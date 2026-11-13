@@ -83,7 +83,8 @@
   .offset{font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);min-width:64px;text-align:center}
   .offset b{color:var(--ink)}
   #tapbar{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:16;display:flex;gap:var(--s1);align-items:center}
-  #tapBtn{padding:18px 40px;font-size:18px}
+  #tapBtn,#startBtn{padding:18px 40px;font-size:18px}
+  #startbar{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:16;display:flex;gap:var(--s1);align-items:center}
 
   /* ---------- player dock (>=200x200 per YouTube policy) ---------- */
   #dock{position:fixed;right:var(--s3);bottom:var(--s3);width:356px;z-index:15}
@@ -205,6 +206,7 @@
     <button class="btn sm" data-off="1">+1s</button>
   </div>
   <div class="group">
+    <button class="btn sm" id="markStart" title="Toque quando a primeira palavra for cantada (S)">Marcar início</button>
     <button class="btn sm" id="resyncBtn" title="Marcar os tempos da letra você mesmo">Sincronizar eu mesmo</button>
   </div>
 </div>
@@ -213,6 +215,11 @@
   <button class="btn ghost" id="tapCancel">Cancelar</button>
   <button class="btn primary" id="tapBtn">Marcar linha <kbd style="color:inherit;border-color:rgba(0,0,0,.3)">espaço</kbd></button>
   <button class="btn ghost" id="tapUndo">Desfazer</button>
+</div>
+
+<div id="startbar" class="hidden">
+  <button class="btn ghost" id="startCancel">Cancelar</button>
+  <button class="btn primary" id="startBtn">Começou! <kbd style="color:inherit;border-color:rgba(0,0,0,.3)">espaço</kbd></button>
 </div>
 
 <div id="dock" class="hidden">
@@ -292,7 +299,7 @@
     </div>
     <div class="step">
       <h3>Atalhos</h3>
-      <p class="hint"><kbd>P</kbd> tocar/pausar · <kbd>N</kbd> próxima · <kbd>[</kbd> <kbd>]</kbd> ajustar tempo · <kbd>F</kbd> tela cheia · <kbd>espaço</kbd> marca linha no modo sincronizar</p>
+      <p class="hint"><kbd>P</kbd> tocar/pausar · <kbd>N</kbd> próxima · <kbd>[</kbd> <kbd>]</kbd> ajustar tempo · <kbd>F</kbd> tela cheia · <kbd>S</kbd> marcar início · <kbd>espaço</kbd> marca linha no modo sincronizar</p>
     </div>
     <div class="step">
       <h3>Letras que você sincronizou</h3>
@@ -330,6 +337,7 @@
   let player = null, playerReady = false, pendingVideo = null;
   let curIdx = -2;
   let tap = null;          // {texts:[], times:[], i}
+  let startMode = false, autoPending = false;
   const draft = { lyric: null, video: null };
 
   /* ---------- toast ---------- */
@@ -393,6 +401,7 @@
           const playing = e.data === YT.PlayerState.PLAYING;
           $('#playBtn').textContent = playing ? '❚❚ Pausar' : '▶︎ Tocar';
           if (e.data === YT.PlayerState.ENDED && !tap) next(true);
+          if (playing) autoAlign();
         },
         onError: e => {
           const msg = { 2: 'Link de vídeo inválido.', 5: 'O vídeo não pode tocar aqui.', 100: 'Vídeo removido ou privado.', 101: 'O dono do vídeo não permite tocar fora do YouTube. Escolha outro vídeo.', 150: 'O dono do vídeo não permite tocar fora do YouTube. Escolha outro vídeo.', 153: 'O YouTube recusou o vídeo porque o app foi aberto direto do computador. Abra por um link http/https.' }[e.data] || 'Erro ao tocar o vídeo.';
@@ -435,7 +444,7 @@
   }
   function tick() {
     requestAnimationFrame(tick);
-    if (tap || !lines.length || !current) return;
+    if (tap || startMode || !lines.length || !current) return;
     const t = now() + offset;
     const i = findIdx(t);
     const els = $('#lines').children;
@@ -528,7 +537,9 @@
     $('#empty').classList.add('hidden');
     $('#controls').classList.remove('hidden');
     $('#dock').classList.remove('hidden');
-    offset = store.get(offKey(song), 0); showOffset();
+    const saved = store.get(offKey(song), null);
+    offset = saved || 0; autoPending = saved === null && !!song.duration; showOffset();
+    endStart(true);
     loadVideo(song.videoId, auto);
     applyLyrics();
     updateMeta();
@@ -556,9 +567,51 @@
   function saveQueue() { store.set('queue', queue); $('#qCount').textContent = queue.length; renderQueue(); updateMetaSafe(); }
   function updateMetaSafe() { if (current) updateMeta(); else $('#qCount').textContent = queue.length; }
 
+  /* ---------- início automático (estimativa) e "Marcar início" (exato) ---------- */
+  // Estimativa: a diferença de duração entre o vídeo e a gravação da letra
+  // costuma ser introdução extra (ou cortada) no começo do vídeo.
+  function autoAlign() {
+    if (!autoPending || !current || !playerReady) return;
+    const vd = player.getDuration ? player.getDuration() : 0;
+    if (!(vd > 0)) return;
+    autoPending = false;
+    const d = vd - current.duration;
+    if (Math.abs(d) >= 1 && Math.abs(d) <= 20) {
+      offset = -Math.round(d * 10) / 10; showOffset(); curIdx = -2;
+      toast(`Início ajustado automaticamente (${$('#offVal').textContent}). Não bateu? Toque “Marcar início”.`);
+    }
+  }
+  const firstSungIdx = () => lines.findIndex(l => !l.gap);
+  function startMark() {
+    if (!current || tap) return;
+    const i = firstSungIdx(); if (i < 0) return toast('Sem letra sincronizada');
+    startMode = true;
+    $('#startbar').classList.remove('hidden'); $('#controls').classList.add('hidden'); $('#countdown').classList.add('hidden');
+    const els = $('#lines').children;
+    for (let k = 0; k < els.length; k++) { els[k].classList.remove('cur', 'past', 'next'); els[k].classList.toggle('tap-target', k === i); }
+    centerOn(i);
+    if (playerReady) { player.seekTo(0, true); player.playVideo(); }
+    toast('Toque “Começou!” quando essa primeira linha for cantada');
+  }
+  function startHit() {
+    if (!startMode) return;
+    const f = lines[firstSungIdx()];
+    offset = Math.round((f.t - now()) * 10) / 10; showOffset();
+    store.set(offKey(current), offset); autoPending = false;
+    endStart();
+    toast(`Sincronizado! (${$('#offVal').textContent}) Fica salvo pra este vídeo.`);
+  }
+  function endStart(silent) {
+    startMode = false;
+    $('#startbar').classList.add('hidden');
+    if (!silent && !tap) $('#controls').classList.remove('hidden');
+    $$('#lines .tap-target').forEach(e => e.classList.remove('tap-target'));
+    curIdx = -2;
+  }
+
   /* ---------- offset ---------- */
   function showOffset() { $('#offVal').textContent = (offset > 0 ? '+' : '') + offset.toFixed(1).replace('.', ',') + 's'; }
-  function nudge(d) { offset = Math.round((offset + d) * 10) / 10; showOffset(); if (current) store.set(offKey(current), offset); curIdx = -2; }
+  function nudge(d) { autoPending = false; offset = Math.round((offset + d) * 10) / 10; showOffset(); if (current) store.set(offKey(current), offset); curIdx = -2; }
   $$('[data-off]').forEach(b => b.onclick = () => nudge(parseFloat(b.dataset.off)));
 
   /* ---------- drawers ---------- */
@@ -741,6 +794,7 @@
     if (!texts.length) return toast('Sem letra para sincronizar');
     startTap(texts);
   };
+  $('#markStart').onclick = startMark; $('#startBtn').onclick = startHit; $('#startCancel').onclick = () => endStart();
   $('#tapBtn').onclick = tapMark; $('#tapUndo').onclick = tapUndo; $('#tapCancel').onclick = cancelTap;
   function toggleFs() { const el = document.documentElement; try { document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen(); } catch {} }
   $('#fsBtn').onclick = toggleFs;
@@ -749,6 +803,9 @@
     if (e.target.matches('input,textarea')) return;
     if (tap && (e.code === 'Space' || e.key === 'Enter')) { e.preventDefault(); tapMark(); return; }
     if (tap && e.key === 'Backspace') { e.preventDefault(); tapUndo(); return; }
+    if (startMode && (e.code === 'Space' || e.key === 'Enter')) { e.preventDefault(); startHit(); return; }
+    if (startMode && e.key === 'Escape') { endStart(); return; }
+    if (e.key === 's' || e.key === 'S') { startMark(); return; }
     if (e.key === 'Escape') closeDrawers();
     if (e.key === 'p' || e.key === 'P' || (e.code === 'Space' && !tap)) { e.preventDefault(); togglePlay(); }
     if (e.key === 'n' || e.key === 'N') next(false);
