@@ -53,8 +53,10 @@
   .ln{font-family:var(--font-display);font-weight:800;font-size:var(--lyric-size);line-height:1.12;letter-spacing:-.015em;
       padding:calc(var(--lyric-size)*.14) 0;color:rgba(255,244,214,.28);transition:color .25s,transform .25s,opacity .25s;transform-origin:left center;max-width:1100px}
   .ln.past{color:rgba(255,244,214,.16)}
-  .ln.cur{color:transparent;transform:scale(1.04);
-      background:linear-gradient(90deg,var(--keijo) 0,var(--keijo) calc(var(--p,0)*100%),var(--coalho) calc(var(--p,0)*100%),var(--coalho) 100%);
+  .ln.cur{color:var(--coalho);transform:scale(1.04)}
+  .ln.cur .w.w-on{color:var(--keijo)}
+  .ln.cur .w.w-now{color:transparent;
+      background:linear-gradient(90deg,var(--keijo) 0,var(--keijo) calc(var(--wp,0)*100%),var(--coalho) calc(var(--wp,0)*100%),var(--coalho) 100%);
       -webkit-background-clip:text;background-clip:text}
   .ln.next{color:rgba(255,244,214,.55)}
   .ln.gap{font-size:calc(var(--lyric-size)*.6);color:var(--muted)}
@@ -358,8 +360,24 @@
       const stamps = []; let m; re.lastIndex = 0;
       while ((m = re.exec(raw))) stamps.push(parseInt(m[1], 10) * 60 + parseFloat(m[2].replace(':', '.')));
       if (!stamps.length) continue;
-      const text = raw.replace(re, '').trim();
-      for (const t of stamps) out.push({ t, text });
+      // LRC "enhanced": <mm:ss.xx> antes de cada palavra
+      const body = raw.replace(re, '');
+      const reW = /<(\d{1,3}):(\d{1,2}(?:[.:]\d{1,3})?)>/g;
+      let segs = null, end = null;
+      if (/<\d{1,3}:\d/.test(body)) {
+        segs = []; let mm, last = null, lastIdx = 0;
+        while ((mm = reW.exec(body))) {
+          const tt = parseInt(mm[1], 10) * 60 + parseFloat(mm[2].replace(':', '.'));
+          if (last) last.text = body.slice(lastIdx, mm.index);
+          last = { t: tt, text: '' }; segs.push(last); lastIdx = reW.lastIndex;
+        }
+        if (last) last.text = body.slice(lastIdx);
+        if (segs.length && !segs[segs.length - 1].text.trim()) end = segs.pop().t;
+        segs = segs.filter(s => s.text);
+        if (segs.length) { segs[0].text = segs[0].text.trimStart(); segs[segs.length - 1].text = segs[segs.length - 1].text.trimEnd(); } else segs = null;
+      }
+      const text = (segs ? segs.map(s => s.text).join('') : body).trim();
+      for (const t of stamps) out.push({ t, text, segs: segs && stamps.length === 1 ? segs : null, end });
     }
     out.sort((a, b) => a.t - b.t);
     // mark instrumental gaps (empty lines) and insert gap markers for long pauses
@@ -370,6 +388,19 @@
       const prev = res[res.length - 1];
       if (prev && !prev.gap && l.t - prev.t > 12) res.push({ t: prev.t + Math.min(6, (l.t - prev.t) / 2), text: '♪', gap: true });
       res.push(l);
+    }
+    // sem tempo por palavra: estima pela duração da linha, proporcional ao tamanho de cada palavra
+    for (let i = 0; i < res.length; i++) {
+      const l = res[i]; if (l.gap) continue;
+      const next = res[i + 1];
+      l.end = l.end || (next ? next.t : l.t + 4);
+      if (l.segs) continue;
+      const chunks = l.text.match(/\S+\s*/g) || [];
+      const dur = Math.min(10, (l.end - l.t) * 0.85);
+      const total = chunks.reduce((a, c) => a + c.trim().length + 1, 0) || 1;
+      let acc = 0;
+      l.segs = chunks.map(c => { const s = { t: l.t + dur * acc / total, text: c }; acc += c.trim().length + 1; return s; });
+      l.segsEnd = l.t + dur; l.estimated = true;
     }
     return res;
   }
@@ -423,7 +454,8 @@
     list.forEach((l, i) => {
       const d = document.createElement('div');
       d.className = 'ln' + (l.gap ? ' gap' : '');
-      d.textContent = l.text || '♪';
+      if (l.segs && !tapMode) l.segs.forEach(s => { const w = document.createElement('span'); w.className = 'w'; w.textContent = s.text; d.appendChild(w); });
+      else d.textContent = l.text || '♪';
       d.dataset.i = i;
       box.appendChild(d);
     });
@@ -457,10 +489,14 @@
       centerOn(i < 0 ? 0 : i);
       curIdx = i;
     }
-    if (i >= 0 && els[i]) {
-      const start = lines[i].t, end = lines[i + 1] ? lines[i + 1].t : start + 4;
-      const p = Math.max(0, Math.min(1, (t - start) / Math.max(0.3, (end - start) * 0.9)));
-      els[i].style.setProperty('--p', p.toFixed(3));
+    if (i >= 0 && els[i] && lines[i].segs) {
+      const l = lines[i], sp = els[i].children, last = l.segsEnd || l.end;
+      for (let k = 0; k < sp.length; k++) {
+        const st = l.segs[k].t, en = l.segs[k + 1] ? l.segs[k + 1].t : last;
+        const on = t >= en, nw = !on && t >= st;
+        sp[k].classList.toggle('w-on', on); sp[k].classList.toggle('w-now', nw);
+        if (nw) sp[k].style.setProperty('--wp', ((t - st) / Math.max(0.05, en - st)).toFixed(3));
+      }
     }
     // countdown before the first sung line
     const first = lines.find(l => !l.gap);
@@ -555,7 +591,7 @@
     if (!current) return;
     $('#nowTitle').textContent = `${current.title} · ${current.artist}`;
     $('#singerName').textContent = current.singer || '—';
-    $('#lyricSrc').innerHTML = mySync(current) ? '<span class="badge mine">sincronizada por você</span>' : (current.lrc ? 'letra: LRCLIB' : '');
+    $('#lyricSrc').innerHTML = mySync(current) ? '<span class="badge mine">sincronizada por você</span>' : (current.lrc ? (lines.some(l => l.segs && !l.estimated) ? '<span class="badge sync">palavra por palavra</span>' : 'letra: LRCLIB') : '');
     const n = queue[0];
     $('#upnext').textContent = n ? `próximo: ${n.singer || '—'} · ${n.title}` : 'fila vazia';
     $('#qCount').textContent = queue.length;
