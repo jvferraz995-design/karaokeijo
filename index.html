@@ -61,9 +61,10 @@
   .ln.next{color:rgba(255,244,214,.55)}
   .ln.gap{font-size:calc(var(--lyric-size)*.6);color:var(--muted)}
   .ln.gap.cur{background:none;color:var(--keijo)}
+  .ln.gap.cd-host{opacity:0}
   .ln.tap-target{color:var(--keijo);outline:2px dashed var(--keijo);outline-offset:6px;border-radius:var(--r-sm)}
   .ln.tapped{color:rgba(255,244,214,.45)}
-  #countdown{position:absolute;left:var(--s5);top:24%;font-family:var(--font-display);font-weight:800;font-size:calc(var(--lyric-size)*.5);color:var(--keijo);display:flex;gap:14px}
+  #countdown{position:absolute;left:var(--s5);top:24%;z-index:2;font-family:var(--font-display);font-weight:800;font-size:calc(var(--lyric-size)*.5);color:var(--keijo);display:flex;gap:14px}
   #countdown i{width:18px;height:18px;border-radius:50%;background:var(--keijo);display:inline-block;opacity:.2;transition:opacity .2s}
   #countdown i.on{opacity:1}
 
@@ -498,15 +499,25 @@
         if (nw) sp[k].style.setProperty('--wp', ((t - st) / Math.max(0.05, en - st)).toFixed(3));
       }
     }
-    // countdown before the first sung line
-    const first = lines.find(l => !l.gap);
+    // contagem 3-2-1 antes do primeiro verso e de cada verso que volta depois de uma pausa (4s ou mais)
     const cd = $('#countdown');
-    const until = first ? first.t - t : 99;
-    if (i < 0 && until > 0 && until <= 4 && now() > 0) {
+    let j = i + 1; while (j < lines.length && lines[j].gap) j++;
+    let p = j - 1; while (p >= 0 && lines[p].gap) p--;
+    const nxt = lines[j], prev = p >= 0 ? lines[p] : null;
+    const pause = nxt ? nxt.t - (prev ? (prev.segsEnd || prev.end || prev.t) : 0) : 0;
+    const until = nxt ? nxt.t - t : 99;
+    const sungNow = i >= 0 && !lines[i].gap && t < (lines[i].segsEnd || lines[i].end || 0);
+    if (nxt && pause >= 4 && until > 0 && until <= 3.2 && !sungNow && now() > 0) {
+      const el = els[j];
+      if (el) {
+        const box = $('#lyrics').getBoundingClientRect(), r = el.getBoundingClientRect();
+        cd.style.top = Math.max(8, r.top - box.top - cd.offsetHeight - 6) + 'px';
+      }
       cd.classList.remove('hidden');
-      const dots = $$('i', cd); const n = Math.ceil(until);
-      dots.forEach((d, k) => d.classList.toggle('on', k < Math.min(3, n)));
-    } else cd.classList.add('hidden');
+      for (let k = p + 1; k < j; k++) els[k] && els[k].classList.add('cd-host');
+      const n = Math.ceil(until);
+      $$('i', cd).forEach((d, k) => d.classList.toggle('on', k < Math.min(3, n)));
+    } else if (!cd.classList.contains('hidden')) { cd.classList.add('hidden'); $$('#lines .cd-host').forEach(e => e.classList.remove('cd-host')); }
   }
   requestAnimationFrame(tick);
 
