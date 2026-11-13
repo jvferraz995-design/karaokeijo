@@ -53,10 +53,12 @@
   .ln{font-family:var(--font-display);font-weight:800;font-size:var(--lyric-size);line-height:1.12;letter-spacing:-.015em;
       padding:calc(var(--lyric-size)*.14) 0;color:rgba(255,244,214,.28);transition:color .25s,transform .25s,opacity .25s;transform-origin:left center;max-width:1100px}
   .ln.past{color:rgba(255,244,214,.16)}
+  .ln.who-start::before{content:attr(data-who);display:block;font-family:var(--font-body);font-weight:700;font-size:max(12px,calc(var(--lyric-size)*.26));letter-spacing:.08em;text-transform:uppercase;color:var(--hl);margin-bottom:2px;opacity:.6}
+  .ln.cur.who-start::before,.ln.next.who-start::before{opacity:1}
   .ln.cur{color:var(--coalho);transform:scale(1.04)}
-  .ln.cur .w.w-on{color:var(--keijo)}
+  .ln.cur .w.w-on{color:var(--hl,var(--keijo))}
   .ln.cur .w.w-now{color:transparent;
-      background:linear-gradient(90deg,var(--keijo) 0,var(--keijo) calc(var(--wp,0)*100%),var(--coalho) calc(var(--wp,0)*100%),var(--coalho) 100%);
+      background:linear-gradient(90deg,var(--hl,var(--keijo)) 0,var(--hl,var(--keijo)) calc(var(--wp,0)*100%),var(--coalho) calc(var(--wp,0)*100%),var(--coalho) 100%);
       -webkit-background-clip:text;background-clip:text}
   .ln.next{color:rgba(255,244,214,.55)}
   .ln.gap{font-size:calc(var(--lyric-size)*.6);color:var(--muted)}
@@ -317,6 +319,8 @@
     <div class="step">
       <h3><span class="n">4</span> Quem canta</h3>
       <input type="text" id="fSinger" placeholder="Nome de quem vai cantar">
+      <input type="text" id="fSinger2" placeholder="Dueto com… (opcional)" style="margin-top:8px">
+      <p class="hint">No dueto, cada um ganha uma cor e os versos se alternam. O refrão fica pros dois.</p>
     </div>
     <p class="hint err" id="addErr"></p>
   </div>
@@ -531,11 +535,29 @@
   const now = () => (playerReady && player.getCurrentTime) ? player.getCurrentTime() : 0;
 
   /* ---------- rendering lyrics ---------- */
+  // dueto: refrão (linhas que se repetem) pros dois; o resto alterna de 2 em 2 linhas
+  const whoName = s => s ? (s.singer2 ? `${s.singer || '—'} & ${s.singer2}` : (s.singer || '')) : '';
+  function assignDuet(list) {
+    const cnt = {}; list.forEach(l => { if (!l.gap) { const k = norm(l.text).replace(/[^a-z0-9]/g, ''); cnt[k] = (cnt[k] || 0) + 1; } });
+    let turn = 'a', chunk = 0, prev = null;
+    list.forEach(l => {
+      if (l.gap) { l.who = null; return; }
+      if (cnt[norm(l.text).replace(/[^a-z0-9]/g, '')] >= 2) { l.who = 'both'; if (chunk > 0) { turn = turn === 'a' ? 'b' : 'a'; chunk = 0; } prev = 'both'; return; }
+      l.who = turn; prev = turn;
+      if (++chunk === 2) { turn = turn === 'a' ? 'b' : 'a'; chunk = 0; }
+    });
+  }
   function renderLines(list, tapMode) {
     const box = $('#lines'); box.innerHTML = '';
+    const duet = !tapMode && current && current.singer2;
+    if (duet) assignDuet(list); else list.forEach(l => { l.who = null; });
+    const COL = { a: 'var(--keijo)', b: '#8fb0d9', both: 'var(--cera)' };
+    const LBL = duet ? { a: current.singer || 'Voz 1', b: current.singer2, both: 'Juntos' } : {};
+    let prevWho = null;
     list.forEach((l, i) => {
       const d = document.createElement('div');
       d.className = 'ln' + (l.gap ? ' gap' : '');
+      if (l.who) { d.style.setProperty('--hl', COL[l.who]); if (l.who !== prevWho) { d.classList.add('who-start'); d.dataset.who = LBL[l.who]; } prevWho = l.who; }
       if (l.segs && !tapMode) l.segs.forEach(s => { const w = document.createElement('span'); w.className = 'w'; w.textContent = s.text; d.appendChild(w); });
       else d.textContent = l.text || '♪';
       d.dataset.i = i;
@@ -683,10 +705,10 @@
     $('#nowWrap').classList.toggle('hidden', !current);
     if (!current) return;
     $('#nowTitle').textContent = `${current.title} · ${current.artist}`;
-    $('#singerName').textContent = current.singer || '—';
+    $('#singerName').textContent = whoName(current) || '—';
     $('#lyricSrc').innerHTML = mySync(current) ? '<span class="badge mine">sincronizada por você</span>' : (current.lrc ? (lines.some(l => l.segs && !l.estimated) ? '<span class="badge sync">palavra por palavra</span>' : 'letra: LRCLIB') : '');
     const n = queue[0];
-    $('#upnext').textContent = n ? `próximo: ${n.singer || '—'} · ${n.title}` : 'fila vazia';
+    $('#upnext').textContent = n ? `próximo: ${whoName(n) || '—'} · ${n.title}` : 'fila vazia';
     $('#qCount').textContent = queue.length;
     broadcastState();
   }
@@ -758,7 +780,7 @@
     $('#fVideo').value = ''; $('#videoChosen').textContent = ''; $('#addErr').textContent = '';
     $('#fPaste').value = ''; $('#pasteWrap').classList.add('hidden'); $('#linkWrap').classList.add('hidden');
     openDrawer('#addDrawer');
-    $('#fQuery').value = ''; renderHistory('');
+    $('#fQuery').value = ''; $('#fSinger2').value = ''; renderHistory('');
     setTimeout(() => $('#fQuery').focus(), 50);
   }
   $('#addBtn').onclick = openAdd; $('#emptyAdd').onclick = openAdd; $('#queueAdd').onclick = openAdd;
@@ -910,7 +932,7 @@
     if (!lyr) { err.textContent = 'Busque a música e escolha uma letra (ou cole a letra).'; return null; }
     const vid = (ytId($('#fVideo').value) ? { id: ytId($('#fVideo').value) } : null) || draft.video;
     if (!vid) { err.textContent = 'Escolha um vídeo da lista ou cole um link.'; return null; }
-    return { uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...lyr, videoId: vid.id, singer: $('#fSinger').value.trim() };
+    return { uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...lyr, videoId: vid.id, singer: $('#fSinger').value.trim(), singer2: $('#fSinger2').value.trim() };
   }
   function enqueue(s) { if (REMOTE) return sendToTv(s); if (!current) { closeDrawers(); play(s, false); toast('Pronto! Aperte Tocar quando quiser.'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); }
   $('#addQueue').onclick = () => { const s = buildSong(); if (s) enqueue(s); };
@@ -919,11 +941,11 @@
   function addHistory(song) {
     const k = song.videoId + '|' + lyricKey(song);
     const old = history.find(x => x.k === k);
-    const { uid, singer, counted, ...rest } = song;
+    const { uid, singer, singer2, counted, ...rest } = song;
     history = [{ ...rest, k, count: (old ? old.count : 0) + 1, last: Date.now() }, ...history.filter(x => x.k !== k)].slice(0, 60);
     store.set('history', history);
   }
-  function fromHistory(x) { const { k, count, last, ...s } = x; return { ...s, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), singer: $('#fSinger').value.trim() }; }
+  function fromHistory(x) { const { k, count, last, ...s } = x; return { ...s, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), singer: $('#fSinger').value.trim(), singer2: $('#fSinger2').value.trim() }; }
   function renderHistory(filter) {
     const box = $('#histList'), q = norm(filter || '').trim();
     const list = history.filter(x => !q || norm(x.title + ' ' + x.artist).includes(q)).slice(0, q ? 8 : 5);
@@ -949,14 +971,14 @@
     if (current) {
       const d = document.createElement('div'); d.className = 'q playing';
       d.innerHTML = '<span class="num">♪</span><div class="t"><b></b><small></small></div>';
-      d.querySelector('b').textContent = current.title; d.querySelector('small').textContent = `${current.singer || '—'} · agora`;
+      d.querySelector('b').textContent = current.title; d.querySelector('small').textContent = `${whoName(current) || '—'} · agora`;
       box.appendChild(d);
     }
     if (!queue.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ninguém na fila ainda.'; box.appendChild(p); return; }
     queue.forEach((s, i) => {
       const d = document.createElement('div'); d.className = 'q';
       d.innerHTML = `<span class="num">${i + 1}</span><div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm" data-a="up" title="Subir">↑</button><button class="btn sm" data-a="play" title="Cantar agora">▶︎</button><button class="btn sm" data-a="rm" title="Tirar">✕</button></div>`;
-      d.querySelector('b').textContent = s.title; d.querySelector('small').textContent = `${s.singer || '—'} · ${s.artist}`;
+      d.querySelector('b').textContent = s.title; d.querySelector('small').textContent = `${whoName(s) || '—'} · ${s.artist}`;
       d.querySelector('[data-a=up]').onclick = () => { if (i > 0) { [queue[i - 1], queue[i]] = [queue[i], queue[i - 1]]; saveQueue(); } };
       d.querySelector('[data-a=play]').onclick = () => { queue.splice(i, 1); saveQueue(); closeDrawers(); play(s, true); };
       d.querySelector('[data-a=rm]').onclick = () => { queue.splice(i, 1); saveQueue(); };
@@ -1051,7 +1073,7 @@
   function celebrate() {
     if (!current || partyOn) return;
     partyOn = true;
-    const who = current.singer;
+    const who = current.singer2 ? `${current.singer} e ${current.singer2}` : current.singer;
     const msgs = who ? [`Mandou bem, ${who}!`, `Que voz, ${who}!`, `Aplausos pra ${who}!`, `${who} arrasou!`, `Essa saiu no ponto, ${who}!`]
                      : ['Mandou bem!', 'Que voz!', 'Aplausos!', 'Arrasou!', 'Essa saiu no ponto!'];
     $('#partyMsg').textContent = msgs[Math.floor(Math.random() * msgs.length)];
@@ -1059,7 +1081,7 @@
     const n = queue[0];
     $('#partyNext').classList.toggle('hidden', !n);
     $('#partySkip').classList.toggle('hidden', !n);
-    if (n) { $('#partyNextTitle').textContent = n.title; $('#partyNextWho').textContent = n.singer ? `com ${n.singer}` : (n.artist || ''); }
+    if (n) { $('#partyNextTitle').textContent = n.title; $('#partyNextWho').textContent = n.singer ? `com ${whoName(n)}` : (n.artist || ''); }
     $('#party').classList.remove('hidden'); $('#controls').classList.add('hidden');
     playCheer(); spawnEmojis(5.5);
     let left = PARTY_SECONDS;
@@ -1135,7 +1157,7 @@
       setTimeout(() => { if (!done) { done = true; try { c.end(true); } catch {} rej(new Error('timeout')); } }, 11000);
     });
   }
-  function snapshot() { return { type: 'state', ts: Date.now(), now: current ? { title: current.title, singer: current.singer || '' } : null, queue: queue.map(s => ({ title: s.title, singer: s.singer || '' })) }; }
+  function snapshot() { return { type: 'state', ts: Date.now(), now: current ? { title: current.title, singer: whoName(current) } : null, queue: queue.map(s => ({ title: s.title, singer: whoName(s) })) }; }
   function broadcastState() {
     if (!mq || REMOTE) return;
     clearTimeout(stateTimer);
