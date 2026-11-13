@@ -132,6 +132,12 @@
   #qrBox{display:flex;justify-content:center;margin:var(--s2) 0}
   #qrBox svg{width:260px;height:260px;background:#fff;border-radius:var(--r-md);padding:10px}
   #roomLink{word-break:break-all;text-align:center}
+  .qrmini{position:absolute;right:var(--s4);bottom:var(--s4);display:flex;align-items:center;gap:14px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 18px 12px 12px;max-width:360px;z-index:3}
+  .qrmini .qrsvg svg{width:120px;height:120px;background:#fff;border-radius:10px;padding:6px;display:block}
+  .qrmini span{font-size:15px;font-weight:700;line-height:1.35}
+  .qrmini small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:4px}
+  #qrParty{top:var(--s4);bottom:auto}
+  @media (max-width:860px){.qrmini{display:none!important}}
   .res .acts{display:flex;gap:4px;flex:none}
   .res .acts .btn{padding:6px 10px}
   .res img{width:96px;height:54px;object-fit:cover;border-radius:6px;flex:none}
@@ -221,6 +227,7 @@
       <p>Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
       <button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button>
     </div>
+    <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>📱 Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
   </div>
 </div>
 
@@ -361,6 +368,7 @@
 </aside>
 
 <div id="party" class="hidden" aria-live="polite">
+  <div class="qrmini hidden" id="qrParty"><div class="qrsvg"></div><span>📱 Quer cantar também?<small>Aponte a câmera e entre na fila</small></span></div>
   <div class="inner">
     <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
     <h1 id="partyMsg"></h1>
@@ -1162,7 +1170,9 @@
     try {
       if (!window.qrcode) await loadScript(QR_SRC);
       const q = qrcode(0, 'M'); q.addData(url); q.make();
-      $('#qrBox').innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+      const svg = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+      $('#qrBox').innerHTML = svg;
+      ['#qrMini', '#qrParty'].forEach(id => { const el = $(id); $('.qrsvg', el).innerHTML = svg; el.classList.remove('hidden'); });
     } catch { $('#qrBox').innerHTML = '<p class="hint">Não consegui gerar o QR. Abra o link abaixo no celular.</p>'; }
   }
   $('#phoneBtn').onclick = async () => { openDrawer('#phoneDrawer'); store.set('hostOn', true); phoneStatus(); if (mq) renderQR(); else { $('#qrBox').innerHTML = '<p class="hint">Preparando o código…</p>'; await startHost(); } phoneStatus(); };
@@ -1225,7 +1235,7 @@
   /* ---------- restore ---------- */
   $('#qCount').textContent = queue.length;
   if (REMOTE) startRemote();
-  else { if (current) play(current, false); if (store.get('hostOn', false)) startHost(); }
+  else { if (current) play(current, false); startHost(); }
 
   // expose for tests
   window.__kk = { parseLRC, toLRC, ytId };
