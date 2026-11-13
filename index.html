@@ -980,6 +980,15 @@
       o.connect(g); g.connect(out); o.start(at); o.stop(at + 0.8);
     }
   }
+  // som de plateia (applause.mp3, Pixabay); se o arquivo falhar, usa as palmas sintetizadas
+  const cheer = new Audio('applause.mp3'); cheer.preload = 'auto'; cheer.volume = 0.9;
+  function playCheer() {
+    try {
+      cheer.currentTime = 0;
+      const p = cheer.play();
+      if (p && p.catch) p.catch(() => playApplause(6));
+    } catch { playApplause(6); }
+  }
   function spawnEmojis(secs) {
     const box = $('#party'), set = ['👏', '👏', '👏', '🎉', '🙌', '✨', '🎤', '🧀'];
     const iv = setInterval(() => {
@@ -1007,7 +1016,7 @@
     $('#partySkip').classList.toggle('hidden', !n);
     if (n) { $('#partyNextTitle').textContent = n.title; $('#partyNextWho').textContent = n.singer ? `com ${n.singer}` : (n.artist || ''); }
     $('#party').classList.remove('hidden'); $('#controls').classList.add('hidden');
-    playApplause(6); spawnEmojis(5.5);
+    playCheer(); spawnEmojis(5.5);
     let left = PARTY_SECONDS;
     const tickLeft = () => { $('#partyLeft').textContent = n ? `começa em ${left}s` : 'fila vazia: adicione a próxima música'; };
     tickLeft();
@@ -1018,6 +1027,7 @@
     partyOn = false;
     partyTimers.forEach(t => { clearInterval(t); clearTimeout(t); }); partyTimers = [];
     $('#party').classList.add('hidden'); $$('#party .emo').forEach(e => e.remove());
+    try { cheer.pause(); } catch {}
     if (!tap) $('#controls').classList.remove('hidden');
     if (goNext && queue.length) next(true);
   }
