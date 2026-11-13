@@ -51,11 +51,33 @@
             mask-image:linear-gradient(transparent 0,#000 22%,#000 70%,transparent 100%)}
   #lines{position:absolute;left:var(--s5);right:calc(var(--s5) + 0px);top:0;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
   .ln{font-family:var(--font-display);font-weight:800;font-size:var(--lyric-size);line-height:1.12;letter-spacing:-.015em;
-      padding:calc(var(--lyric-size)*.14) 0;color:rgba(255,244,214,.28);transition:color .25s,transform .25s,opacity .25s;transform-origin:left center;max-width:1100px}
+      padding:calc(var(--lyric-size)*.14) 0;color:rgba(255,244,214,.28);transition:color .25s,transform .3s,opacity .25s,filter .35s;transform-origin:left center;max-width:1100px;filter:blur(1.6px)}
   .ln.past{color:rgba(255,244,214,.16)}
   .ln.who-start::before{content:attr(data-who);display:block;font-family:var(--font-body);font-weight:700;font-size:max(12px,calc(var(--lyric-size)*.26));letter-spacing:.08em;text-transform:uppercase;color:var(--hl);margin-bottom:2px;opacity:.6}
   .ln.cur.who-start::before,.ln.next.who-start::before{opacity:1}
-  .ln.cur{color:var(--coalho);transform:scale(1.04)}
+  .ln.cur{color:var(--coalho);transform:scale(1.07);filter:drop-shadow(0 0 22px rgba(245,191,0,.28))}
+  .ln.next{filter:blur(.4px)}
+  .ln.tap-target,.ln.tapped{filter:none}
+  body.lowfx .ln{filter:none!important}
+  /* tela limpa: some cabeçalho, controles e cursor sem mexer o mouse */
+  #stage > header,#controls{transition:opacity .45s}
+  body.idle #stage > header,body.idle #controls{opacity:0;pointer-events:none}
+  body.idle,body.idle *{cursor:none!important}
+  /* vinheta "No palco" */
+  #intro{position:fixed;inset:0;z-index:14;background:var(--surface);display:flex;align-items:center;padding:0 var(--s5);overflow:hidden;cursor:pointer}
+  #intro h1{font-family:var(--font-display);font-weight:800;font-size:clamp(64px,11vw,168px);line-height:.9;letter-spacing:-.03em;color:var(--keijo);margin:var(--s3) 0 var(--s2);animation:introUp .7s cubic-bezier(.2,1,.3,1) both .15s}
+  #intro .sub{font-size:clamp(20px,2.4vw,34px);font-weight:700;color:var(--coalho);margin:0;animation:introUp .7s cubic-bezier(.2,1,.3,1) both .3s}
+  #intro .sub small{display:block;color:var(--muted);font-weight:500;font-size:.68em;margin-top:6px}
+  #intro .tag{animation:introUp .5s cubic-bezier(.2,1,.3,1) both}
+  #intro .bars{margin-top:var(--s3)}
+  #intro .bars span{transform-origin:left;animation:grow .6s cubic-bezier(.2,1,.3,1) both}
+  #intro .bars span:nth-child(2){animation-delay:.1s} #intro .bars span:nth-child(3){animation-delay:.2s}
+  #intro .prog{position:absolute;left:0;bottom:0;height:6px;background:var(--keijo);animation:prog 3.2s linear forwards}
+  @keyframes introUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes prog{from{width:0}to{width:100%}}
+  @media (max-width:860px){#intro{padding:0 var(--s2)}}
+  body.intro-on #controls,body.intro-on #stage > header{opacity:0;pointer-events:none}
   .ln.cur .w.w-on{color:var(--hl,var(--keijo))}
   .ln.cur .w.w-now{color:transparent;
       background:linear-gradient(90deg,var(--hl,var(--keijo)) 0,var(--hl,var(--keijo)) calc(var(--wp,0)*100%),var(--coalho) calc(var(--wp,0)*100%),var(--coalho) 100%);
@@ -368,6 +390,11 @@
       <p class="hint">Com a chave, o app busca os vídeos sozinho. Sem ela, é só colar o link. A chave fica salva só neste navegador.</p>
     </div>
     <div class="step">
+      <h3>Efeitos visuais</h3>
+      <label style="display:flex;gap:10px;align-items:center;font-size:15px"><input type="checkbox" id="fxToggle" style="accent-color:var(--keijo);width:18px;height:18px"> Desfoque e brilho na letra</label>
+      <p class="hint">Se a TV ou o computador travar durante a música, desligue.</p>
+    </div>
+    <div class="step">
       <h3>Atalhos</h3>
       <p class="hint"><kbd>P</kbd> tocar/pausar · <kbd>N</kbd> próxima · <kbd>[</kbd> <kbd>]</kbd> ajustar tempo · <kbd>F</kbd> tela cheia · <kbd>S</kbd> marcar início · <kbd>espaço</kbd> marca linha no modo sincronizar</p>
     </div>
@@ -394,6 +421,15 @@
   </div>
 </div>
 
+<div id="intro" class="hidden" title="Clique para começar já">
+  <div class="inner">
+    <span class="tag">no palco</span>
+    <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
+    <h1 id="introName"></h1>
+    <p class="sub" id="introSong"></p>
+  </div>
+  <div class="prog"></div>
+</div>
 <div id="reactLayer" aria-hidden="true"></div>
 <div id="toast" style="opacity:0"></div>
 <div id="banner" class="hidden"></div>
@@ -691,7 +727,11 @@
     const saved = store.get(offKey(song), null);
     offset = saved || 0; autoPending = saved === null && !!song.duration; showOffset();
     endStart(true);
-    loadVideo(song.videoId, auto);
+    const hasLyr = !!(mySync(song) || song.lrc);
+    if (auto && hasLyr && !REMOTE) {
+      loadVideo(song.videoId, false);   // carrega parado; toca depois da vinheta
+      showIntro(song, () => { if (current !== song) return; if (playerReady) player.playVideo(); else if (pendingVideo) pendingVideo.auto = true; });
+    } else { hideIntro(); loadVideo(song.videoId, auto); }
     applyLyrics();
     updateMeta();
     if (!mySync(song) && !song.lrc) {
@@ -990,7 +1030,36 @@
 
   /* ---------- settings ---------- */
   const size = store.get('size', null); if (size) document.documentElement.style.setProperty('--lyric-size', size + 'px');
+  /* ---------- efeitos visuais, tela limpa e vinheta ---------- */
+  document.body.classList.toggle('lowfx', !!store.get('lowfx', false));
+  $('#fxToggle').onchange = e => { document.body.classList.toggle('lowfx', !e.target.checked); store.set('lowfx', !e.target.checked); };
+  let idleT;
+  function poke() {
+    document.body.classList.remove('idle'); clearTimeout(idleT);
+    idleT = setTimeout(() => {
+      const playing = playerReady && player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING;
+      const drawerOpen = $$('.drawer').some(d => !d.classList.contains('hidden'));
+      if (playing && !drawerOpen && !tap && !startMode) document.body.classList.add('idle'); else poke();
+    }, 3000);
+  }
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev => document.addEventListener(ev, poke, { passive: true }));
+  poke();
+  let introT = null, introDone = null;
+  function showIntro(song, done) {
+    const el = $('#intro');
+    $('#introName').textContent = whoName(song) || 'Sua vez!';
+    const sub = $('#introSong'); sub.textContent = song.title;
+    if (song.artist) { const sm = document.createElement('small'); sm.textContent = song.artist; sub.appendChild(sm); }
+    el.classList.add('hidden'); void el.offsetWidth; el.classList.remove('hidden');   // reinicia as animações
+    document.body.classList.add('intro-on');
+    clearTimeout(introT); introDone = done;
+    introT = setTimeout(() => { hideIntro(); const f = introDone; introDone = null; f && f(); }, 3200);
+  }
+  function hideIntro() { clearTimeout(introT); $('#intro').classList.add('hidden'); document.body.classList.remove('intro-on'); }
+  $('#intro').onclick = () => { hideIntro(); const f = introDone; introDone = null; f && f(); };
+
   $('#settingsBtn').onclick = () => {
+    $('#fxToggle').checked = !document.body.classList.contains('lowfx');
     $('#sizeRange').value = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--lyric-size'), 10) || 56;
     $('#ytKey').value = getKey();
     $('#mineCount').textContent = `${store.keys('sync:').length} letra(s) sincronizada(s) salvas neste navegador.`;
