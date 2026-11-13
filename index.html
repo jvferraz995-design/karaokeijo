@@ -582,11 +582,26 @@
   $('#togglePaste').onclick = () => { $('#pasteWrap').classList.toggle('hidden'); if (!$('#pasteWrap').classList.contains('hidden')) { draft.lyric = null; $$('#lyricResults .res').forEach(r => r.classList.remove('sel')); $('#fPaste').focus(); } };
   $('#toggleLink').onclick = () => { $('#linkWrap').classList.toggle('hidden'); if (!$('#linkWrap').classList.contains('hidden')) $('#fVideo').focus(); };
 
+  /* ---------- casar letra e vídeo pelo artista ---------- */
+  let lyrRes = [], vidRes = [], pending = 0;
+  const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const tokens = a => norm(a).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !['feat', 'part', 'with'].includes(w));
+  const matches = (v, l) => tokens(l.artistName).some(t => norm(v.title + ' ' + v.channel).includes(t));
+  function pickVideoFor(l) { const v = vidRes.find(v => matches(v, l)); if (v) v.b.click(); return !!v; }
+  function autoMatch() {
+    if (pending > 0) return;
+    let l = lyrRes.find(x => x.d.syncedLyrics && vidRes.some(v => matches(v, x.d))) || lyrRes.find(x => x.d.syncedLyrics) || lyrRes[0];
+    if (l) l.b.click();
+    if (!l || !pickVideoFor(l.d)) { if (vidRes[0]) vidRes[0].b.click(); }
+  }
+
   function search() {
     const q = $('#fQuery').value.trim();
     if (!q) { $('#fQuery').focus(); return; }
     draft.lyric = null; draft.video = null; $('#videoChosen').textContent = '';
-    searchLyrics(q); searchYt(q);
+    lyrRes = []; vidRes = []; pending = 2;
+    searchLyrics(q).finally(() => { pending--; autoMatch(); });
+    searchYt(q).finally(() => { pending--; autoMatch(); });
   }
   $('#searchBtn').onclick = search;
   $('#fQuery').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
@@ -607,13 +622,14 @@
         b.innerHTML = `<div class="t"><b></b><small></small></div><span class="badge ${d.syncedLyrics ? 'sync' : 'plain'}">${d.syncedLyrics ? 'sincronizada' : 'só texto'}</span>`;
         b.querySelector('b').textContent = d.trackName;
         b.querySelector('small').textContent = [d.artistName, d.albumName, fmtDur(d.duration)].filter(Boolean).join(' · ');
-        b.onclick = () => {
+        b.onclick = e => {
           $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel');
           draft.lyric = { lrclibId: d.id, title: d.trackName, artist: d.artistName, lrc: d.syncedLyrics || null, plain: d.plainLyrics || null, duration: d.duration };
           $('#pasteWrap').classList.add('hidden');
+          if (e && e.isTrusted) pickVideoFor(d);
         };
         box.appendChild(b);
-        if (k === 0) b.click();
+        lyrRes.push({ d, b });
       });
     } catch (e) {
       box.innerHTML = '<p class="hint err">Não consegui falar com o LRCLIB. Verifique a internet e tente de novo.</p>';
@@ -649,7 +665,7 @@
         b.querySelector('small').textContent = decode(sn.channelTitle);
         b.onclick = () => { $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); draft.video = { id, title: decode(sn.title) }; $('#fVideo').value = ''; $('#videoChosen').textContent = ''; };
         box.appendChild(b);
-        if (k === 0) b.click();
+        vidRes.push({ id, title: decode(sn.title), channel: decode(sn.channelTitle), b });
       });
       if (!box.children.length) box.innerHTML = `<p class="hint">Nenhum vídeo encontrado. ${fallback}</p>`;
     } catch (e) { box.innerHTML = `<p class="hint err">A busca no YouTube falhou (${escapeHtml(e.message || 'erro')}). ${fallback}</p>`; }
