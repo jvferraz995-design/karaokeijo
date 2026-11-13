@@ -640,13 +640,30 @@
   const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const tokens = a => norm(a).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !['feat', 'part', 'with'].includes(w));
   const matches = (v, l) => tokens(l.artistName).some(t => norm(v.title + ' ' + v.channel).includes(t));
-  function pickVideoFor(l) { const v = vidRes.find(v => matches(v, l)); if (v) v.b.click(); return !!v; }
+  // Quanto menor, melhor: letra sincronizada, mesmo artista e duração parecida com a do vídeo.
+  const durDiff = (v, l) => (v.dur && l.duration) ? Math.abs(v.dur - l.duration) : null;
+  function pairScore(l, v) {
+    const dd = durDiff(v, l);
+    return (l.syncedLyrics ? 0 : 100) + (matches(v, l) ? 0 : 30) + (dd == null ? 20 : Math.min(60, dd));
+  }
+  const best = (list, f) => list.reduce((a, x) => (a == null || f(x) < f(a)) ? x : a, null);
+  function showFit(l) {
+    vidRes.forEach(v => {
+      const dd = durDiff(v, l), tag = v.b.querySelector('.fit');
+      tag.classList.toggle('hidden', !(dd != null && dd <= 4));
+    });
+  }
+  function pickVideoFor(l) { const v = best(vidRes, v => pairScore(l, v)); if (v) v.b.click(); showFit(l); return !!v; }
+  function pickLyricFor(v) { const l = best(lyrRes, x => pairScore(x.d, v)); if (l) { l.b.click(); showFit(l.d); } }
   function autoMatch() {
     if (pending > 0) return;
-    let l = lyrRes.find(x => x.d.syncedLyrics && vidRes.some(v => matches(v, x.d))) || lyrRes.find(x => x.d.syncedLyrics) || lyrRes[0];
-    if (l) l.b.click();
-    if (!l || !pickVideoFor(l.d)) { if (vidRes[0]) vidRes[0].b.click(); }
+    let pair = null, s = Infinity;
+    for (const l of lyrRes) for (const v of vidRes) { const sc = pairScore(l.d, v); if (sc < s) { s = sc; pair = [l, v]; } }
+    if (pair) { pair[0].b.click(); pair[1].b.click(); showFit(pair[0].d); }
+    else if (lyrRes[0]) lyrRes[0].b.click();
+    else if (vidRes[0]) vidRes[0].b.click();
   }
+  const isoDur = s => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(s || ''); return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0; };
 
   function search() {
     const q = $('#fQuery').value.trim();
@@ -712,14 +729,23 @@
       (data.items || []).forEach((it, k) => {
         const id = it.id.videoId, sn = it.snippet;
         const b = document.createElement('button'); b.className = 'res';
-        b.innerHTML = `<img alt=""><div class="t"><b></b><small></small></div>`;
+        b.innerHTML = `<img alt=""><div class="t"><b></b><small></small></div><span class="badge sync fit hidden">duração bate</span>`;
         { const im = b.querySelector('img'); const u = sn.thumbnails?.medium?.url || sn.thumbnails?.default?.url; u ? (im.src = u) : im.remove(); }
         b.querySelector('b').textContent = decode(sn.title);
         b.querySelector('small').textContent = decode(sn.channelTitle);
-        b.onclick = () => { $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); draft.video = { id, title: decode(sn.title) }; $('#fVideo').value = ''; $('#videoChosen').textContent = ''; };
+        const v = { id, title: decode(sn.title), channel: decode(sn.channelTitle), dur: 0, b };
+        b.onclick = e => { $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); draft.video = { id, title: v.title }; $('#fVideo').value = ''; $('#videoChosen').textContent = ''; if (e && e.isTrusted) pickLyricFor(v); };
         box.appendChild(b);
-        vidRes.push({ id, title: decode(sn.title), channel: decode(sn.channelTitle), b });
+        vidRes.push(v);
       });
+      // duração de cada vídeo (custa 1 unidade da cota, contra 100 da busca)
+      if (vidRes.length) {
+        try {
+          const dp = new URLSearchParams({ part: 'contentDetails', id: vidRes.map(v => v.id).join(','), key });
+          const dj = await (await fetch('https://www.googleapis.com/youtube/v3/videos?' + dp)).json();
+          (dj.items || []).forEach(it => { const v = vidRes.find(x => x.id === it.id); if (v) { v.dur = isoDur(it.contentDetails?.duration); v.b.querySelector('small').textContent = `${v.channel} · ${fmtDur(v.dur)}`; } });
+        } catch {}
+      }
       if (!box.children.length) box.innerHTML = `<p class="hint">Nenhum vídeo encontrado. ${fallback}</p>`;
     } catch (e) { box.innerHTML = `<p class="hint err">A busca no YouTube falhou (${escapeHtml(e.message || 'erro')}). ${fallback}</p>`; }
   }
