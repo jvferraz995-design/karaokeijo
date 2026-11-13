@@ -40,6 +40,26 @@
   :root[data-theme] .brand .jp button:not(.on){opacity:.4}
   :root[data-theme] .brand .jp button:not(.on):hover{opacity:1}
   body,header,#intro,#party{transition:background-color .4s,color .4s}
+  /* ---------- tutorial ---------- */
+  .hero-acts{display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center}
+  #tourBtn.pulse{animation:tourPulse 2s ease-in-out infinite}
+  @keyframes tourPulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--keijo) 55%,transparent)}50%{box-shadow:0 0 0 10px transparent}}
+  #tour{position:fixed;inset:0;z-index:45}
+  #tour .shade{position:absolute;inset:0;background:rgba(0,0,0,.72)}
+  #tour .hole{position:absolute;border-radius:999px;box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 0 3px var(--keijo);transition:all .35s cubic-bezier(.2,1,.3,1);pointer-events:none}
+  #tour.has-hole .shade{display:none}
+  #tour .card{position:absolute;width:min(420px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-md);padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.45);transition:top .35s cubic-bezier(.2,1,.3,1),left .35s cubic-bezier(.2,1,.3,1)}
+  #tour .card .stepn{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--keijo)}
+  #tour .card h2{font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.05;letter-spacing:-.02em;margin:8px 0 10px}
+  #tour .card p{margin:0 0 18px;color:var(--muted);font-size:16px;line-height:1.5}
+  #tour .card p b{color:var(--ink)}
+  #tour .dots{display:flex;gap:6px;margin-right:auto}
+  #tour .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  #tour .dots i.on{background:var(--keijo);width:20px;border-radius:999px}
+  #tour .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  @media (max-width:480px){#tour .dots{flex:0 0 100%;margin-bottom:6px}#tour .skip{margin-right:auto}}
+  .brand .jp{white-space:nowrap}
+  #tour .skip{background:none;border:0;color:var(--muted);font-weight:600;font-size:14px;padding:8px}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
   body{background:var(--surface);color:var(--ink);font-family:var(--font-body);overflow:hidden}
@@ -299,7 +319,7 @@
       <h1 id="emptyH">Solta a voz.<br><em>A letra é com a gente.</em></h1>
       <div class="wstats hidden" id="wStats"></div>
       <p id="emptyP">Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
-      <button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button>
+      <div class="hero-acts"><button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button><button class="btn" id="tourBtn" style="padding:14px 24px;font-size:16px">💡 Como funciona</button></div>
     </div>
     <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>📱 Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
   </div>
@@ -420,6 +440,8 @@
 </aside>
 
 <!-- Settings drawer -->
+<div id="tour" class="hidden" role="dialog" aria-modal="true" aria-label="Tutorial"><div class="shade"></div><div class="hole"></div><div class="card"><div class="stepn" id="tourN"></div><h2 id="tourT"></h2><p id="tourP"></p><div class="row"><div class="dots" id="tourDots"></div><button class="skip" id="tourSkip">Pular</button><button class="btn" id="tourBack">Voltar</button><button class="btn primary" id="tourNext">Próximo</button></div></div></div>
+
 <aside class="drawer hidden" id="setDrawer" aria-label="Ajustes">
   <header><h2>Ajustes</h2><div class="spacer"></div><button class="btn icon ghost" data-close>✕</button></header>
   <div class="body">
@@ -437,6 +459,10 @@
       <h3>Efeitos visuais</h3>
       <label style="display:flex;gap:10px;align-items:center;font-size:15px"><input type="checkbox" id="fxToggle" style="accent-color:var(--keijo);width:18px;height:18px"> Desfoque e brilho na letra</label>
       <p class="hint">Se a TV ou o computador travar durante a música, desligue.</p>
+    </div>
+    <div class="step">
+      <h3>Tutorial</h3>
+      <button class="btn" id="tourAgain">💡 Ver o tutorial de novo</button>
     </div>
     <div class="step">
       <h3>Atalhos</h3>
@@ -1277,6 +1303,66 @@
   function toggleFs() { const el = document.documentElement; try { document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen(); } catch {} }
   $('#fsBtn').onclick = toggleFs;
 
+  /* ---------- tutorial ---------- */
+  const TOUR = [
+    { t: 'Bem-vindo ao Karaokeijo チーズ', p: 'Em um minuto você aprende o básico: <b>escolher a música</b>, <b>chamar a galera</b> e <b>acertar a letra</b>.' },
+    { el: '#addBtn', t: 'Escolha a música', p: 'Toque em <b>+ Música</b> e digite só o nome. A gente busca a versão karaokê no YouTube: escolha um vídeo e coloque quem vai cantar. Dois nomes viram <b>dueto</b>.' },
+    { el: '#phoneBtn', t: 'Cada um pelo celular', p: 'Mostre o <b>QR code</b> pra galera. Cada pessoa aponta a câmera e manda a própria música pra fila, sem disputar o controle.' },
+    { el: '#queueBtn', t: 'A fila anda sozinha', p: 'Aqui ficam as próximas músicas. Quando uma termina, rolam os <b>aplausos</b> e a seguinte começa automaticamente.' },
+    { el: '#controls', t: 'Letra fora do tempo?', p: 'Durante a música, use <b>−1s</b> e <b>+1s</b> na barra de baixo pra adiantar ou atrasar a letra. Se ela vier sem sincronia, toque em <b>Sincronizar eu mesmo</b> e marque cada linha no ritmo.' },
+    { el: '.brand .jp', t: 'Deixe com a sua cara', p: 'Toque em <b>チ</b>, <b>ー</b> ou <b>ズ</b> pra trocar as cores do app. Em <b>⚙</b> você muda o tamanho da letra, e <b>⛶</b> põe em tela cheia.' },
+    { t: 'Pronto, bora cantar!', p: 'Escolha a primeira música e solte a voz. O tutorial fica guardado em <b>⚙ Ajustes</b> se precisar ver de novo.', last: true },
+  ];
+  let tourI = -1;
+  function tourOn() { return tourI >= 0; }
+  function tourShow(i) {
+    tourI = Math.max(0, Math.min(TOUR.length - 1, i));
+    const s = TOUR[tourI], tour = $('#tour'), card = $('.card', tour), hole = $('.hole', tour);
+    closeDrawers(); document.body.classList.remove('idle');
+    tour.classList.remove('hidden');
+    $('#tourN').textContent = `${tourI + 1} de ${TOUR.length}`;
+    $('#tourT').textContent = s.t; $('#tourP').innerHTML = s.p;
+    $('#tourDots').innerHTML = TOUR.map((_, k) => `<i class="${k === tourI ? 'on' : ''}"></i>`).join('');
+    $('#tourBack').classList.toggle('hidden', tourI === 0);
+    $('#tourSkip').classList.toggle('hidden', !!s.last);
+    $('#tourNext').textContent = s.last ? '+ Adicionar música' : (tourI === 0 ? 'Começar' : 'Próximo');
+    const el = s.el && $(s.el), r = el && el.getBoundingClientRect();
+    const vis = r && r.width > 0 && r.height > 0 && r.left >= 0 && r.right <= innerWidth && getComputedStyle(el).visibility !== 'hidden' && !el.closest('.hidden');
+    const W = innerWidth, H = innerHeight, cw = Math.min(420, W - 32);
+    tour.classList.toggle('has-hole', !!vis);
+    if (vis) {
+      const pad = 8;
+      Object.assign(hole.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px', display: 'block' });
+      const ch = card.offsetHeight || 240;
+      let top = r.bottom + 20; if (top + ch > H - 16) top = Math.max(16, r.top - ch - 20);
+      const left = Math.max(16, Math.min(W - cw - 16, r.left + r.width / 2 - cw / 2));
+      card.style.left = left + 'px'; card.style.top = top + 'px';
+    } else {
+      hole.style.display = 'none';
+      card.style.left = (W - cw) / 2 + 'px'; card.style.top = Math.max(16, (H - (card.offsetHeight || 260)) / 2) + 'px';
+    }
+    $('#tourNext').focus({ preventScroll: true });
+  }
+  function tourEnd(add) {
+    tourI = -1; $('#tour').classList.add('hidden');
+    store.set('tourSeen', true); $('#tourBtn').classList.remove('pulse');
+    if (add) openAdd();
+  }
+  $('#tourBtn').onclick = () => tourShow(0);
+  $('#tourAgain').onclick = () => tourShow(0);
+  $('#tourNext').onclick = () => TOUR[tourI].last ? tourEnd(true) : tourShow(tourI + 1);
+  $('#tourBack').onclick = () => tourShow(tourI - 1);
+  $('#tourSkip').onclick = () => tourEnd(false);
+  $('#tour .shade').onclick = () => tourEnd(false);
+  if (!store.get('tourSeen', false)) $('#tourBtn').classList.add('pulse');
+  window.addEventListener('resize', () => { if (tourOn()) tourShow(tourI); });
+  document.addEventListener('keydown', e => {
+    if (!tourOn()) return;
+    e.stopImmediatePropagation();
+    if (e.key === 'Escape') tourEnd(false);
+    else if (e.key === 'ArrowRight') { e.preventDefault(); TOUR[tourI].last ? tourEnd(true) : tourShow(tourI + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); tourShow(tourI - 1); }
+  }, true);
   document.addEventListener('keydown', e => {
     if (e.target.matches('input,textarea')) return;
     if (tap && (e.code === 'Space' || e.key === 'Enter')) { e.preventDefault(); tapMark(); return; }
