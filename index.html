@@ -120,6 +120,8 @@
   .res .t{flex:1;min-width:0}
   .res .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .res .t small{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .res .acts{display:flex;gap:4px;flex:none}
+  .res .acts .btn{padding:6px 10px}
   .res img{width:96px;height:54px;object-fit:cover;border-radius:6px;flex:none}
   .badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:var(--pill);flex:none}
   .badge.sync{background:var(--keijo);color:var(--maturado)}
@@ -245,6 +247,11 @@
       <p class="hint">Buscamos a letra e o vídeo ao mesmo tempo. No YouTube, a busca já inclui “karaoke” ou “instrumental” pra achar a versão sem voz.</p>
     </div>
 
+    <div class="step hidden" id="histStep">
+      <h3>Já cantadas <span class="hint" style="margin:0;text-transform:none;letter-spacing:0;font-weight:500">· já vêm sincronizadas</span></h3>
+      <div id="histList" class="results"></div>
+    </div>
+
     <div class="step" id="lyricStep">
       <h3><span class="n">2</span> A letra</h3>
       <div id="lyricResults" class="results"><p class="hint">Faça uma busca acima.</p></div>
@@ -341,6 +348,7 @@
   let curIdx = -2;
   let tap = null;          // {texts:[], times:[], i}
   let startMode = false, autoPending = false;
+  let history = store.get('history', []);
   const draft = { lyric: null, video: null };
 
   /* ---------- toast ---------- */
@@ -434,6 +442,7 @@
           $('#playBtn').textContent = playing ? '❚❚ Pausar' : '▶︎ Tocar';
           if (e.data === YT.PlayerState.ENDED && !tap) next(true);
           if (playing) autoAlign();
+          if (playing && current && !current.counted) { current.counted = true; store.set('current', current); addHistory(current); }
         },
         onError: e => {
           const msg = { 2: 'Link de vídeo inválido.', 5: 'O vídeo não pode tocar aqui.', 100: 'Vídeo removido ou privado.', 101: 'O dono do vídeo não permite tocar fora do YouTube. Escolha outro vídeo.', 150: 'O dono do vídeo não permite tocar fora do YouTube. Escolha outro vídeo.', 153: 'O YouTube recusou o vídeo porque o app foi aberto direto do computador. Abra por um link http/https.' }[e.data] || 'Erro ao tocar o vídeo.';
@@ -675,6 +684,7 @@
     $('#fVideo').value = ''; $('#videoChosen').textContent = ''; $('#addErr').textContent = '';
     $('#fPaste').value = ''; $('#pasteWrap').classList.add('hidden'); $('#linkWrap').classList.add('hidden');
     openDrawer('#addDrawer');
+    $('#fQuery').value = ''; renderHistory('');
     setTimeout(() => $('#fQuery').focus(), 50);
   }
   $('#addBtn').onclick = openAdd; $('#emptyAdd').onclick = openAdd; $('#queueAdd').onclick = openAdd;
@@ -828,7 +838,35 @@
     if (!vid) { err.textContent = 'Escolha um vídeo da lista ou cole um link.'; return null; }
     return { uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...lyr, videoId: vid.id, singer: $('#fSinger').value.trim() };
   }
-  $('#addQueue').onclick = () => { const s = buildSong(); if (!s) return; if (!current) { closeDrawers(); play(s, false); toast('Pronto! Aperte Tocar quando quiser.'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); };
+  function enqueue(s) { if (!current) { closeDrawers(); play(s, false); toast('Pronto! Aperte Tocar quando quiser.'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); }
+  $('#addQueue').onclick = () => { const s = buildSong(); if (s) enqueue(s); };
+
+  /* ---------- histórico "Já cantadas" ---------- */
+  function addHistory(song) {
+    const k = song.videoId + '|' + lyricKey(song);
+    const old = history.find(x => x.k === k);
+    const { uid, singer, counted, ...rest } = song;
+    history = [{ ...rest, k, count: (old ? old.count : 0) + 1, last: Date.now() }, ...history.filter(x => x.k !== k)].slice(0, 60);
+    store.set('history', history);
+  }
+  function fromHistory(x) { const { k, count, last, ...s } = x; return { ...s, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), singer: $('#fSinger').value.trim() }; }
+  function renderHistory(filter) {
+    const box = $('#histList'), q = norm(filter || '').trim();
+    const list = history.filter(x => !q || norm(x.title + ' ' + x.artist).includes(q)).slice(0, q ? 8 : 5);
+    $('#histStep').classList.toggle('hidden', !list.length);
+    box.innerHTML = '';
+    list.forEach(x => {
+      const d = document.createElement('div'); d.className = 'res';
+      d.innerHTML = '<div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm primary" data-a="now">Cantar</button><button class="btn sm" data-a="q">+ Fila</button><button class="btn sm ghost" data-a="rm" title="Tirar do histórico">✕</button></div>';
+      d.querySelector('b').textContent = x.title;
+      d.querySelector('small').textContent = [x.artist, `${x.count}×`, store.get(offKey(x), null) != null ? 'tempo ajustado' : ''].filter(Boolean).join(' · ');
+      d.querySelector('[data-a=now]').onclick = () => { closeDrawers(); play(fromHistory(x), true); };
+      d.querySelector('[data-a=q]').onclick = () => enqueue(fromHistory(x));
+      d.querySelector('[data-a=rm]').onclick = () => { history = history.filter(y => y.k !== x.k); store.set('history', history); renderHistory($('#fQuery').value); };
+      box.appendChild(d);
+    });
+  }
+  $('#fQuery').addEventListener('input', e => renderHistory(e.target.value));
   $('#addNow').onclick = () => { const s = buildSong(); if (!s) return; closeDrawers(); play(s, true); };
 
   /* ---------- queue ---------- */
