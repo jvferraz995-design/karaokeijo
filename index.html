@@ -319,7 +319,7 @@
     <div id="qrBox"></div>
     <p class="hint" id="roomLink"></p>
     <p class="chosen" id="phoneStatus" style="text-align:center"></p>
-    <p class="hint">Funciona melhor com todo mundo no mesmo Wi-Fi. Deixe esta página aberta na TV enquanto os celulares mandam músicas.</p>
+    <p class="hint">Funciona em qualquer rede, Wi-Fi ou 4G. Deixe esta página aberta na TV enquanto os celulares mandam músicas.</p>
   </div>
   <div class="foot"><button class="btn ghost" id="newRoom">Gerar outro código</button></div>
 </aside>
@@ -1096,43 +1096,65 @@
   });
   window.addEventListener('resize', () => { curIdx = -2; if (tap) markTap(); });
 
-  /* ---------- celular como controle (PeerJS: conexão direta entre TV e celular) ---------- */
-  const ROOM = new URLSearchParams(location.search).get('sala');
+  /* ---------- celular como controle (mensagens via servidor MQTT público) ---------- */
+  const QS = new URLSearchParams(location.search);
+  const ROOM = QS.get('sala');
   const REMOTE = !!ROOM;
-  const PEER_SRC = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+  const MQTT_SRC = 'https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js';
   const QR_SRC = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
-  let peer = null, conns = [], tvConn = null;
+  const BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  const myId = Math.random().toString(36).slice(2, 10);
+  let mq = null, brokerIdx = 0, phones = new Map(), stateTimer = null, tvSeen = false;
+  const topics = r => ({ in: `karaokeijo/${r}/in`, state: `karaokeijo/${r}/state`, ack: id => `karaokeijo/${r}/ack/${id}` });
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
-  function roomId() { let id = store.get('room', null); if (!id) { id = 'karaokeijo-' + Math.random().toString(36).slice(2, 8); store.set('room', id); } return id; }
-  const roomUrl = () => location.origin + location.pathname + '?sala=' + encodeURIComponent(roomId());
-  function snapshot() { return { type: 'state', now: current ? { title: current.title, singer: current.singer || '' } : null, queue: queue.map(s => ({ title: s.title, singer: s.singer || '' })) }; }
-  function broadcastState() { if (!conns || !conns.length) return; const st = snapshot(); conns.forEach(c => { try { if (c.open) c.send(st); } catch {} }); }
-  function phoneStatus(msg) { const el = $('#phoneStatus'); if (!el) return; el.textContent = msg || (peer && peer.open ? (conns.length ? `✓ ${conns.length} celular(es) conectado(s)` : 'Pronto. Esperando celulares…') : 'Conectando…'); }
-  async function startHost() {
-    if (peer) return;
-    try { if (!window.Peer) await loadScript(PEER_SRC); } catch { phoneStatus('Não consegui carregar a conexão. Verifique a internet.'); return; }
-    peer = new Peer(roomId());
-    peer.on('open', () => phoneStatus());
-    peer.on('connection', c => {
-      c.on('open', () => { conns.push(c); phoneStatus(); try { c.send(snapshot()); } catch {} toast('📱 Um celular entrou'); });
-      c.on('data', d => onPhoneData(c, d));
-      c.on('close', () => { conns = conns.filter(x => x !== c); phoneStatus(); });
-    });
-    peer.on('disconnected', () => { try { peer.reconnect(); } catch {} });
-    peer.on('error', e => {
-      if (e.type === 'unavailable-id') { store.set('room', null); try { peer.destroy(); } catch {} peer = null; startHost().then(renderQR); }
-      else phoneStatus(`Erro de conexão (${e.type}). Tente “Gerar outro código”.`);
+  function roomId() { let id = store.get('room2', null); if (!id) { id = 'k' + Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6); store.set('room2', id); } return id; }
+  const roomUrl = () => location.origin + location.pathname + '?sala=' + encodeURIComponent(roomId()) + '&b=' + brokerIdx;
+  function connectBroker(idx) {
+    return new Promise((res, rej) => {
+      let done = false;
+      const c = mqtt.connect(BROKERS[idx], { clientId: 'kk_' + myId + '_' + idx, connectTimeout: 10000, reconnectPeriod: 3000, clean: true });
+      c.on('connect', () => { if (!done) { done = true; res(c); } });
+      c.on('error', () => {});
+      setTimeout(() => { if (!done) { done = true; try { c.end(true); } catch {} rej(new Error('timeout')); } }, 11000);
     });
   }
-  function onPhoneData(c, d) {
-    if (!d || d.type !== 'add' || !d.song || !d.song.videoId) return;
+  function snapshot() { return { type: 'state', ts: Date.now(), now: current ? { title: current.title, singer: current.singer || '' } : null, queue: queue.map(s => ({ title: s.title, singer: s.singer || '' })) }; }
+  function broadcastState() {
+    if (!mq || REMOTE) return;
+    clearTimeout(stateTimer);
+    stateTimer = setTimeout(() => { try { mq.publish(topics(roomId()).state, JSON.stringify(snapshot()), { retain: true }); } catch {} }, 300);
+  }
+  function phoneStatus(msg) {
+    const el = $('#phoneStatus'); if (!el) return;
+    const n = [...phones.values()].filter(t => Date.now() - t < 3 * 3600e3).length;
+    el.textContent = msg || (mq && mq.connected ? (n ? `✓ ${n} celular(es) conectado(s)` : 'Pronto. Esperando celulares…') : 'Conectando…');
+  }
+  async function startHost() {
+    if (mq) return;
+    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { phoneStatus('Não consegui carregar a conexão. Verifique a internet.'); return; }
+    for (let i = 0; i < BROKERS.length && !mq; i++) { try { mq = await connectBroker(i); brokerIdx = i; } catch {} }
+    if (!mq) { phoneStatus('Não consegui conectar ao servidor de mensagens. Tente de novo em instantes.'); return; }
+    const t = topics(roomId());
+    mq.subscribe(t.in);
+    mq.on('message', (topic, buf) => { if (topic !== t.in) return; let d; try { d = JSON.parse(buf.toString()); } catch { return; } onPhoneData(d); });
+    mq.on('connect', () => { phoneStatus(); broadcastState(); });
+    mq.on('offline', () => phoneStatus('Sem internet. Tentando reconectar…'));
+    setInterval(broadcastState, 30000);   // mantém o "estado" fresco pros celulares
+    broadcastState(); phoneStatus(); renderQR();
+  }
+  function onPhoneData(d) {
+    if (!d || !d.from) return;
+    const isNew = !phones.has(d.from);
+    phones.set(d.from, Date.now());
+    if (d.type === 'hello') { if (isNew) toast('📱 Um celular entrou'); phoneStatus(); broadcastState(); return; }
+    if (d.type !== 'add' || !d.song || !d.song.videoId) return;
     const s = { ...d.song, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
     delete s.counted;
     let pos;
     if (!current) { play(s, false); pos = 0; toast(`📱 ${s.singer || 'Alguém'} mandou “${s.title}”. Aperte Tocar!`); }
     else { queue.push(s); saveQueue(); pos = queue.length; toast(`📱 ${s.singer || 'Alguém'} entrou na fila: ${s.title}`); }
-    try { c.send({ type: 'ok', pos }); } catch {}
-    broadcastState();
+    try { mq.publish(topics(roomId()).ack(d.from), JSON.stringify({ type: 'ok', pos })); } catch {}
+    phoneStatus(); broadcastState();
   }
   async function renderQR() {
     const url = roomUrl();
@@ -1143,11 +1165,11 @@
       $('#qrBox').innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
     } catch { $('#qrBox').innerHTML = '<p class="hint">Não consegui gerar o QR. Abra o link abaixo no celular.</p>'; }
   }
-  $('#phoneBtn').onclick = async () => { openDrawer('#phoneDrawer'); store.set('hostOn', true); phoneStatus(); renderQR(); await startHost(); phoneStatus(); };
+  $('#phoneBtn').onclick = async () => { openDrawer('#phoneDrawer'); store.set('hostOn', true); phoneStatus(); if (mq) renderQR(); else { $('#qrBox').innerHTML = '<p class="hint">Preparando o código…</p>'; await startHost(); } phoneStatus(); };
   $('#newRoom').onclick = async () => {
-    store.set('room', null); conns.forEach(c => { try { c.close(); } catch {} }); conns = [];
-    if (peer) { try { peer.destroy(); } catch {} peer = null; }
-    renderQR(); phoneStatus('Conectando…'); await startHost(); phoneStatus();
+    if (mq) { try { mq.publish(topics(roomId()).state, '', { retain: true }); mq.end(true); } catch {} mq = null; }
+    store.set('room2', null); phones.clear();
+    phoneStatus('Conectando…'); await startHost(); phoneStatus();
   };
 
   // ----- lado do celular -----
@@ -1162,36 +1184,41 @@
     rows.forEach(([a, b]) => { const d = document.createElement('div'); d.className = 'rq'; d.innerHTML = '<span></span><b></b>'; d.children[0].textContent = a; d.children[1].textContent = b; box.appendChild(d); });
   }
   function sendToTv(s) {
-    if (!tvConn || !tvConn.open) { toast('Sem conexão com a TV. Tentando de novo…'); connectTv(); return; }
+    if (!mq || !mq.connected) { toast('Sem conexão. Tentando de novo…'); return; }
+    if (!tvSeen) { toast('A TV ainda não respondeu. Confira se o karaokê está aberto nela.'); }
     if (!s.singer) { $('#addErr').textContent = 'Coloque seu nome em “Quem canta”.'; $('#fSinger').focus(); return; }
     const { uid, counted, ...song } = s;
     store.set('myname', s.singer);
-    tvConn.send({ type: 'add', song });
+    mq.publish(topics(ROOM).in, JSON.stringify({ type: 'add', from: myId, song }));
+    toast('Enviando…');
     openAdd(); $('#fSinger').value = s.singer;
-  }
-  function connectTv() {
-    if (!peer || !peer.open || (tvConn && tvConn.open)) return;
-    tvConn = peer.connect(ROOM, { reliable: true });
-    tvConn.on('open', () => setRemote('✓ Conectado à TV'));
-    tvConn.on('data', d => {
-      if (d && d.type === 'state') renderRemoteState(d);
-      if (d && d.type === 'ok') toast(d.pos ? `Mandado! Você é o ${d.pos}º da fila 🎤` : 'Mandado! Já está na TV 🎤');
-    });
-    tvConn.on('close', () => { setRemote('Conexão perdida. Tentando de novo…'); setTimeout(connectTv, 3000); });
   }
   async function startRemote() {
     document.body.classList.add('remote');
     $('#addDrawer h2').textContent = 'Mandar música pra TV';
     $('#addQueue').textContent = 'Mandar pra fila 🎤'; $('#addQueue').classList.add('primary');
     openAdd(); $('#fSinger').value = store.get('myname', '');
-    setRemote('Conectando à TV…');
-    try { if (!window.Peer) await loadScript(PEER_SRC); } catch { setRemote('Não consegui carregar a conexão. Verifique a internet.'); return; }
-    peer = new Peer();
-    peer.on('open', connectTv);
-    peer.on('disconnected', () => { try { peer.reconnect(); } catch {} });
-    peer.on('error', e => {
-      setRemote(e.type === 'peer-unavailable' ? 'TV não encontrada. Confira se o karaokê está aberto na TV. Tentando de novo…' : `Erro de conexão (${e.type}). Tentando de novo…`);
-      setTimeout(connectTv, 4000);
+    setRemote('Conectando…');
+    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { setRemote('Não consegui carregar a conexão. Verifique a internet.'); return; }
+    const bi = Math.min(BROKERS.length - 1, Math.max(0, parseInt(QS.get('b') || '0', 10) || 0));
+    mq = mqtt.connect(BROKERS[bi], { clientId: 'kk_' + myId, connectTimeout: 12000, reconnectPeriod: 3000, clean: true });
+    const t = topics(ROOM);
+    mq.on('connect', () => {
+      mq.subscribe([t.state, t.ack(myId)]);
+      mq.publish(t.in, JSON.stringify({ type: 'hello', from: myId }));
+      if (!tvSeen) setRemote('Procurando a TV…');
+      setTimeout(() => { if (!tvSeen) setRemote('A TV não respondeu. Confira se o karaokê está aberto nela, com o código do celular aparecendo pelo menos uma vez.'); }, 7000);
+    });
+    mq.on('offline', () => setRemote('Sem internet. Tentando reconectar…'));
+    mq.on('error', () => {});
+    mq.on('message', (topic, buf) => {
+      let d; try { d = JSON.parse(buf.toString()); } catch { return; }
+      if (topic === t.state && d.type === 'state') {
+        renderRemoteState(d);
+        if (Date.now() - (d.ts || 0) < 90e3) { tvSeen = true; setRemote('✓ Conectado à TV'); }
+        else if (!tvSeen) setRemote('A TV parece estar fechada. Abra o karaokê nela.');
+      }
+      if (topic === t.ack(myId) && d.type === 'ok') toast(d.pos ? `Mandado! Você é o ${d.pos}º da fila 🎤` : 'Mandado! Já está na TV 🎤');
     });
   }
 
