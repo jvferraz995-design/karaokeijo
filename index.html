@@ -94,6 +94,24 @@
 
   /* ---------- empty ---------- */
   #empty{position:absolute;inset:0;display:flex;align-items:center;padding:0 var(--s5)}
+  #bgfx{position:fixed;inset:-10%;z-index:0;pointer-events:none;overflow:hidden}
+  #bgfx i{position:absolute;border-radius:999px;filter:blur(70px);opacity:.16;will-change:transform;animation:drift 40s ease-in-out infinite alternate}
+  #bgfx i:nth-child(1){width:46vw;height:22vw;left:2%;top:8%;background:var(--keijo);animation-duration:38s}
+  #bgfx i:nth-child(2){width:34vw;height:16vw;right:4%;top:22%;background:var(--gorgonzola);animation-duration:46s;animation-delay:-12s}
+  #bgfx i:nth-child(3){width:28vw;height:13vw;left:24%;bottom:10%;background:var(--cera);opacity:.13;animation-duration:52s;animation-delay:-20s}
+  #bgfx i:nth-child(4){width:22vw;height:10vw;right:18%;bottom:4%;background:var(--keijo);opacity:.10;animation-duration:34s;animation-delay:-6s}
+  @keyframes drift{0%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(8vw,4vh) rotate(4deg)}100%{transform:translate(-6vw,-5vh) rotate(-2deg)}}
+  #stage{z-index:1}
+  body.lowfx #bgfx,body.remote #bgfx{display:none}
+  #progress{position:fixed;left:0;bottom:0;height:4px;width:0;background:var(--keijo);z-index:16;border-radius:0 4px 4px 0;transition:width .25s linear;box-shadow:0 0 12px rgba(245,191,0,.5)}
+  body.remote #progress,body.intro-on #progress,body.waiting #progress{display:none}
+  body.waiting #dock,body.waiting #controls,body.waiting #lyrics,body.waiting #countdown{display:none!important}
+  #empty .wstats{display:flex;gap:var(--s2);flex-wrap:wrap;margin:0 0 var(--s4)}
+  #empty .wstats span{padding:8px 16px;border-radius:var(--pill);background:var(--raised);border:1px solid var(--line);font-weight:700;font-size:15px}
+  body.waiting #empty h1{font-size:clamp(48px,6.5vw,96px)}
+  .qrmini.big{right:var(--s5);bottom:auto;top:50%;transform:translateY(-50%);flex-direction:column;text-align:center;padding:22px;max-width:300px;gap:16px}
+  .qrmini.big .qrsvg svg{width:240px;height:240px;padding:10px}
+  .qrmini.big span{font-size:18px}
   #empty h1{font-family:var(--font-display);font-weight:800;font-size:clamp(48px,8vw,112px);line-height:.92;letter-spacing:-.03em;margin:0 0 var(--s3)}
   #empty h1 em{font-style:normal;color:var(--keijo)}
   #empty p{color:var(--muted);font-size:19px;max-width:560px;line-height:1.5;margin:0 0 var(--s4)}
@@ -229,6 +247,8 @@
 </head>
 <body>
 
+<div id="bgfx" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div id="progress"></div>
 <div id="stage">
   <header>
     <div class="brand" aria-label="Karaokeijo"><b>karao<i>keijo</i></b><span class="jp" lang="ja">チーズ</span></div>
@@ -253,8 +273,9 @@
   <div id="empty">
     <div>
       <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
-      <h1>Solta a voz.<br><em>A letra é com a gente.</em></h1>
-      <p>Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
+      <h1 id="emptyH">Solta a voz.<br><em>A letra é com a gente.</em></h1>
+      <div class="wstats hidden" id="wStats"></div>
+      <p id="emptyP">Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
       <button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button>
     </div>
     <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>📱 Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
@@ -456,7 +477,7 @@
   let current = store.get('current', null);
   let lines = [];          // [{t, text, gap?}]
   let offset = 0;
-  let player = null, playerReady = false, pendingVideo = null;
+  let player = null, playerReady = false, pendingVideo = null, waiting = false;
   let curIdx = -2;
   let tap = null;          // {texts:[], times:[], i}
   let startMode = false, autoPending = false;
@@ -614,8 +635,16 @@
     while (lo <= hi) { const mid = (lo + hi) >> 1; if (lines[mid].t <= t) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
     return ans;
   }
+  let progLast = 0;
+  function updProgress() {
+    const ts = performance.now(); if (ts - progLast < 250) return; progLast = ts;
+    let f = 0;
+    try { if (current && playerReady && player.getDuration) { const d = player.getDuration(); if (d > 0) f = Math.min(1, now() / d); } } catch {}
+    $('#progress').style.width = (waiting ? 0 : f * 100) + '%';
+  }
   function tick() {
     requestAnimationFrame(tick);
+    updProgress();
     if (tap || startMode || !lines.length || !current) return;
     const t = now() + offset;
     const i = findIdx(t);
@@ -721,6 +750,7 @@
     current = song; store.set('current', current);
     tap = null; $('#tapbar').classList.add('hidden');
     if (partyOn) endParty(false);
+    if (waiting) leaveWaiting();
     $('#empty').classList.add('hidden');
     $('#controls').classList.remove('hidden');
     $('#dock').classList.remove('hidden');
@@ -974,7 +1004,7 @@
     if (!vid) { err.textContent = 'Escolha um vídeo da lista ou cole um link.'; return null; }
     return { uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...lyr, videoId: vid.id, singer: $('#fSinger').value.trim(), singer2: $('#fSinger2').value.trim() };
   }
-  function enqueue(s) { if (REMOTE) return sendToTv(s); if (!current) { closeDrawers(); play(s, false); toast('Pronto! Aperte Tocar quando quiser.'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); }
+  function enqueue(s) { if (REMOTE) return sendToTv(s); if (waiting) { closeDrawers(); play(s, true); return; } if (!current) { closeDrawers(); play(s, false); toast('Pronto! Aperte Tocar quando quiser.'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); }
   $('#addQueue').onclick = () => { const s = buildSong(); if (s) enqueue(s); };
 
   /* ---------- histórico "Já cantadas" ---------- */
@@ -1142,6 +1172,7 @@
   function celebrate() {
     if (!current || partyOn) return;
     partyOn = true;
+    store.set('sung', sungToday().concat(Date.now()).slice(-200));
     const who = current.singer2 ? `${current.singer} e ${current.singer2}` : current.singer;
     const msgs = who ? [`Mandou bem, ${who}!`, `Que voz, ${who}!`, `Aplausos pra ${who}!`, `${who} arrasou!`, `Essa saiu no ponto, ${who}!`]
                      : ['Mandou bem!', 'Que voz!', 'Aplausos!', 'Arrasou!', 'Essa saiu no ponto!'];
@@ -1166,6 +1197,32 @@
     try { cheer.pause(); } catch {}
     if (!tap) $('#controls').classList.remove('hidden');
     if (goNext && queue.length) next(true);
+    else if (goNext) showWaiting();
+  }
+  const EMPTY_H = $('#emptyH').innerHTML, EMPTY_P = $('#emptyP').textContent;
+  function sungToday() { const c = Date.now() - 12 * 3600e3; return (store.get('sung', []) || []).filter(x => x > c); }
+  function showWaiting() {
+    waiting = true;
+    try { player.stopVideo(); } catch {}
+    document.body.classList.add('waiting');
+    $('#emptyH').innerHTML = 'Palco livre.<br><em>Quem canta agora?</em>';
+    $('#emptyP').textContent = 'Mande a próxima pelo celular ou toque no botão. A fila começa sozinha.';
+    $('#emptyAdd').textContent = '+ Adicionar música';
+    const n = sungToday().length;
+    const st = $('#wStats'); st.innerHTML = '';
+    const add = t => { const s = document.createElement('span'); s.textContent = t; st.appendChild(s); };
+    add(`🎤 ${n} ${n === 1 ? 'música cantada' : 'músicas cantadas'} hoje`);
+    if (current && current.singer) add(`👏 Última: ${whoName(current)}`);
+    st.classList.remove('hidden');
+    $('#qrMini').classList.add('big');
+    $('#empty').classList.remove('hidden');
+  }
+  function leaveWaiting() {
+    waiting = false;
+    document.body.classList.remove('waiting');
+    $('#emptyH').innerHTML = EMPTY_H; $('#emptyP').textContent = EMPTY_P;
+    $('#emptyAdd').textContent = '+ Adicionar a primeira música';
+    $('#wStats').classList.add('hidden'); $('#qrMini').classList.remove('big');
   }
   $('#partySkip').onclick = () => endParty(true);
   $('#partyAdd').onclick = () => { endParty(false); openAdd(); };
@@ -1260,7 +1317,8 @@
     const s = { ...d.song, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
     delete s.counted;
     let pos;
-    if (!current) { play(s, false); pos = 0; toast(`📱 ${s.singer || 'Alguém'} mandou “${s.title}”. Aperte Tocar!`); }
+    if (waiting) { play(s, true); toast(`📱 ${s.singer || 'Alguém'} mandou “${s.title}”!`); }
+    else if (!current) { play(s, false); pos = 0; toast(`📱 ${s.singer || 'Alguém'} mandou “${s.title}”. Aperte Tocar!`); }
     else { queue.push(s); saveQueue(); pos = queue.length; toast(`📱 ${s.singer || 'Alguém'} entrou na fila: ${s.title}`); }
     try { mq.publish(topics(roomId()).ack(d.from), JSON.stringify({ type: 'ok', pos })); } catch {}
     phoneStatus(); broadcastState();
