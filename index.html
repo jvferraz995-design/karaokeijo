@@ -644,7 +644,7 @@
   const durDiff = (v, l) => (v.dur && l.duration) ? Math.abs(v.dur - l.duration) : null;
   function pairScore(l, v) {
     const dd = durDiff(v, l);
-    return (l.syncedLyrics ? 0 : 100) + (matches(v, l) ? 0 : 30) + (dd == null ? 20 : Math.min(60, dd));
+    return (l.syncedLyrics ? 0 : 100) + (matches(v, l) ? 0 : 30) + (v.good ? 0 : 25) + (dd == null ? 20 : Math.min(60, dd));
   }
   const best = (list, f) => list.reduce((a, x) => (a == null || f(x) < f(a)) ? x : a, null);
   function showFit(l) {
@@ -662,6 +662,18 @@
     if (pair) { pair[0].b.click(); pair[1].b.click(); showFit(pair[0].d); }
     else if (lyrRes[0]) lyrRes[0].b.click();
     else if (vidRes[0]) vidRes[0].b.click();
+  }
+  // Classificação pelo título do vídeo
+  const RE_BAD = /(cover|reac[tç]|reaction|tutorial|aula|cifra|como tocar|violão|guitar|piano|drum|bateria|dança|coreografia)/i;
+  const RE_LIVE = /(ao vivo|en vivo|\blive\b|show)/i;
+  const RE_GOOD = /(karaok|instrumental|playback|sem voz|sin voz|no vocals|backing track|minus one|\bbase\b)/i;
+  const RE_GUIDE = /(backing vocal|voz guia|com voz|guide vocal|with vocals|con voz)/i;
+  const RE_NOVOX = /(sem voz|sin voz|no vocals|without vocals|instrumental)/i;
+  function classify(title) {
+    const good = RE_GOOD.test(title);
+    if (RE_BAD.test(title) && !good) return null;
+    if (RE_LIVE.test(title) && !good) return null;
+    return { good, guide: RE_GUIDE.test(title), novox: !RE_GUIDE.test(title) && RE_NOVOX.test(title) };
   }
   const isoDur = s => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(s || ''); return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0; };
 
@@ -721,19 +733,22 @@
     if (!key) { box.innerHTML = `<p class="hint">${fallback}</p>`; return; }
     box.innerHTML = '<p class="hint">Buscando vídeos…</p>';
     try {
-      const p = new URLSearchParams({ part: 'snippet', type: 'video', videoEmbeddable: 'true', maxResults: '6', q: ytQuery, key });
+      const p = new URLSearchParams({ part: 'snippet', type: 'video', videoEmbeddable: 'true', maxResults: '12', q: ytQuery, key });
       const r = await fetch('https://www.googleapis.com/youtube/v3/search?' + p);
       const data = await r.json();
       if (data.error) throw new Error(data.error.message);
       box.innerHTML = '';
-      (data.items || []).forEach((it, k) => {
+      const items = (data.items || []).map(it => ({ it, c: classify(decode(it.snippet.title)) })).filter(x => x.c);
+      items.sort((a, b) => b.c.good - a.c.good);
+      if (items.filter(x => x.c.good).length >= 3) items.splice(0, items.length, ...items.filter(x => x.c.good));
+      items.slice(0, 6).forEach(({ it, c }) => {
         const id = it.id.videoId, sn = it.snippet;
         const b = document.createElement('button'); b.className = 'res';
-        b.innerHTML = `<img alt=""><div class="t"><b></b><small></small></div><span class="badge sync fit hidden">duração bate</span>`;
+        b.innerHTML = `<img alt=""><div class="t"><b></b><small></small></div>${c.guide ? '<span class="badge mine">voz guia</span>' : ''}${c.novox ? '<span class="badge plain">sem voz</span>' : ''}<span class="badge sync fit hidden">duração bate</span>`;
         { const im = b.querySelector('img'); const u = sn.thumbnails?.medium?.url || sn.thumbnails?.default?.url; u ? (im.src = u) : im.remove(); }
         b.querySelector('b').textContent = decode(sn.title);
         b.querySelector('small').textContent = decode(sn.channelTitle);
-        const v = { id, title: decode(sn.title), channel: decode(sn.channelTitle), dur: 0, b };
+        const v = { id, title: decode(sn.title), channel: decode(sn.channelTitle), dur: 0, good: c.good, b };
         b.onclick = e => { $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); draft.video = { id, title: v.title }; $('#fVideo').value = ''; $('#videoChosen').textContent = ''; if (e && e.isTrusted) pickLyricFor(v); };
         box.appendChild(b);
         vidRes.push(v);
