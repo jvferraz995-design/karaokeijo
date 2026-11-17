@@ -184,18 +184,28 @@
   #empty .wstats b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
   body.waiting #empty h1{font-size:clamp(48px,5.5vw,80px)}
   body.waiting #empty > div:first-child{max-width:860px}
-  .qrmini.big{right:var(--s5);bottom:auto;top:50%;transform:translateY(-50%);flex-direction:column;text-align:center;padding:24px;max-width:300px;gap:16px}
+  .qrmini.big{flex-direction:column;text-align:center;padding:24px;max-width:300px;gap:16px}
   .qrmini.big .qrsvg svg{width:240px;height:240px;padding:12px}
   .qrmini.big span{font-size:18px}
   #empty h1{font-family:var(--font-display);font-weight:700;font-size:clamp(48px,7vw,96px);line-height:1;letter-spacing:-.03em;margin:0 0 var(--s3)}
   #empty h1 em{font-style:normal;color:var(--keijo)}
   #empty p{color:var(--muted);font-size:19px;max-width:36rem;line-height:1.5;margin:0 0 var(--s4)}
   #empty > div:first-child{position:relative;z-index:2;max-width:640px}
-  .preview{position:absolute;right:var(--s5);top:50%;transform:translateY(-50%);width:min(480px,34vw);background:var(--raised);border:1px solid var(--line);border-radius:20px;padding:var(--s4) var(--s4) var(--s3);display:none}
-  @media (min-width:1180px){.preview{display:block}body:not(.waiting) #empty:not(:has(#qrMini:not(.hidden))) h1{font-size:clamp(56px,5vw,72px)}#empty > div:first-child{max-width:760px}}
-  body.waiting .preview,#empty:has(#qrMini:not(.hidden)) .preview{display:none!important}
-  .preview .pl{font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1.2;letter-spacing:-.01em;color:rgba(var(--ln-rgb),.28);padding:6px 0}
-  .preview .pl.on{color:var(--lyric);font-size:34px}
+  .side{position:absolute;right:var(--s4);bottom:var(--s4);z-index:3}
+  .side .qrmini{position:static}
+  .preview{background:var(--raised);border:1px solid var(--line);border-radius:20px;padding:var(--s4) var(--s4) var(--s3);display:none}
+  @media (min-width:1180px){
+    .side{right:var(--s5);bottom:auto;top:50%;transform:translateY(-50%);width:min(480px,34vw)}
+    .preview{display:block}
+    .side .qrmini{position:absolute;left:0;right:0;top:100%;bottom:auto;margin-top:var(--s2);max-width:none}
+    body:not(.waiting) #empty h1{font-size:clamp(56px,5vw,72px)}
+    #empty > div:first-child{max-width:760px}
+  }
+  body.waiting .preview{display:none!important}
+  body.waiting .side{right:var(--s5);bottom:auto;top:50%;transform:translateY(-50%);width:auto}
+  body.waiting .side .qrmini{position:static;margin:0}
+  .preview .pl{font-family:var(--font-display);font-weight:800;font-size:clamp(22px,2vw,30px);line-height:1.2;letter-spacing:-.01em;color:rgba(var(--ln-rgb),.28);padding:6px 0}
+  .preview .pl.on{color:var(--lyric);font-size:clamp(24px,2.2vw,34px)}
   .preview .pl.on em{font-style:normal;color:var(--keijo)}
   .preview .pl.on i{font-style:normal;background:linear-gradient(90deg,var(--keijo) 55%,var(--lyric) 55%);-webkit-background-clip:text;background-clip:text;color:transparent}
   .preview .pfoot{display:flex;justify-content:space-between;align-items:center;margin-top:var(--s3);padding-top:var(--s2);border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
@@ -372,8 +382,10 @@
       <p id="emptyP">Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
       <div class="hero-acts"><button class="btn primary lg" id="emptyAdd">+ Adicionar a primeira música</button><button class="btn lg" id="tourBtn"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Como funciona</button></div>
     </div>
-    <div class="preview" aria-hidden="true"><div class="pl">A sala apaga a luz</div><div class="pl on"><em>a letra </em><i>acende</i> no tempo</div><div class="pl">palavra por palavra</div><div class="pl">todo mundo canta junto</div><div class="pbar"><span></span></div><div class="pfoot"><span>cantando: <b>Ana e Léo</b></span><span>próxima: Bia</span></div></div>
-    <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
+    <div class="side">
+      <div class="preview" aria-hidden="true"><div class="pl">A sala apaga a luz</div><div class="pl on"><em>a letra </em><i>acende</i> no tempo</div><div class="pl">palavra por palavra</div><div class="pl">todo mundo canta junto</div><div class="pbar"><span></span></div><div class="pfoot"><span>cantando: <b>Ana e Léo</b></span><span>próxima: Bia</span></div></div>
+      <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
+    </div>
   </div>
 </div>
 
