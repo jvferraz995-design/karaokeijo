@@ -121,6 +121,8 @@
   .btn.primary:hover{background:color-mix(in srgb,var(--keijo) 88%,var(--ink))}
   .btn.ghost{background:transparent}
   .btn.sm{padding:6px 12px;font-size:13px}
+  .btn.lg{padding:12px 24px;font-size:16px}
+  .btn kbd{color:inherit;border-color:currentColor;opacity:.6}
   .btn.sm.icon{width:32px;height:32px;padding:0}
   .btn:disabled{opacity:.4;cursor:default}
   .icon{width:40px;height:40px;padding:0;justify-content:center}
@@ -208,7 +210,9 @@
   /* ---------- bottom controls ---------- */
   #controls{position:fixed;left:var(--s3);bottom:var(--s3);display:flex;gap:var(--s1);align-items:center;z-index:15;flex-wrap:wrap;max-width:calc(100vw - 420px)}
   .group{display:flex;align-items:center;gap:4px;background:var(--raised);border:1px solid var(--line);border-radius:var(--pill);padding:4px}
-  .group .btn{border:0;background:transparent}
+  .group .btn{border:0;background:transparent;height:36px;padding:0 14px}
+  .group .btn.icon{width:36px;padding:0}
+  .group .btn.sm{height:36px;padding:0 12px}
   .group .btn:hover{background:var(--hover)}
   .offset{font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);min-width:64px;text-align:center}
   .offset b{color:var(--ink)}
@@ -282,7 +286,7 @@
   .hint{font-size:13px;color:var(--muted);line-height:1.5;margin:var(--s1) 0 0}
   .hint a{color:var(--keijo)}
   .err{color:var(--cera)}
-  .chosen{font-size:14px;margin-top:var(--s1);color:var(--keijo)}
+  .chosen{font-size:14px;margin-top:var(--s1);color:var(--ink)}
   .q{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);margin-bottom:8px}
   .q.playing{border-color:var(--keijo)}
   .q .num{font-size:15px;font-weight:500;color:var(--muted);width:24px;text-align:center;font-variant-numeric:tabular-nums;display:inline-flex;justify-content:center}
@@ -366,7 +370,7 @@
       <h1 id="emptyH">Solta a voz<br><em>A letra é com a gente</em></h1>
       <div class="wstats hidden" id="wStats"></div>
       <p id="emptyP">Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
-      <div class="hero-acts"><button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button><button class="btn" id="tourBtn" style="padding:14px 24px;font-size:16px"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Como funciona</button></div>
+      <div class="hero-acts"><button class="btn primary lg" id="emptyAdd">+ Adicionar a primeira música</button><button class="btn lg" id="tourBtn"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Como funciona</button></div>
     </div>
     <div class="preview" aria-hidden="true"><div class="pl">A sala apaga a luz</div><div class="pl on"><em>a letra </em><i>acende</i> no tempo</div><div class="pl">palavra por palavra</div><div class="pl">todo mundo canta junto</div><div class="pbar"><span></span></div><div class="pfoot"><span>cantando: <b>Ana e Léo</b></span><span>próxima: Bia</span></div></div>
     <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
@@ -394,13 +398,13 @@
 
 <div id="tapbar" class="hidden">
   <button class="btn ghost" id="tapCancel">Cancelar</button>
-  <button class="btn primary" id="tapBtn">Marcar linha <kbd style="color:inherit;border-color:rgba(0,0,0,.3)">espaço</kbd></button>
+  <button class="btn primary" id="tapBtn">Marcar linha <kbd>espaço</kbd></button>
   <button class="btn ghost" id="tapUndo">Desfazer</button>
 </div>
 
 <div id="startbar" class="hidden">
   <button class="btn ghost" id="startCancel">Cancelar</button>
-  <button class="btn primary" id="startBtn">Começou <kbd style="color:inherit;border-color:rgba(0,0,0,.3)">espaço</kbd></button>
+  <button class="btn primary" id="startBtn">Começou <kbd>espaço</kbd></button>
 </div>
 
 <div id="dock" class="hidden">
@@ -1127,7 +1131,7 @@
     box.innerHTML = '';
     list.forEach(x => {
       const d = document.createElement('div'); d.className = 'res';
-      d.innerHTML = '<div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm primary" data-a="now">Cantar</button><button class="btn sm" data-a="q">+ Fila</button><button class="btn sm ghost icon" data-a="rm" title="Tirar do histórico" aria-label="Tirar do histórico">' + IC.x + '</button></div>';
+      d.innerHTML = '<div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm" data-a="now">Cantar</button><button class="btn sm" data-a="q">+ Fila</button><button class="btn sm ghost icon" data-a="rm" title="Tirar do histórico" aria-label="Tirar do histórico">' + IC.x + '</button></div>';
       d.querySelector('b').textContent = x.title;
       d.querySelector('small').textContent = [x.artist, `${x.count}×`, store.get(offKey(x), null) != null ? 'tempo ajustado' : ''].filter(Boolean).join(' · ');
       d.querySelector('[data-a=now]').onclick = () => { closeDrawers(); play(fromHistory(x), true); };
