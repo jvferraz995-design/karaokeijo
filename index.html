@@ -11,13 +11,13 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Karaokeijo チーズ">
 <meta property="og:url" content="https://karaokeijo.github.io/">
-<meta property="og:title" content="Karaokeijo チーズ · Solta a voz. A letra é com a gente.">
+<meta property="og:title" content="Karaokeijo チーズ · Solta a voz, a letra é com a gente">
 <meta property="og:description" content="Karaokê com a letra sincronizada na tela toda. Busque a música, chame a galera e cada um manda a sua pelo celular.">
 <meta property="og:image" content="https://karaokeijo.github.io/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Karaokeijo チーズ: Solta a voz. A letra é com a gente.">
+<meta property="og:image:alt" content="Karaokeijo チーズ: Solta a voz, a letra é com a gente">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,23 +28,20 @@
     --keijo:#f5bf00; --maturado:#141414; --coalho:#fff4d6; --cera:#ee6a4e; --gorgonzola:#8fb0d9;
     --surface:#141414; --raised:#1f1e1b; --ink:#fff4d6; --muted:#b8af98; --line:#34322c;
     --on-accent:#141414; --lyric:#fff4d6; --lyric-dim:#fff4d6; --ln-rgb:255,244,214; --hover:#2a2925;
-    --blob1:#f5bf00; --blob2:#8fb0d9; --blob3:#ee6a4e; --blob-op:.16; --duet-b:#8fb0d9;
+    --duet-b:#8fb0d9; --ease:cubic-bezier(.22,1,.36,1);
     --font-display:"Parkinsans","Arial Black",system-ui,sans-serif;
     --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
     --s1:8px; --s2:16px; --s3:24px; --s4:40px; --s5:64px;
-    --r-sm:6px; --r-md:16px; --pill:999px;
+    --r-sm:10px; --r-md:16px; --pill:999px;
     --lyric-size:56px;
   }
   /* ---------- temas (paleta Keijo) ---------- */
   :root[data-theme=coalho]{--surface:#fff4d6;--raised:#fbe8bb;--ink:#141414;--muted:#6b604a;--line:#e8d6a6;--hover:#f4dfac;
-    --keijo:#ee6a4e;--on-accent:#141414;--lyric:#141414;--lyric-dim:#141414;--ln-rgb:20,20,20;
-    --blob1:#ee6a4e;--blob2:#8fb0d9;--blob3:#f5bf00;--blob-op:.26;--duet-b:#4a78b0}
+    --keijo:#ee6a4e;--on-accent:#141414;--lyric:#141414;--lyric-dim:#141414;--ln-rgb:20,20,20;--duet-b:#4a78b0}
   :root[data-theme=gorgonzola]{--surface:#0f1620;--raised:#18222f;--ink:#fff4d6;--muted:#9fadbf;--line:#2a3646;--hover:#223042;
-    --keijo:#8fb0d9;--on-accent:#141414;--lyric:#fff4d6;--lyric-dim:#fff4d6;--ln-rgb:255,244,214;
-    --blob1:#8fb0d9;--blob2:#ee6a4e;--blob3:#f5bf00;--blob-op:.18;--duet-b:#f5bf00}
+    --keijo:#8fb0d9;--on-accent:#141414;--lyric:#fff4d6;--lyric-dim:#fff4d6;--ln-rgb:255,244,214;--duet-b:#f5bf00}
   :root[data-theme=keijo]{--surface:#f5bf00;--raised:#fbd03a;--ink:#141414;--muted:#4f3f00;--line:#dba800;--hover:#e9b500;
-    --keijo:#141414;--on-accent:#f5bf00;--lyric:rgba(20,20,20,.42);--lyric-dim:rgba(20,20,20,.42);--ln-rgb:20,20,20;
-    --blob1:#fff4d6;--blob2:#ee6a4e;--blob3:#fff4d6;--blob-op:.35;--duet-b:#1f4f8a}
+    --keijo:#141414;--on-accent:#f5bf00;--lyric:rgba(20,20,20,.42);--lyric-dim:rgba(20,20,20,.42);--ln-rgb:20,20,20;--duet-b:#1f4f8a}
   .brand .jp button{all:unset;cursor:pointer;padding:0 1px;position:relative;transition:transform .15s}
   .brand .jp button:hover{transform:translateY(-2px)}
   .brand .jp button:focus-visible{outline:2px solid var(--keijo);outline-offset:2px;border-radius:3px}
@@ -55,36 +52,34 @@
   :root[data-theme=keijo] .ln.cur:not(:has(.w)){color:#141414}
   :root[data-theme] .brand .jp button:not(.on){opacity:.4}
   :root[data-theme] .brand .jp button:not(.on):hover{opacity:1}
-  body,header,#intro,#party{transition:background-color .4s,color .4s}
+  body,header,#intro,#party{transition:background-color .4s var(--ease),color .4s var(--ease)}
   /* ---------- tutorial ---------- */
   .hero-acts{display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center}
-  #tourBtn.pulse{animation:tourPulse 2s ease-in-out infinite}
-  @keyframes tourPulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--keijo) 55%,transparent)}50%{box-shadow:0 0 0 10px transparent}}
   #tour{position:fixed;inset:0;z-index:45}
   #tour .shade{position:absolute;inset:0;background:rgba(0,0,0,.72)}
-  #tour .hole{position:absolute;border-radius:999px;box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 0 3px var(--keijo);transition:all .35s cubic-bezier(.2,1,.3,1);pointer-events:none}
+  #tour .hole{position:absolute;border-radius:999px;box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 0 3px var(--keijo);transition:left .35s var(--ease),top .35s var(--ease),width .35s var(--ease),height .35s var(--ease);pointer-events:none}
   #tour.has-hole .shade{display:none}
-  #tour .card{position:absolute;width:min(420px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-md);padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.45);transition:top .35s cubic-bezier(.2,1,.3,1),left .35s cubic-bezier(.2,1,.3,1)}
-  #tour .card .stepn{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--keijo)}
-  #tour .card h2{font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.05;letter-spacing:-.02em;margin:8px 0 10px}
-  #tour .card p{margin:0 0 18px;color:var(--muted);font-size:16px;line-height:1.5}
+  #tour .card{position:absolute;width:min(420px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-md);padding:24px 24px 20px;box-shadow:0 20px 60px rgba(0,0,0,.45);transition:top .35s var(--ease),left .35s var(--ease)}
+  #tour .card .stepn{font-size:13px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+  #tour .card h2{font-family:var(--font-display);font-weight:700;font-size:26px;line-height:1.1;margin:8px 0 12px}
+  #tour .card p{margin:0 0 20px;color:var(--muted);font-size:16px;line-height:1.5}
   #tour .card p b{color:var(--ink)}
-  #tour .dots{display:flex;gap:6px;margin-right:auto}
+  #tour .dots{display:flex;gap:8px;margin-right:auto}
   #tour .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
   #tour .dots i.on{background:var(--keijo);width:20px;border-radius:999px}
   #tour .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  @media (max-width:480px){#tour .dots{flex:0 0 100%;margin-bottom:6px}#tour .skip{margin-right:auto}}
+  @media (max-width:480px){#tour .dots{flex:0 0 100%;margin-bottom:8px}#tour .skip{margin-right:auto}}
   .brand .jp{white-space:nowrap}
-  #tour .skip{background:none;border:0;color:var(--muted);font-weight:600;font-size:14px;padding:8px}
+  #tour .skip{background:none;border:0;color:var(--muted);font-weight:500;font-size:14px;padding:8px}
   /* ---------- menu hambúrguer (celular) ---------- */
   .hnav{display:contents}
   #menuBtn{display:none}
   .hnav .mlabel{display:none}
   @media (max-width:860px){
     #menuBtn{display:inline-flex}
-    .hnav{display:none;position:fixed;top:60px;right:var(--s2);left:auto;min-width:220px;flex-direction:column;align-items:stretch;gap:6px;padding:10px;
+    .hnav{display:none;position:fixed;top:60px;right:var(--s2);left:auto;min-width:220px;flex-direction:column;align-items:stretch;gap:4px;padding:8px;
       background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 16px 40px rgba(0,0,0,.35);z-index:25}
-    header.menu-open .hnav{display:flex;animation:menuIn .18s ease-out}
+    header.menu-open .hnav{display:flex;animation:menuIn .18s var(--ease)}
     .hnav .btn{justify-content:flex-start;width:100%;padding:12px 16px;font-size:16px}
     .hnav .btn.icon{width:100%;height:auto;gap:10px}
     .hnav .mlabel{display:inline}
@@ -105,21 +100,28 @@
   /* ---------- top bar ---------- */
   header{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;gap:var(--s2);padding:0 var(--s3);z-index:20;
     background:linear-gradient(var(--surface) 60%,transparent)}
-  .brand{display:flex;align-items:baseline;gap:10px;font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
+  .brand{display:flex;align-items:baseline;gap:8px;font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
   .brand b{font-size:28px;color:var(--ink)}
   .brand b i{font-style:normal;color:var(--keijo)}
   .brand b .kj{display:inline-block;height:1.108em;width:auto;vertical-align:-.2845em;margin-left:.04em;color:var(--keijo)}
   .brand .jp{font-family:"Noto Sans JP",var(--font-display);font-weight:700;font-size:16px;color:var(--keijo);letter-spacing:.04em}
   .spacer{flex:1}
   .now{display:flex;align-items:center;gap:var(--s1);font-size:14px;color:var(--muted);min-width:0}
-  .now strong{color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
-  .tag{display:inline-block;padding:4px 12px;border-radius:var(--pill);background:var(--keijo);color:var(--on-accent);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-  .btn{border:0;border-radius:var(--pill);padding:10px 18px;font-weight:700;font-size:14px;background:var(--raised);color:var(--ink);border:1px solid var(--line);display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .now strong{color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--muted)}
+  .tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--keijo)}
+  .count{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+  .btn{border-radius:var(--pill);padding:10px 16px;font-weight:600;font-size:14px;background:var(--raised);color:var(--ink);border:1px solid var(--line);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .15s var(--ease)}
   .btn:hover{border-color:var(--muted)}
+  .btn:active:not(:disabled){transform:scale(.97)}
+  .btn:focus-visible,.res:focus-visible,#reactBar button:focus-visible{outline:2px solid var(--keijo);outline-offset:2px}
+  .btn .ic{flex:none}
+  .btn.sm .ic{width:16px;height:16px}
   .btn.primary{background:var(--keijo);color:var(--on-accent);border-color:var(--keijo)}
-  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.primary:hover{background:color-mix(in srgb,var(--keijo) 88%,var(--ink))}
   .btn.ghost{background:transparent}
   .btn.sm{padding:6px 12px;font-size:13px}
+  .btn.sm.icon{width:32px;height:32px;padding:0}
   .btn:disabled{opacity:.4;cursor:default}
   .icon{width:40px;height:40px;padding:0;justify-content:center}
 
@@ -128,13 +130,13 @@
   #lyrics{flex:1;overflow:hidden;position:relative;padding:0 var(--s5);
     -webkit-mask-image:linear-gradient(transparent 0,#000 22%,#000 70%,transparent 100%);
             mask-image:linear-gradient(transparent 0,#000 22%,#000 70%,transparent 100%)}
-  #lines{position:absolute;left:var(--s5);right:calc(var(--s5) + 0px);top:0;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+  #lines{position:absolute;left:var(--s5);right:var(--s5);top:0;transition:transform .45s var(--ease)}
   .ln{font-family:var(--font-display);font-weight:800;font-size:var(--lyric-size);line-height:1.12;letter-spacing:-.015em;
       padding:calc(var(--lyric-size)*.14) 0;color:rgba(var(--ln-rgb),.28);transition:color .25s,transform .3s,opacity .25s,filter .35s;transform-origin:left center;max-width:1100px;filter:blur(1.6px)}
   .ln.past{color:rgba(var(--ln-rgb),.16)}
-  .ln.who-start::before{content:attr(data-who);display:block;font-family:var(--font-body);font-weight:700;font-size:max(12px,calc(var(--lyric-size)*.26));letter-spacing:.08em;text-transform:uppercase;color:var(--hl);margin-bottom:2px;opacity:.6}
+  .ln.who-start::before{content:attr(data-who);display:block;font-family:var(--font-body);font-weight:600;font-size:max(13px,calc(var(--lyric-size)*.3));color:var(--hl);margin-bottom:4px;opacity:.6}
   .ln.cur.who-start::before,.ln.next.who-start::before{opacity:1}
-  .ln.cur{color:var(--lyric);transform:scale(1.07);filter:drop-shadow(0 0 22px color-mix(in srgb,var(--keijo) 28%,transparent))}
+  .ln.cur{color:var(--lyric);transform:scale(1.07);filter:none}
   .ln.next{filter:blur(.4px)}
   .ln.tap-target,.ln.tapped{filter:none}
   body.lowfx .ln{filter:none!important}
@@ -144,15 +146,15 @@
   body.idle,body.idle *{cursor:none!important}
   /* vinheta "No palco" */
   #intro{position:fixed;inset:0;z-index:14;background:var(--surface);display:flex;align-items:center;padding:0 var(--s5);overflow:hidden;cursor:pointer}
-  #intro h1{font-family:var(--font-display);font-weight:800;font-size:clamp(64px,11vw,168px);line-height:.9;letter-spacing:-.03em;color:var(--keijo);margin:var(--s3) 0 var(--s2);animation:introUp .7s cubic-bezier(.2,1,.3,1) both .15s}
-  #intro .sub{font-size:clamp(20px,2.4vw,34px);font-weight:700;color:var(--ink);margin:0;animation:introUp .7s cubic-bezier(.2,1,.3,1) both .3s}
+  #intro h1{font-family:var(--font-display);font-weight:700;font-size:clamp(64px,11vw,168px);line-height:.92;letter-spacing:-.03em;color:var(--keijo);margin:var(--s3) 0 var(--s2);animation:introUp .6s var(--ease) both .15s}
+  #intro .sub{font-size:clamp(20px,2.4vw,34px);font-weight:600;color:var(--ink);margin:0;animation:introUp .6s var(--ease) both .3s}
   #intro .sub small{display:block;color:var(--muted);font-weight:500;font-size:.68em;margin-top:6px}
-  #intro .tag{animation:introUp .5s cubic-bezier(.2,1,.3,1) both}
+  #intro .tag{animation:introUp .5s var(--ease) both;font-size:18px}
   #intro .bars{margin-top:var(--s3)}
-  #intro .bars span{transform-origin:left;animation:grow .6s cubic-bezier(.2,1,.3,1) both}
+  #intro .bars span{transform-origin:left;animation:grow .6s var(--ease) both}
   #intro .bars span:nth-child(2){animation-delay:.1s} #intro .bars span:nth-child(3){animation-delay:.2s}
   #intro .prog{position:absolute;left:0;bottom:0;height:6px;background:var(--keijo);animation:prog 3.2s linear forwards}
-  @keyframes introUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+  @keyframes introUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
   @keyframes prog{from{width:0}to{width:100%}}
   @media (max-width:860px){#intro{padding:0 var(--s2)}}
@@ -167,33 +169,37 @@
   .ln.gap.cd-host{opacity:0}
   .ln.tap-target{color:var(--keijo);outline:2px dashed var(--keijo);outline-offset:6px;border-radius:var(--r-sm)}
   .ln.tapped{color:rgba(var(--ln-rgb),.45)}
-  #countdown{position:absolute;left:var(--s5);top:24%;z-index:2;font-family:var(--font-display);font-weight:800;font-size:calc(var(--lyric-size)*.5);color:var(--keijo);display:flex;gap:14px}
-  #countdown i{width:18px;height:18px;border-radius:50%;background:var(--keijo);display:inline-block;opacity:.2;transition:opacity .2s}
+  #countdown{position:absolute;left:var(--s5);top:24%;z-index:2;display:flex;gap:16px}
+  #countdown i{width:16px;height:16px;border-radius:50%;background:var(--keijo);display:inline-block;opacity:.2;transition:opacity .2s}
   #countdown i.on{opacity:1}
 
   /* ---------- empty ---------- */
   #empty{position:absolute;inset:0;display:flex;align-items:center;padding:0 var(--s5)}
-  #bgfx{position:fixed;inset:-10%;z-index:0;pointer-events:none;overflow:hidden}
-  #bgfx i{position:absolute;border-radius:999px;filter:blur(70px);opacity:var(--blob-op);will-change:transform;animation:drift 40s ease-in-out infinite alternate}
-  #bgfx i:nth-child(1){width:46vw;height:22vw;left:2%;top:8%;background:var(--blob1);animation-duration:38s}
-  #bgfx i:nth-child(2){width:34vw;height:16vw;right:4%;top:22%;background:var(--blob2);animation-duration:46s;animation-delay:-12s}
-  #bgfx i:nth-child(3){width:28vw;height:13vw;left:24%;bottom:10%;background:var(--blob3);opacity:calc(var(--blob-op)*.8);animation-duration:52s;animation-delay:-20s}
-  #bgfx i:nth-child(4){width:22vw;height:10vw;right:18%;bottom:4%;background:var(--blob1);opacity:calc(var(--blob-op)*.6);animation-duration:34s;animation-delay:-6s}
-  @keyframes drift{0%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(8vw,4vh) rotate(4deg)}100%{transform:translate(-6vw,-5vh) rotate(-2deg)}}
-  #stage{z-index:1}
-  body.lowfx #bgfx,body.remote #bgfx{display:none}
-  #progress{position:fixed;left:0;bottom:0;height:4px;width:0;background:var(--keijo);z-index:16;border-radius:0 4px 4px 0;transition:width .25s linear;box-shadow:0 0 12px color-mix(in srgb,var(--keijo) 50%,transparent)}
+  #progress{position:fixed;left:0;bottom:0;height:4px;width:0;background:var(--keijo);z-index:16;border-radius:0 4px 4px 0;transition:width .25s linear}
   body.remote #progress,body.intro-on #progress,body.waiting #progress{display:none}
   body.waiting #dock,body.waiting #controls,body.waiting #lyrics,body.waiting #countdown{display:none!important}
-  #empty .wstats{display:flex;gap:var(--s2);flex-wrap:wrap;margin:0 0 var(--s4)}
-  #empty .wstats span{padding:8px 16px;border-radius:var(--pill);background:var(--raised);border:1px solid var(--line);font-weight:700;font-size:15px}
-  body.waiting #empty h1{font-size:clamp(48px,6.5vw,96px)}
-  .qrmini.big{right:var(--s5);bottom:auto;top:50%;transform:translateY(-50%);flex-direction:column;text-align:center;padding:22px;max-width:300px;gap:16px}
-  .qrmini.big .qrsvg svg{width:240px;height:240px;padding:10px}
+  #empty .wstats{display:flex;gap:var(--s3);flex-wrap:wrap;margin:0 0 var(--s3);color:var(--muted);font-size:16px}
+  #empty .wstats b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  body.waiting #empty h1{font-size:clamp(48px,5.5vw,80px)}
+  body.waiting #empty > div:first-child{max-width:860px}
+  .qrmini.big{right:var(--s5);bottom:auto;top:50%;transform:translateY(-50%);flex-direction:column;text-align:center;padding:24px;max-width:300px;gap:16px}
+  .qrmini.big .qrsvg svg{width:240px;height:240px;padding:12px}
   .qrmini.big span{font-size:18px}
-  #empty h1{font-family:var(--font-display);font-weight:800;font-size:clamp(48px,8vw,112px);line-height:.92;letter-spacing:-.03em;margin:0 0 var(--s3)}
+  #empty h1{font-family:var(--font-display);font-weight:700;font-size:clamp(48px,7vw,96px);line-height:1;letter-spacing:-.03em;margin:0 0 var(--s3)}
   #empty h1 em{font-style:normal;color:var(--keijo)}
-  #empty p{color:var(--muted);font-size:19px;max-width:560px;line-height:1.5;margin:0 0 var(--s4)}
+  #empty p{color:var(--muted);font-size:19px;max-width:36rem;line-height:1.5;margin:0 0 var(--s4)}
+  #empty > div:first-child{position:relative;z-index:2;max-width:640px}
+  .preview{position:absolute;right:var(--s5);top:50%;transform:translateY(-50%);width:min(480px,34vw);background:var(--raised);border:1px solid var(--line);border-radius:20px;padding:var(--s4) var(--s4) var(--s3);display:none}
+  @media (min-width:1180px){.preview{display:block}body:not(.waiting) #empty:not(:has(#qrMini:not(.hidden))) h1{font-size:clamp(56px,5vw,72px)}#empty > div:first-child{max-width:760px}}
+  body.waiting .preview,#empty:has(#qrMini:not(.hidden)) .preview{display:none!important}
+  .preview .pl{font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1.2;letter-spacing:-.01em;color:rgba(var(--ln-rgb),.28);padding:6px 0}
+  .preview .pl.on{color:var(--lyric);font-size:34px}
+  .preview .pl.on em{font-style:normal;color:var(--keijo)}
+  .preview .pl.on i{font-style:normal;background:linear-gradient(90deg,var(--keijo) 55%,var(--lyric) 55%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .preview .pfoot{display:flex;justify-content:space-between;align-items:center;margin-top:var(--s3);padding-top:var(--s2);border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .preview .pfoot b{color:var(--ink);font-weight:600}
+  .preview .pbar{height:4px;border-radius:2px;background:var(--line);margin-top:var(--s2);overflow:hidden}
+  .preview .pbar span{display:block;width:38%;height:100%;background:var(--keijo)}
   .bars{display:flex;gap:12px;margin-bottom:var(--s3)}
   .bars span{height:20px;border-radius:var(--pill);background:var(--keijo)}
   .bars span:nth-child(2){background:var(--ink)}
@@ -201,13 +207,13 @@
 
   /* ---------- bottom controls ---------- */
   #controls{position:fixed;left:var(--s3);bottom:var(--s3);display:flex;gap:var(--s1);align-items:center;z-index:15;flex-wrap:wrap;max-width:calc(100vw - 420px)}
-  .group{display:flex;align-items:center;gap:6px;background:var(--raised);border:1px solid var(--line);border-radius:var(--pill);padding:4px}
+  .group{display:flex;align-items:center;gap:4px;background:var(--raised);border:1px solid var(--line);border-radius:var(--pill);padding:4px}
   .group .btn{border:0;background:transparent}
   .group .btn:hover{background:var(--hover)}
   .offset{font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);min-width:64px;text-align:center}
   .offset b{color:var(--ink)}
   #tapbar{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:16;display:flex;gap:var(--s1);align-items:center}
-  #tapBtn,#startBtn{padding:18px 40px;font-size:18px}
+  #tapBtn,#startBtn{padding:16px 40px;font-size:18px}
   #startbar{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:16;display:flex;gap:var(--s1);align-items:center}
 
   /* ---------- player dock (>=200x200 per YouTube policy) ---------- */
@@ -222,20 +228,20 @@
   .scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30}
   .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--raised);border-left:1px solid var(--line);z-index:31;display:flex;flex-direction:column}
   .drawer header{position:static;background:none;border-bottom:1px solid var(--line);padding:0 var(--s3)}
-  .drawer h2{font-family:var(--font-display);font-weight:800;font-size:24px;margin:0;letter-spacing:-.01em}
+  .drawer h2{font-family:var(--font-display);font-weight:700;font-size:24px;margin:0}
   .drawer .body{flex:1;overflow:auto;padding:var(--s3)}
   .drawer .foot{padding:var(--s2) var(--s3);border-top:1px solid var(--line);display:flex;gap:var(--s1);justify-content:flex-end}
   .step{margin-bottom:var(--s4)}
-  .step h3{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
-  .step h3 .n{width:24px;height:24px;border-radius:50%;background:var(--keijo);color:var(--on-accent);display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+  .step h3{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink);margin:0 0 12px}
+  .step h3 .n{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
   .row{display:flex;gap:var(--s1);margin-bottom:var(--s1)}
   .row>*{flex:1}
-  input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;font-size:15px;outline:none}
+  input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 16px;font-size:15px;outline:none;transition:border-color .15s var(--ease)}
   input:focus,textarea:focus{border-color:var(--keijo)}
   textarea{min-height:160px;resize:vertical;line-height:1.5}
-  label.f{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
-  .results{display:flex;flex-direction:column;gap:6px;margin-top:var(--s1)}
-  .res{display:flex;gap:12px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px}
+  label.f{display:block;font-size:13px;color:var(--muted);margin:0 0 8px}
+  .results{display:flex;flex-direction:column;gap:8px;margin-top:var(--s1)}
+  .res{display:flex;gap:12px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px;transition:border-color .15s var(--ease)}
   .res:hover{border-color:var(--muted)}
   .res.sel{border-color:var(--keijo);box-shadow:0 0 0 1px var(--keijo) inset}
   .res .t{flex:1;min-width:0}
@@ -246,65 +252,68 @@
   body.remote #addDrawer{width:100vw;border-left:0}
   body.remote #addDrawer [data-close],body.remote #addNow,body.remote #histList [data-a=now]{display:none!important}
   #remoteInfo{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 16px;margin-bottom:var(--s3)}
-  #remoteStatus{margin:0 0 6px}
-  .rq{display:flex;gap:10px;align-items:baseline;font-size:14px;padding:3px 0}
-  .rq span{color:var(--keijo);font-weight:700;min-width:70px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-  .rq b{font-weight:600}
+  #remoteStatus{margin:0 0 8px}
+  .rq{display:flex;gap:12px;align-items:baseline;font-size:14px;padding:4px 0}
+  .rq span{color:var(--muted);min-width:72px;font-size:13px;font-variant-numeric:tabular-nums}
+  .rq b{font-weight:500}
   #qrBox{display:flex;justify-content:center;margin:var(--s2) 0}
-  #qrBox svg{width:260px;height:260px;background:#fff;border-radius:var(--r-md);padding:10px}
+  #qrBox svg{width:260px;height:260px;background:#fff;border-radius:var(--r-md);padding:12px}
   #roomLink{word-break:break-all;text-align:center}
-  .qrmini{position:absolute;right:var(--s4);bottom:var(--s4);display:flex;align-items:center;gap:14px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 18px 12px 12px;max-width:360px;z-index:3}
-  .qrmini .qrsvg svg{width:120px;height:120px;background:#fff;border-radius:10px;padding:6px;display:block}
-  .qrmini span{font-size:15px;font-weight:700;line-height:1.35}
+  .qrmini{position:absolute;right:var(--s4);bottom:var(--s4);display:flex;align-items:center;gap:16px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 20px 12px 12px;max-width:360px;z-index:3}
+  .qrmini .qrsvg svg{width:120px;height:120px;background:#fff;border-radius:8px;padding:8px;display:block}
+  .qrmini span{font-size:15px;font-weight:600;line-height:1.35}
   .qrmini small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:4px}
   #qrParty{top:var(--s4);bottom:auto}
   #reactLayer{position:fixed;inset:0;pointer-events:none;z-index:16;overflow:hidden}
   .emo.react{font-size:56px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
   #reactBar{display:flex;gap:8px;margin-top:12px}
-  #reactBar button{flex:1;font-size:28px;padding:10px 0;border-radius:var(--r-md);background:var(--raised);border:1px solid var(--line);transition:transform .1s}
-  #reactBar button.pop{transform:scale(1.25)}
+  #reactBar button{flex:1;font-size:28px;padding:12px 0;border-radius:var(--r-md);background:var(--raised);border:1px solid var(--line);transition:transform .12s var(--ease)}
+  #reactBar button.pop{transform:scale(1.12)}
   body.remote #toast{top:auto;bottom:96px;max-width:90vw;text-align:center}
   @media (max-width:860px){.qrmini{display:none!important}}
   .res .acts{display:flex;gap:4px;flex:none}
-  .res .acts .btn{padding:6px 10px}
-  .res img{width:96px;height:54px;object-fit:cover;border-radius:6px;flex:none}
-  .badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:var(--pill);flex:none}
-  .badge.sync{background:var(--keijo);color:var(--on-accent)}
-  .badge.plain{background:var(--line);color:var(--muted)}
-  .badge.mine{background:var(--gorgonzola);color:var(--maturado)}
+  .res .acts .btn{padding:6px 12px}
+  .res .acts .btn.icon{padding:0}
+  .res img{width:96px;height:54px;object-fit:cover;border-radius:4px;flex:none}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--muted);flex:none;white-space:nowrap}
+  .badge.sync::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--keijo)}
+  .badge.mine{color:var(--ink)}
+  .badge.mine::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
   .hint{font-size:13px;color:var(--muted);line-height:1.5;margin:var(--s1) 0 0}
   .hint a{color:var(--keijo)}
   .err{color:var(--cera)}
   .chosen{font-size:14px;margin-top:var(--s1);color:var(--keijo)}
-  .q{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);margin-bottom:6px}
+  .q{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);margin-bottom:8px}
   .q.playing{border-color:var(--keijo)}
-  .q .num{font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--keijo);width:28px;text-align:center}
+  .q .num{font-size:15px;font-weight:500;color:var(--muted);width:24px;text-align:center;font-variant-numeric:tabular-nums;display:inline-flex;justify-content:center}
+  .q.playing .num{color:var(--keijo)}
   .q .t{flex:1;min-width:0}
   .q .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .q .t small{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
   .q .acts{display:flex;gap:4px}
-  .q .acts .btn{padding:6px 10px}
+  .q .acts .btn{padding:0}
   .range{width:100%;accent-color:var(--keijo)}
-  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg{display:flex;gap:8px;flex-wrap:wrap}
   .seg .btn.on{background:var(--keijo);color:var(--on-accent);border-color:var(--keijo)}
 
   /* ---------- comemoração no fim da música ---------- */
-  #party{position:fixed;inset:0;z-index:14;background:color-mix(in srgb,var(--surface) 97%,transparent);display:flex;align-items:center;padding:0 var(--s5);overflow:hidden}
+  #party{position:fixed;inset:0;z-index:14;background:var(--surface);display:flex;align-items:center;padding:0 var(--s5);overflow:hidden}
   #party .inner{position:relative;z-index:2;max-width:860px}
-  #party h1{font-family:var(--font-display);font-weight:800;font-size:clamp(44px,7vw,104px);line-height:.95;letter-spacing:-.03em;margin:var(--s2) 0 var(--s1);color:var(--keijo);animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+  #party h1{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,7vw,104px);line-height:1;letter-spacing:-.03em;margin:var(--s2) 0 var(--s1);color:var(--keijo);animation:pop .5s var(--ease)}
   #party .sub{font-size:20px;color:var(--muted);margin:0 0 var(--s4)}
   #party .nextcard{display:inline-flex;flex-direction:column;gap:4px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s2) var(--s3);margin-bottom:var(--s3);min-width:320px}
-  #party .nextcard b{font-family:var(--font-display);font-size:26px;letter-spacing:-.01em}
+  #party .nextcard b{font-family:var(--font-display);font-weight:700;font-size:26px}
   #party .nextcard span{color:var(--muted);font-size:15px}
+  #party .nextcard .label{font-size:13px}
   #party .row2{display:flex;gap:var(--s1);align-items:center;flex-wrap:wrap}
   #party .left{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;margin-left:var(--s1)}
   .emo{position:absolute;bottom:-60px;font-size:44px;z-index:1;pointer-events:none;animation:rise var(--d,3.5s) ease-out forwards}
   @keyframes rise{0%{transform:translate(0,0) rotate(0) scale(.6);opacity:0}10%{opacity:1}100%{transform:translate(var(--dx,0px),-110vh) rotate(var(--r,0deg)) scale(1.15);opacity:0}}
-  @keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes pop{0%{transform:translateY(12px);opacity:0}100%{transform:none;opacity:1}}
   @media (max-width:860px){#party{padding:0 var(--s2);align-items:flex-start;padding-top:96px}#party .nextcard{min-width:0;width:100%}}
-  #toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 20px;border-radius:var(--pill);font-weight:700;font-size:14px;z-index:50;transition:opacity .3s;pointer-events:none}
+  #toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 20px;border-radius:var(--pill);font-weight:600;font-size:14px;z-index:50;transition:opacity .3s var(--ease);pointer-events:none}
   #banner{position:fixed;top:64px;left:var(--s3);right:var(--s3);z-index:25;background:var(--cera);color:var(--maturado);border-radius:var(--r-md);padding:12px 16px;font-size:14px;line-height:1.45}
-  #banner b{font-weight:800}
+  #banner b{font-weight:600}
   kbd{font-family:var(--font-body);font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
 
   @media (max-width:860px){
@@ -320,13 +329,12 @@
     #upnext{display:none}
     #controls{left:var(--s2);right:var(--s2);bottom:var(--s2);max-width:none;justify-content:center}
     #lyrics{margin-bottom:430px}
-    #empty h1{font-size:44px}
+    #empty h1{font-size:40px}
   }
 </style>
 </head>
 <body>
 
-<div id="bgfx" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 <div id="progress"></div>
 <div id="stage">
   <header>
@@ -336,8 +344,8 @@
     <button class="btn icon" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="hnav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path class="m1" d="M4 7h16"/><path class="m2" d="M4 12h16"/><path class="m3" d="M4 17h16"/></svg></button>
     <nav class="hnav" id="hnav" aria-label="Menu">
     <button class="btn primary" id="addBtn">+ Música</button>
-    <button class="btn" id="phoneBtn" title="Mandar músicas pelo celular">📱 Celular</button>
-    <button class="btn" id="queueBtn">Fila <span id="qCount" class="tag" style="padding:2px 8px">0</span></button>
+    <button class="btn" id="phoneBtn" title="Mandar músicas pelo celular"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>Celular</button>
+    <button class="btn" id="queueBtn">Fila <span id="qCount" class="count">0</span></button>
     <button class="btn icon" id="settingsBtn" title="Ajustes" aria-label="Ajustes">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="mlabel">Ajustes</span>
     </button>
@@ -355,20 +363,21 @@
   <div id="empty">
     <div>
       <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
-      <h1 id="emptyH">Solta a voz.<br><em>A letra é com a gente.</em></h1>
+      <h1 id="emptyH">Solta a voz<br><em>A letra é com a gente</em></h1>
       <div class="wstats hidden" id="wStats"></div>
       <p id="emptyP">Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
-      <div class="hero-acts"><button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button><button class="btn" id="tourBtn" style="padding:14px 24px;font-size:16px">💡 Como funciona</button></div>
+      <div class="hero-acts"><button class="btn primary" id="emptyAdd" style="padding:14px 28px;font-size:16px">+ Adicionar a primeira música</button><button class="btn" id="tourBtn" style="padding:14px 24px;font-size:16px"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Como funciona</button></div>
     </div>
-    <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>📱 Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
+    <div class="preview" aria-hidden="true"><div class="pl">A sala apaga a luz</div><div class="pl on"><em>a letra </em><i>acende</i> no tempo</div><div class="pl">palavra por palavra</div><div class="pl">todo mundo canta junto</div><div class="pbar"><span></span></div><div class="pfoot"><span>cantando: <b>Ana e Léo</b></span><span>próxima: Bia</span></div></div>
+    <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
   </div>
 </div>
 
 <div id="controls" class="hidden">
   <div class="group">
-    <button class="btn" id="playBtn" title="Tocar/pausar (P)">▶︎ Tocar</button>
-    <button class="btn" id="restartBtn" title="Voltar ao início">↺</button>
-    <button class="btn" id="nextBtn" title="Próxima da fila (N)">Próxima ⏭</button>
+    <button class="btn" id="playBtn" title="Tocar/pausar (P)"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Tocar</button>
+    <button class="btn icon" id="restartBtn" title="Voltar ao início" aria-label="Voltar ao início"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    <button class="btn" id="nextBtn" title="Próxima da fila (N)">Próxima<svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5v14l10-7z"/><path d="M19 5v14"/></svg></button>
   </div>
   <div class="group" title="Letra atrasada? Use −. Adiantada? Use +. Teclas [ e ]">
     <button class="btn sm" data-off="-1">−1s</button>
@@ -391,7 +400,7 @@
 
 <div id="startbar" class="hidden">
   <button class="btn ghost" id="startCancel">Cancelar</button>
-  <button class="btn primary" id="startBtn">Começou! <kbd style="color:inherit;border-color:rgba(0,0,0,.3)">espaço</kbd></button>
+  <button class="btn primary" id="startBtn">Começou <kbd style="color:inherit;border-color:rgba(0,0,0,.3)">espaço</kbd></button>
 </div>
 
 <div id="dock" class="hidden">
@@ -403,7 +412,7 @@
 <!-- Add song drawer -->
 <div class="scrim hidden" id="scrim"></div>
 <aside class="drawer hidden" id="addDrawer" aria-label="Adicionar música">
-  <header><h2>Adicionar música</h2><div class="spacer"></div><button class="btn icon ghost" data-close>✕</button></header>
+  <header><h2>Adicionar música</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
   <div class="body">
     <div id="remoteInfo" class="hidden"><p id="remoteStatus" class="hint"></p><div id="remoteNow"></div>
       <div id="reactBar" class="hidden"><button data-r="👏">👏</button><button data-r="🔥">🔥</button><button data-r="😂">😂</button><button data-r="❤️">❤️</button><button data-r="🧀">🧀</button></div>
@@ -411,20 +420,20 @@
     <div class="step">
       <h3><span class="n">1</span> Qual música?</h3>
       <div class="row">
-        <input type="text" id="fQuery" placeholder="Nome da música (ex.: Evidências)">
+        <input type="text" id="fQuery" placeholder="Nome da música">
         <button class="btn primary" id="searchBtn" style="flex:none">Buscar</button>
       </div>
       <p class="hint">Buscamos a letra e o vídeo ao mesmo tempo. No YouTube, a busca já inclui “karaoke” ou “instrumental” pra achar a versão sem voz.</p>
     </div>
 
     <div class="step hidden" id="histStep">
-      <h3>Já cantadas <span class="hint" style="margin:0;text-transform:none;letter-spacing:0;font-weight:500">· já vêm sincronizadas</span></h3>
+      <h3>Já cantadas <span class="hint" style="margin:0;font-weight:400">· já vêm sincronizadas</span></h3>
       <div id="histList" class="results"></div>
     </div>
 
     <div class="step" id="lyricStep">
       <h3><span class="n">2</span> A letra</h3>
-      <div id="lyricResults" class="results"><p class="hint">Faça uma busca acima.</p></div>
+      <div id="lyricResults" class="results"><p class="hint">Faça uma busca acima</p></div>
       <div id="pasteWrap" class="hidden" style="margin-top:12px">
         <label class="f">Cole a letra (uma linha por verso). Depois você marca os tempos tocando na tela.</label>
         <textarea id="fPaste" placeholder="Cole a letra aqui…"></textarea>
@@ -435,7 +444,7 @@
 
     <div class="step">
       <h3><span class="n">3</span> O vídeo</h3>
-      <div id="ytResults" class="results"><p class="hint">Faça uma busca acima.</p></div>
+      <div id="ytResults" class="results"><p class="hint">Faça uma busca acima</p></div>
       <div class="chosen" id="videoChosen"></div>
       <div id="linkWrap" class="hidden" style="margin-top:12px"><input type="url" id="fVideo" placeholder="Cole o link do vídeo do YouTube"></div>
       <button class="btn ghost sm" id="toggleLink" style="margin-top:8px">Prefere colar um link?</button>
@@ -457,7 +466,7 @@
 
 <!-- Phone drawer -->
 <aside class="drawer hidden" id="phoneDrawer" aria-label="Celular">
-  <header><h2>Mandar pelo celular</h2><div class="spacer"></div><button class="btn icon ghost" data-close>✕</button></header>
+  <header><h2>Mandar pelo celular</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
   <div class="body">
     <p class="hint" style="font-size:15px">Aponte a câmera do celular pro código. Cada pessoa busca a música, coloca o nome e manda direto pra fila da TV.</p>
     <div id="qrBox"></div>
@@ -470,7 +479,7 @@
 
 <!-- Queue drawer -->
 <aside class="drawer hidden" id="queueDrawer" aria-label="Fila">
-  <header><h2>Fila da noite</h2><div class="spacer"></div><button class="btn icon ghost" data-close>✕</button></header>
+  <header><h2>Fila da noite</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
   <div class="body" id="queueList"></div>
   <div class="foot">
     <button class="btn ghost" id="clearQueue">Limpar fila</button>
@@ -482,7 +491,7 @@
 <div id="tour" class="hidden" role="dialog" aria-modal="true" aria-label="Tutorial"><div class="shade"></div><div class="hole"></div><div class="card"><div class="stepn" id="tourN"></div><h2 id="tourT"></h2><p id="tourP"></p><div class="row"><div class="dots" id="tourDots"></div><button class="skip" id="tourSkip">Pular</button><button class="btn" id="tourBack">Voltar</button><button class="btn primary" id="tourNext">Próximo</button></div></div></div>
 
 <aside class="drawer hidden" id="setDrawer" aria-label="Ajustes">
-  <header><h2>Ajustes</h2><div class="spacer"></div><button class="btn icon ghost" data-close>✕</button></header>
+  <header><h2>Ajustes</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
   <div class="body">
     <div class="step">
       <h3>Tamanho da letra</h3>
@@ -496,12 +505,12 @@
     </div>
     <div class="step">
       <h3>Efeitos visuais</h3>
-      <label style="display:flex;gap:10px;align-items:center;font-size:15px"><input type="checkbox" id="fxToggle" style="accent-color:var(--keijo);width:18px;height:18px"> Desfoque e brilho na letra</label>
+      <label style="display:flex;gap:10px;align-items:center;font-size:15px"><input type="checkbox" id="fxToggle" style="accent-color:var(--keijo);width:18px;height:18px"> Desfoque nas outras linhas da letra</label>
       <p class="hint">Se a TV ou o computador travar durante a música, desligue.</p>
     </div>
     <div class="step">
       <h3>Tutorial</h3>
-      <button class="btn" id="tourAgain">💡 Ver o tutorial de novo</button>
+      <button class="btn" id="tourAgain"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Ver o tutorial de novo</button>
     </div>
     <div class="step">
       <h3>Atalhos</h3>
@@ -516,14 +525,14 @@
 </aside>
 
 <div id="party" class="hidden" aria-live="polite">
-  <div class="qrmini hidden" id="qrParty"><div class="qrsvg"></div><span>📱 Quer cantar também?<small>Aponte a câmera e entre na fila</small></span></div>
+  <div class="qrmini hidden" id="qrParty"><div class="qrsvg"></div><span>Quer cantar também?<small>Aponte a câmera e entre na fila</small></span></div>
   <div class="inner">
     <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
     <h1 id="partyMsg"></h1>
     <p class="sub" id="partySub"></p>
-    <div class="nextcard" id="partyNext"><span class="label">PRÓXIMO</span><b id="partyNextTitle"></b><span id="partyNextWho"></span></div>
+    <div class="nextcard" id="partyNext"><span class="label">Próximo</span><b id="partyNextTitle"></b><span id="partyNextWho"></span></div>
     <div class="row2">
-      <button class="btn primary" id="partySkip">Começar agora ▶︎</button>
+      <button class="btn primary" id="partySkip"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Começar agora</button>
       <button class="btn" id="partyAdd">+ Música</button>
       <span class="left" id="partyLeft"></span>
     </div>
@@ -548,6 +557,7 @@
   'use strict';
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const IC = {"phone": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><path d=\"M12 18h.01\"/></svg>", "play": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 4.5v15l12-7.5z\"/></svg>", "pause": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 5v14M16 5v14\"/></svg>", "next": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 5v14l10-7z\"/><path d=\"M19 5v14\"/></svg>", "restart": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>", "x": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>", "up": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg>", "help": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg>", "music": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></svg>"};
 
   /* ---------- storage (best effort) ---------- */
   const store = {
@@ -660,7 +670,7 @@
         onReady: () => { playerReady = true; if (pendingVideo) { loadVideo(pendingVideo.id, pendingVideo.auto); pendingVideo = null; } },
         onStateChange: e => {
           const playing = e.data === YT.PlayerState.PLAYING;
-          $('#playBtn').textContent = playing ? '❚❚ Pausar' : '▶︎ Tocar';
+          $('#playBtn').innerHTML = playing ? IC.pause + 'Pausar' : IC.play + 'Tocar';
           if (e.data === YT.PlayerState.ENDED && !tap && !startMode) celebrate();
           if (playing) autoAlign();
           if (playing && current && !current.counted) { current.counted = true; store.set('current', current); addHistory(current); }
@@ -681,7 +691,7 @@
 
   /* ---------- rendering lyrics ---------- */
   // dueto: refrão (linhas que se repetem) pros dois; o resto alterna de 2 em 2 linhas
-  const whoName = s => s ? (s.singer2 ? `${s.singer || '—'} & ${s.singer2}` : (s.singer || '')) : '';
+  const whoName = s => s ? (s.singer2 ? `${s.singer || '—'} e ${s.singer2}` : (s.singer || '')) : '';
   function assignDuet(list) {
     const cnt = {}; list.forEach(l => { if (!l.gap) { const k = norm(l.text).replace(/[^a-z0-9]/g, ''); cnt[k] = (cnt[k] || 0) + 1; } });
     let turn = 'a', chunk = 0, prev = null;
@@ -818,7 +828,7 @@
     lines = parseLRC(lrc); offset = 0; store.set(offKey(current), 0); showOffset();
     renderLines(lines);
     updateMeta();
-    toast('Letra sincronizada e salva!');
+    toast('Letra sincronizada e salva');
     if (playerReady) player.seekTo(0, true);
   }
   function cancelTap() {
@@ -901,7 +911,7 @@
     for (let k = 0; k < els.length; k++) { els[k].classList.remove('cur', 'past', 'next'); els[k].classList.toggle('tap-target', k === i); }
     centerOn(i);
     if (playerReady) { player.seekTo(0, true); player.playVideo(); }
-    toast('Toque “Começou!” quando essa primeira linha for cantada');
+    toast('Toque “Começou” quando essa primeira linha for cantada');
   }
   function startHit() {
     if (!startMode) return;
@@ -909,7 +919,7 @@
     offset = Math.round((f.t - now()) * 10) / 10; showOffset();
     store.set(offKey(current), offset); autoPending = false;
     endStart();
-    toast(`Sincronizado! (${$('#offVal').textContent}) Fica salvo pra este vídeo.`);
+    toast(`Sincronizado (${$('#offVal').textContent}). Fica salvo pra este vídeo.`);
   }
   function endStart(silent) {
     startMode = false;
@@ -939,8 +949,8 @@
   /* ---------- add song ---------- */
   function openAdd() {
     draft.lyric = null; draft.video = null;
-    $('#lyricResults').innerHTML = '<p class="hint">Faça uma busca acima.</p>';
-    $('#ytResults').innerHTML = '<p class="hint">Faça uma busca acima.</p>';
+    $('#lyricResults').innerHTML = '<p class="hint">Faça uma busca acima</p>';
+    $('#ytResults').innerHTML = '<p class="hint">Faça uma busca acima</p>';
     $('#fVideo').value = ''; $('#videoChosen').textContent = ''; $('#addErr').textContent = '';
     $('#fPaste').value = ''; $('#pasteWrap').classList.add('hidden'); $('#linkWrap').classList.add('hidden');
     openDrawer('#addDrawer');
@@ -1038,7 +1048,7 @@
   $('#fVideo').addEventListener('input', () => {
     const id = ytId($('#fVideo').value);
     draft.video = id ? { id, title: '' } : null;
-    $('#videoChosen').textContent = id ? '✓ vídeo do link' : ($('#fVideo').value ? 'Link não reconhecido' : '');
+    $('#videoChosen').textContent = id ? 'Vídeo do link escolhido' : ($('#fVideo').value ? 'Link não reconhecido' : '');
     $$('#ytResults .res').forEach(r => r.classList.remove('sel'));
   });
 
@@ -1098,7 +1108,7 @@
     if (!vid) { err.textContent = 'Escolha um vídeo da lista ou cole um link.'; return null; }
     return { uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...lyr, videoId: vid.id, singer: $('#fSinger').value.trim(), singer2: $('#fSinger2').value.trim() };
   }
-  function enqueue(s) { if (REMOTE) return sendToTv(s); if (waiting) { closeDrawers(); play(s, true); return; } if (!current) { closeDrawers(); play(s, false); toast('Pronto! Aperte Tocar quando quiser.'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); }
+  function enqueue(s) { if (REMOTE) return sendToTv(s); if (waiting) { closeDrawers(); play(s, true); return; } if (!current) { closeDrawers(); play(s, false); toast('Pronto. Aperte Tocar quando quiser'); return; } queue.push(s); saveQueue(); closeDrawers(); toast(`${s.singer || 'Música'} na fila (${queue.length}º)`); }
   $('#addQueue').onclick = () => { const s = buildSong(); if (s) enqueue(s); };
 
   /* ---------- histórico "Já cantadas" ---------- */
@@ -1117,7 +1127,7 @@
     box.innerHTML = '';
     list.forEach(x => {
       const d = document.createElement('div'); d.className = 'res';
-      d.innerHTML = '<div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm primary" data-a="now">Cantar</button><button class="btn sm" data-a="q">+ Fila</button><button class="btn sm ghost" data-a="rm" title="Tirar do histórico">✕</button></div>';
+      d.innerHTML = '<div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm primary" data-a="now">Cantar</button><button class="btn sm" data-a="q">+ Fila</button><button class="btn sm ghost icon" data-a="rm" title="Tirar do histórico" aria-label="Tirar do histórico">' + IC.x + '</button></div>';
       d.querySelector('b').textContent = x.title;
       d.querySelector('small').textContent = [x.artist, `${x.count}×`, store.get(offKey(x), null) != null ? 'tempo ajustado' : ''].filter(Boolean).join(' · ');
       d.querySelector('[data-a=now]').onclick = () => { closeDrawers(); play(fromHistory(x), true); };
@@ -1134,14 +1144,14 @@
     const box = $('#queueList'); box.innerHTML = '';
     if (current) {
       const d = document.createElement('div'); d.className = 'q playing';
-      d.innerHTML = '<span class="num">♪</span><div class="t"><b></b><small></small></div>';
+      d.innerHTML = '<span class="num">' + IC.music + '</span><div class="t"><b></b><small></small></div>';
       d.querySelector('b').textContent = current.title; d.querySelector('small').textContent = `${whoName(current) || '—'} · agora`;
       box.appendChild(d);
     }
-    if (!queue.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ninguém na fila ainda.'; box.appendChild(p); return; }
+    if (!queue.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ninguém na fila ainda'; box.appendChild(p); return; }
     queue.forEach((s, i) => {
       const d = document.createElement('div'); d.className = 'q';
-      d.innerHTML = `<span class="num">${i + 1}</span><div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm" data-a="up" title="Subir">↑</button><button class="btn sm" data-a="play" title="Cantar agora">▶︎</button><button class="btn sm" data-a="rm" title="Tirar">✕</button></div>`;
+      d.innerHTML = `<span class="num">${i + 1}</span><div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm icon" data-a="up" title="Subir" aria-label="Subir">${IC.up}</button><button class="btn sm icon" data-a="play" title="Cantar agora" aria-label="Cantar agora">${IC.play}</button><button class="btn sm icon ghost" data-a="rm" title="Tirar" aria-label="Tirar">${IC.x}</button></div>`;
       d.querySelector('b').textContent = s.title; d.querySelector('small').textContent = `${whoName(s) || '—'} · ${s.artist}`;
       d.querySelector('[data-a=up]').onclick = () => { if (i > 0) { [queue[i - 1], queue[i]] = [queue[i], queue[i - 1]]; saveQueue(); } };
       d.querySelector('[data-a=play]').onclick = () => { queue.splice(i, 1); saveQueue(); closeDrawers(); play(s, true); };
@@ -1181,7 +1191,7 @@
   let introT = null, introDone = null;
   function showIntro(song, done) {
     const el = $('#intro');
-    $('#introName').textContent = whoName(song) || 'Sua vez!';
+    $('#introName').textContent = whoName(song) || 'Sua vez';
     const sub = $('#introSong'); sub.textContent = song.title;
     if (song.artist) { const sm = document.createElement('small'); sm.textContent = song.artist; sub.appendChild(sm); }
     el.classList.add('hidden'); void el.offsetWidth; el.classList.remove('hidden');   // reinicia as animações
@@ -1204,7 +1214,7 @@
   $('#copyLrc').onclick = async () => {
     if (!current) return toast('Nenhuma música tocando');
     const lrc = mySync(current) || current.lrc; if (!lrc) return toast('Essa música ainda não tem tempos');
-    try { await navigator.clipboard.writeText(lrc); toast('Copiado!'); } catch { toast('Não consegui copiar'); }
+    try { await navigator.clipboard.writeText(lrc); toast('Copiado'); } catch { toast('Não consegui copiar'); }
   };
 
   /* ---------- comemoração: palmas, torcida e "próximo" ---------- */
@@ -1260,7 +1270,7 @@
     } catch { playApplause(6); }
   }
   function spawnEmojis(secs) {
-    const box = $('#party'), set = ['👏', '👏', '👏', '🎉', '🙌', '✨', '🎤', '🧀'];
+    const box = $('#party'), set = ['👏', '👏', '👏', '🎉', '🙌', '🎤', '🧀'];
     const iv = setInterval(() => {
       const e = document.createElement('span'); e.className = 'emo';
       e.textContent = set[Math.floor(Math.random() * set.length)];
@@ -1278,8 +1288,8 @@
     partyOn = true;
     store.set('sung', sungToday().concat(Date.now()).slice(-200));
     const who = current.singer2 ? `${current.singer} e ${current.singer2}` : current.singer;
-    const msgs = who ? [`Mandou bem, ${who}!`, `Que voz, ${who}!`, `Aplausos pra ${who}!`, `${who} arrasou!`, `Essa saiu no ponto, ${who}!`]
-                     : ['Mandou bem!', 'Que voz!', 'Aplausos!', 'Arrasou!', 'Essa saiu no ponto!'];
+    const msgs = who ? [`Mandou bem, ${who}`, `Que voz, ${who}`, `Aplausos pra ${who}`, (current.singer2 ? `${who} arrasaram` : `${who} arrasou`), `Essa saiu no ponto, ${who}`]
+                     : ['Mandou bem', 'Que voz', 'Aplausos', 'Arrasou', 'Essa saiu no ponto'];
     $('#partyMsg').textContent = msgs[Math.floor(Math.random() * msgs.length)];
     $('#partySub').textContent = `${current.title}${current.artist ? ' · ' + current.artist : ''}`;
     const n = queue[0];
@@ -1309,14 +1319,14 @@
     waiting = true;
     try { player.stopVideo(); } catch {}
     document.body.classList.add('waiting');
-    $('#emptyH').innerHTML = 'Palco livre.<br><em>Quem canta agora?</em>';
+    $('#emptyH').innerHTML = 'Palco livre<br><em>Quem canta agora?</em>';
     $('#emptyP').textContent = 'Mande a próxima pelo celular ou toque no botão. A fila começa sozinha.';
     $('#emptyAdd').textContent = '+ Adicionar música';
     const n = sungToday().length;
     const st = $('#wStats'); st.innerHTML = '';
-    const add = t => { const s = document.createElement('span'); s.textContent = t; st.appendChild(s); };
-    add(`🎤 ${n} ${n === 1 ? 'música cantada' : 'músicas cantadas'} hoje`);
-    if (current && current.singer) add(`👏 Última: ${whoName(current)}`);
+    const add = (n, t, pre = '') => { const s = document.createElement('span'); const b = document.createElement('b'); b.textContent = n; s.append(pre, b, t ? ' ' + t : ''); st.appendChild(s); };
+    add(n, `${n === 1 ? 'música cantada' : 'músicas cantadas'} hoje`);
+    if (current && current.singer) add(whoName(current), '', 'Última: ');
     st.classList.remove('hidden');
     $('#qrMini').classList.add('big');
     $('#empty').classList.remove('hidden');
@@ -1355,8 +1365,8 @@
     { el: '#phoneBtn', t: 'Cada um pelo celular', p: 'Mostre o <b>QR code</b> pra galera. Cada pessoa aponta a câmera e manda a própria música pra fila, sem disputar o controle.' },
     { el: '#queueBtn', t: 'A fila anda sozinha', p: 'Aqui ficam as próximas músicas. Quando uma termina, rolam os <b>aplausos</b> e a seguinte começa automaticamente.' },
     { el: '#controls', t: 'Letra fora do tempo?', p: 'Durante a música, use <b>−1s</b> e <b>+1s</b> na barra de baixo pra adiantar ou atrasar a letra. Se ela vier sem sincronia, toque em <b>Sincronizar eu mesmo</b> e marque cada linha no ritmo.' },
-    { el: '.brand .jp', t: 'Deixe com a sua cara', p: 'Toque em <b>チ</b>, <b>ー</b> ou <b>ズ</b> pra trocar as cores do app. Em <b>⚙</b> você muda o tamanho da letra, e <b>⛶</b> põe em tela cheia.' },
-    { t: 'Pronto, bora cantar!', p: 'Escolha a primeira música e solte a voz. O tutorial fica guardado em <b>⚙ Ajustes</b> se precisar ver de novo.', last: true },
+    { el: '.brand .jp', t: 'Deixe com a sua cara', p: 'Toque em <b>チ</b>, <b>ー</b> ou <b>ズ</b> pra trocar as cores do app. Em <b>Ajustes</b> você muda o tamanho da letra, e o botão ao lado põe em tela cheia.' },
+    { t: 'Pronto, bora cantar', p: 'Escolha a primeira música e solte a voz. O tutorial fica guardado em <b>Ajustes</b> se precisar ver de novo.', last: true },
   ];
   let tourI = -1;
   function tourOn() { return tourI >= 0; }
@@ -1372,7 +1382,7 @@
     $('#tourSkip').classList.toggle('hidden', !!s.last);
     $('#tourNext').textContent = s.last ? '+ Adicionar música' : (tourI === 0 ? 'Começar' : 'Próximo');
     let el = s.el && $(s.el);
-    if (el && el.closest('#hnav') && getComputedStyle($('#menuBtn')).display !== 'none') { el = $('#menuBtn'); $('#tourP').innerHTML += ' No celular, esse botão fica no menu <b>☰</b>.'; }
+    if (el && el.closest('#hnav') && getComputedStyle($('#menuBtn')).display !== 'none') { el = $('#menuBtn'); $('#tourP').innerHTML += ' No celular, esse botão fica no menu, no canto de cima.'; }
     const r = el && el.getBoundingClientRect();
     const vis = r && r.width > 0 && r.height > 0 && r.left >= 0 && r.right <= innerWidth && getComputedStyle(el).visibility !== 'hidden' && !el.closest('.hidden');
     const W = innerWidth, H = innerHeight, cw = Math.min(420, W - 32);
@@ -1401,8 +1411,7 @@
   $('#tourBack').onclick = () => tourShow(tourI - 1);
   $('#tourSkip').onclick = () => tourEnd(false);
   $('#tour .shade').onclick = () => tourEnd(false);
-  if (!store.get('tourSeen', false)) $('#tourBtn').classList.add('pulse');
-  window.addEventListener('resize', () => { if (tourOn()) tourShow(tourI); });
+    window.addEventListener('resize', () => { if (tourOn()) tourShow(tourI); });
   document.addEventListener('keydown', e => {
     if (!tourOn()) return;
     e.stopImmediatePropagation();
@@ -1458,7 +1467,7 @@
   function phoneStatus(msg) {
     const el = $('#phoneStatus'); if (!el) return;
     const n = [...phones.values()].filter(t => Date.now() - t < 3 * 3600e3).length;
-    el.textContent = msg || (mq && mq.connected ? (n ? `✓ ${n} celular(es) conectado(s)` : 'Pronto. Esperando celulares…') : 'Conectando…');
+    el.textContent = msg || (mq && mq.connected ? (n ? `${n} ${n === 1 ? 'celular conectado' : 'celulares conectados'}` : 'Pronto. Esperando celulares…') : 'Conectando…');
   }
   async function startHost() {
     if (mq) return;
@@ -1477,15 +1486,15 @@
     if (!d || !d.from) return;
     const isNew = !phones.has(d.from);
     phones.set(d.from, Date.now());
-    if (d.type === 'hello') { if (isNew) toast('📱 Um celular entrou'); phoneStatus(); broadcastState(); return; }
+    if (d.type === 'hello') { if (isNew) toast('Um celular entrou'); phoneStatus(); broadcastState(); return; }
     if (d.type === 'react') { if (REACTS.includes(d.e)) spawnReact(d.e); return; }
     if (d.type !== 'add' || !d.song || !d.song.videoId) return;
     const s = { ...d.song, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
     delete s.counted;
     let pos;
-    if (waiting) { play(s, true); toast(`📱 ${s.singer || 'Alguém'} mandou “${s.title}”!`); }
-    else if (!current) { play(s, false); pos = 0; toast(`📱 ${s.singer || 'Alguém'} mandou “${s.title}”. Aperte Tocar!`); }
-    else { queue.push(s); saveQueue(); pos = queue.length; toast(`📱 ${s.singer || 'Alguém'} entrou na fila: ${s.title}`); }
+    if (waiting) { play(s, true); toast(`${s.singer || 'Alguém'} mandou “${s.title}”`); }
+    else if (!current) { play(s, false); pos = 0; toast(`${s.singer || 'Alguém'} mandou “${s.title}”. Aperte Tocar`); }
+    else { queue.push(s); saveQueue(); pos = queue.length; toast(`${s.singer || 'Alguém'} entrou na fila: ${s.title}`); }
     try { mq.publish(topics(roomId()).ack(d.from), JSON.stringify({ type: 'ok', pos })); } catch {}
     phoneStatus(); broadcastState();
   }
@@ -1535,7 +1544,7 @@
     if (st.now) rows.push(['No palco', st.now.title + (st.now.singer ? ' · ' + st.now.singer : '')]);
     (st.queue || []).slice(0, 5).forEach((q, i) => rows.push([`${i + 1}º da fila`, q.title + (q.singer ? ' · ' + q.singer : '')]));
     if ((st.queue || []).length > 5) rows.push(['', `+ ${st.queue.length - 5} na fila`]);
-    if (!rows.length) rows.push(['Fila', 'vazia: manda a primeira!']);
+    if (!rows.length) rows.push(['Fila', 'vazia, manda a primeira']);
     rows.forEach(([a, b]) => { const d = document.createElement('div'); d.className = 'rq'; d.innerHTML = '<span></span><b></b>'; d.children[0].textContent = a; d.children[1].textContent = b; box.appendChild(d); });
   }
   function sendToTv(s) {
@@ -1551,7 +1560,7 @@
   async function startRemote() {
     document.body.classList.add('remote');
     $('#addDrawer h2').textContent = 'Mandar música pra TV';
-    $('#addQueue').textContent = 'Mandar pra fila 🎤'; $('#addQueue').classList.add('primary');
+    $('#addQueue').textContent = 'Mandar pra fila'; $('#addQueue').classList.add('primary');
     openAdd(); $('#fSinger').value = store.get('myname', '');
     setRemote('Conectando…');
     $('#reactBar').classList.remove('hidden');
@@ -1572,10 +1581,10 @@
       let d; try { d = JSON.parse(buf.toString()); } catch { return; }
       if (topic === t.state && d.type === 'state') {
         renderRemoteState(d);
-        if (Date.now() - (d.ts || 0) < 90e3) { tvSeen = true; setRemote('✓ Conectado à TV'); }
+        if (Date.now() - (d.ts || 0) < 90e3) { tvSeen = true; setRemote('Conectado à TV'); }
         else if (!tvSeen) setRemote('A TV parece estar fechada. Abra o karaokê nela.');
       }
-      if (topic === t.ack(myId) && d.type === 'ok') toast(d.pos ? `Mandado! Você é o ${d.pos}º da fila 🎤` : 'Mandado! Já está na TV 🎤');
+      if (topic === t.ack(myId) && d.type === 'ok') toast(d.pos ? `Mandado. Você é o ${d.pos}º da fila` : 'Mandado. Já está na TV');
     });
   }
 
