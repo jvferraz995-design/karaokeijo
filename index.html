@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Karaokeijo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@700;800&family=Figtree:wght@400;500;600;700&display=swap">
@@ -645,21 +645,6 @@
   document.addEventListener('pointerdown', () => { if (!wakeLock) requestWakeLock(); }, { passive: true });
   requestWakeLock();
 
-  const STAGE = Object.freeze({
-    EMPTY: 'EMPTY',
-    WAITING: 'WAITING',
-    INTRO: 'INTRO',
-    PLAYING: 'PLAYING',
-    TAP_SYNC: 'TAP_SYNC',
-    START_MARK: 'START_MARK',
-    PARTY: 'PARTY'
-  });
-  let stageState = STAGE.EMPTY;
-  function setStage(nextState) {
-    stageState = nextState;
-    document.body.dataset.stage = nextState;
-  }
-
   let queue = store.get('queue', []);
   let current = store.get('current', null);
   let lines = [];
@@ -784,7 +769,7 @@
               }
             } catch {}
           }
-          const msg = { 2: 'Link de vídeo inválido.', 5: 'O vídeo não pode tocar aqui.', 100: 'Vídeo removido ou privado.', 101: 'O dono do vídeo não permite tocar fora do YouTube.', 150: 'O dono do vídeo não permite tocar fora do YouTube.', 153: 'O YouTube recusou o vídeo.' }[e.data] || 'Erro ao tocar o vídeo.';
+          const msg = { 2: 'Link de vídeo inválido.', 5: 'O vídeo não pode tocar aqui.', 100: 'Vídeo removido ou privado.', 101: 'O dono do vídeo não permite tocar fora do YouTube. Escolha outro vídeo.', 150: 'O dono do vídeo não permite tocar fora do YouTube. Escolha outro vídeo.', 153: 'O YouTube recusou o vídeo.' }[e.data] || 'Erro ao tocar o vídeo.';
           toast(msg);
         }
       }
@@ -964,27 +949,8 @@
     $('#controls').classList.remove('hidden');
     $('#dock').classList.remove('hidden');
     
-    // ----------------------------------------------------
-    // CÁLCULO AUTOMÁTICO DE OFFSET POR DIFERENÇA DE DURAÇÃO
-    // ----------------------------------------------------
     const saved = store.get(offKey(song), null);
-    if (saved !== null) {
-      offset = saved;
-      autoPending = false;
-    } else if (song.duration && song.videoDur) {
-      const diff = song.videoDur - song.duration;
-      if (diff > 1 && diff <= 45) {
-        offset = -Math.round(diff * 10) / 10;
-        autoPending = false;
-      } else {
-        offset = 0;
-        autoPending = !!song.duration;
-      }
-    } else {
-      offset = 0;
-      autoPending = !!song.duration;
-    }
-    showOffset();
+    offset = saved || 0; autoPending = saved === null && !!song.duration; showOffset();
     
     endStart(true);
     const hasLyr = !!(mySync(song) || song.lrc);
@@ -1164,7 +1130,7 @@
         lyrRes.push({ d, b });
       });
     } catch (e) {
-      box.innerHTML = '<p class="hint err">Não consegui falar com o LRCLIB. Verifique a internet.</p>';
+      box.innerHTML = '<p class="hint err">Não consegui falar com o LRCLIB. Verifique a internet e tente de novo.</p>';
     }
   }
 
@@ -1288,7 +1254,7 @@
     if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
     $$('.brand .jp button').forEach(b => b.classList.toggle('on', b.dataset.th === t));
     store.set('theme', t);
-    if (say) toast(t ? `Tema ${THEMES[t]}` : 'Tema Maturado');
+    if (say) toast(t ? `Tema ${THEMES[t]} · toque de novo pra voltar ao Maturado` : 'Tema Maturado');
   }
   $$('.brand .jp button').forEach(b => b.onclick = () => setTheme(store.get('theme', '') === b.dataset.th ? '' : b.dataset.th, true));
   setTheme(store.get('theme', ''), false);
@@ -1469,12 +1435,12 @@
 
   const TOUR = [
     { t: 'Bem-vindo ao Karaokeijo チーズ', p: 'Em um minuto você aprende o básico: <b>escolher a música</b>, <b>chamar a galera</b> e <b>acertar a letra</b>.' },
-    { el: '#addBtn', t: 'Escolha a música', p: 'Toque em <b>+ Música</b> e digite só o nome. A gente busca a versão karaokê no YouTube.' },
-    { el: '#phoneBtn', t: 'Cada um pelo celular', p: 'Mostre o <b>QR code</b> pra galera. Cada pessoa aponta a câmera e manda a própria música pra fila.' },
+    { el: '#addBtn', t: 'Escolha a música', p: 'Toque em <b>+ Música</b> e digite só o nome. A gente busca a versão karaokê no YouTube: escolha um vídeo e coloque quem vai cantar. Dois nomes viram <b>dueto</b>.' },
+    { el: '#phoneBtn', t: 'Cada um pelo celular', p: 'Mostre o <b>QR code</b> pra galera. Cada pessoa aponta a câmera e manda a própria música pra fila, sem disputar o controle.' },
     { el: '#queueBtn', t: 'A fila anda sozinha', p: 'Aqui ficam as próximas músicas. Quando uma termina, rolam os <b>aplausos</b> e a seguinte começa automaticamente.' },
-    { el: '#controls', t: 'Letra fora do tempo?', p: 'Durante a música, use <b>−1s</b> e <b>+1s</b> na barra de baixo pra adiantar ou atrasar a letra.' },
-    { el: '.brand .jp', t: 'Deixe com a sua cara', p: 'Toque em <b>チ</b>, <b>ー</b> ou <b>ズ</b> pra trocar as cores do app.' },
-    { t: 'Pronto, bora cantar', p: 'Escolha a primeira música e solte a voz.', last: true },
+    { el: '#controls', t: 'Letra fora do tempo?', p: 'Durante a música, use <b>−1s</b> e <b>+1s</b> na barra de baixo pra adiantar ou atrasar a letra. Se ela vier sem sincronia, toque em <b>Sincronizar eu mesmo</b> e marque cada linha no ritmo.' },
+    { el: '.brand .jp', t: 'Deixe com a sua cara', p: 'Toque em <b>チ</b>, <b>ー</b> ou <b>ズ</b> pra trocar as cores do app. Em <b>Ajustes</b> você muda o tamanho da letra, e o botão ao lado põe em tela cheia.' },
+    { t: 'Pronto, bora cantar', p: 'Escolha a primeira música e solte a voz. O tutorial fica guardado em <b>Ajustes</b> se precisar ver de novo.', last: true },
   ];
   let tourI = -1;
   function tourOn() { return tourI >= 0; }
@@ -1490,7 +1456,7 @@
     $('#tourSkip').classList.toggle('hidden', !!s.last);
     $('#tourNext').textContent = s.last ? '+ Adicionar música' : (tourI === 0 ? 'Começar' : 'Próximo');
     let el = s.el && $(s.el);
-    if (el && el.closest('#hnav') && getComputedStyle($('#menuBtn')).display !== 'none') { el = $('#menuBtn'); }
+    if (el && el.closest('#hnav') && getComputedStyle($('#menuBtn')).display !== 'none') { el = $('#menuBtn'); $('#tourP').innerHTML += ' No celular, esse botão fica no menu, no canto de cima.'; }
     const r = el && el.getBoundingClientRect();
     const vis = r && r.width > 0 && r.height > 0 && r.left >= 0 && r.right <= innerWidth && getComputedStyle(el).visibility !== 'hidden' && !el.closest('.hidden');
     const W = innerWidth, H = innerHeight, cw = Math.min(420, W - 32);
@@ -1552,7 +1518,8 @@
   const BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
   const myId = store.get('clientId', null) || (() => { const id = Math.random().toString(36).slice(2, 10); store.set('clientId', id); return id; })();
   let mq = null, brokerIdx = 0, phones = new Map(), stateTimer = null, tvSeen = false;
-  const processedMsgIds = new Set();
+  const processedMsgIds = new Set(store.get('seenMsg', []));
+  const rememberMsg = id => { processedMsgIds.add(id); store.set('seenMsg', [...processedMsgIds].slice(-200)); };
 
   const topics = r => ({ in: `karaokeijo/${r}/in`, state: `karaokeijo/${r}/state`, ack: id => `karaokeijo/${r}/ack/${id}` });
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
@@ -1583,9 +1550,9 @@
 
   async function startHost() {
     if (mq) return;
-    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { phoneStatus('Não consegui carregar a conexão.'); return; }
+    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { phoneStatus('Não consegui carregar a conexão. Verifique a internet.'); return; }
     for (let i = 0; i < BROKERS.length && !mq; i++) { try { mq = await connectBroker(i); brokerIdx = i; } catch {} }
-    if (!mq) { phoneStatus('Não consegui conectar ao servidor de mensagens.'); return; }
+    if (!mq) { phoneStatus('Não consegui conectar ao servidor de mensagens. Tente de novo em instantes.'); return; }
     const t = topics(roomId());
     mq.subscribe(t.in);
     mq.on('message', (topic, buf) => { if (topic !== t.in) return; let d; try { d = JSON.parse(buf.toString()); } catch { return; } onPhoneData(d); });
@@ -1607,7 +1574,7 @@
       try { mq.publish(topics(roomId()).ack(d.from), JSON.stringify({ type: 'ok', msgId: d.msgId, pos: queue.length })); } catch {}
       return;
     }
-    if (d.msgId) processedMsgIds.add(d.msgId);
+    if (d.msgId) rememberMsg(d.msgId);
 
     const s = { ...d.song, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
     delete s.counted;
@@ -1628,12 +1595,12 @@
       const svg = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
       $('#qrBox').innerHTML = svg;
       ['#qrMini', '#qrParty'].forEach(id => { const el = $(id); $('.qrsvg', el).innerHTML = svg; el.classList.remove('hidden'); });
-    } catch { $('#qrBox').innerHTML = '<p class="hint">Não consegui gerar o QR.</p>'; }
+    } catch { $('#qrBox').innerHTML = '<p class="hint">Não consegui gerar o QR. Abra o link abaixo no celular.</p>'; }
   }
   $('#phoneBtn').onclick = async () => { openDrawer('#phoneDrawer'); store.set('hostOn', true); phoneStatus(); if (mq) renderQR(); else { $('#qrBox').innerHTML = '<p class="hint">Preparando o código…</p>'; await startHost(); } phoneStatus(); };
   $('#newRoom').onclick = async () => {
     if (mq) { try { mq.publish(topics(roomId()).state, '', { retain: true }); mq.end(true); } catch {} mq = null; }
-    store.set('room2', null); phones.clear(); processedMsgIds.clear();
+    store.set('room2', null); phones.clear(); processedMsgIds.clear(); store.set('seenMsg', []);
     phoneStatus('Conectando…'); await startHost(); phoneStatus();
   };
 
@@ -1698,7 +1665,7 @@
       flushOutbox();
       toast('Enviando pra TV…');
     } else {
-      toast('Guardado! Enviaremos assim que reconectar à TV…');
+      toast('Guardado. Vai pra TV assim que a conexão voltar');
     }
     openAdd(); $('#fSinger').value = s.singer;
   }
@@ -1711,21 +1678,21 @@
     setRemote('Conectando…');
     $('#reactBar').classList.remove('hidden');
     $$('#reactBar button').forEach(b => b.onclick = () => sendReact(b.dataset.r, b));
-    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { setRemote('Não consegui carregar a conexão.'); return; }
+    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { setRemote('Não consegui carregar a conexão. Verifique a internet.'); return; }
 
     const preferredIdx = Math.min(BROKERS.length - 1, Math.max(0, parseInt(QS.get('b') || '0', 10) || 0));
-    const order = [preferredIdx, ...BROKERS.map((_, i) => i).filter(i => i !== preferredIdx)];
-    for (const idx of order) {
-      try { mq = await connectBroker(idx); break; } catch {}
+    // o celular precisa ficar no mesmo servidor da TV (o número vem no QR); só tenta de novo nele
+    for (let attempt = 0; attempt < 3 && !mq; attempt++) {
+      try { mq = await connectBroker(preferredIdx); } catch { if (attempt < 2) { setRemote('Conectando… nova tentativa'); await new Promise(r => setTimeout(r, 2000)); } }
     }
-    if (!mq) { setRemote('Não consegui conectar.'); return; }
+    if (!mq) { setRemote('Não consegui conectar ao servidor da TV. Verifique a internet e escaneie o QR de novo.'); return; }
 
     const t = topics(ROOM);
     const onConnected = () => {
       mq.subscribe([t.state, t.ack(myId)]);
       mq.publish(t.in, JSON.stringify({ type: 'hello', from: myId }));
       flushOutbox();
-      if (!tvSeen) setRemote('Procurando a TV…');
+      if (!tvSeen) { setRemote('Procurando a TV…'); setTimeout(() => { if (!tvSeen) setRemote('A TV não respondeu. Confira se o karaokê está aberto nela, com o código do celular aparecendo pelo menos uma vez.'); }, 7000); }
     };
     if (mq.connected) onConnected();
     mq.on('connect', onConnected);
@@ -1736,13 +1703,13 @@
       if (topic === t.state && d.type === 'state') {
         renderRemoteState(d);
         if (Date.now() - (d.ts || 0) < 90e3) { tvSeen = true; setRemote(outbox.length ? `Conectado · enviando ${outbox.length} música(s)…` : 'Conectado à TV'); flushOutbox(); }
-        else if (!tvSeen) setRemote('A TV parece estar fechada.');
+        else if (!tvSeen) setRemote('A TV parece estar fechada. Abra o karaokê nela.');
       }
       if (topic === t.ack(myId) && d.type === 'ok') {
         if (d.msgId) { outbox = outbox.filter(p => p.msgId !== d.msgId); saveOutbox(); }
         else { outbox = []; saveOutbox(); }
         setRemote('Conectado à TV');
-        toast(d.pos ? `Mandado! Você é o ${d.pos}º da fila` : 'Mandado! Já está na TV');
+        toast(d.pos ? `Mandado. Você é o ${d.pos}º da fila` : 'Mandado. Já está na TV');
       }
     });
 
