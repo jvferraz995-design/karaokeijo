@@ -215,4 +215,1556 @@
 
   #controls{position:fixed;left:var(--s3);bottom:var(--s3);display:flex;gap:var(--s1);align-items:center;z-index:15;flex-wrap:wrap;max-width:calc(100vw - 420px)}
   .group{display:flex;align-items:center;gap:4px;background:var(--raised);border:1px solid var(--line);border-radius:var(--pill);padding:4px}
-  .group .btn{border:0;background:transparent;height:3
+  .group .btn{border:0;background:transparent;height:36px;padding:0 14px}
+  .group .btn.icon{width:36px;padding:0}
+  .group .btn.sm{height:36px;padding:0 12px}
+  .group .btn:hover{background:var(--hover)}
+  .offset{font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);min-width:64px;text-align:center}
+  .offset b{color:var(--ink)}
+  #tapbar{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:16;display:flex;gap:var(--s1);align-items:center}
+  #tapBtn,#startBtn{padding:16px 40px;font-size:18px}
+  #startbar{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:16;display:flex;gap:var(--s1);align-items:center}
+
+  #dock{position:fixed;right:var(--s3);bottom:var(--s3);width:356px;z-index:15}
+  #dock .who{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s1);font-size:13px;color:var(--muted);gap:8px}
+  #dock .who b{color:var(--ink);font-size:15px}
+  #playerBox{width:356px;height:200px;border-radius:var(--r-md);overflow:hidden;background:#000;border:1px solid var(--line)}
+  #playerBox iframe{width:100%;height:100%;display:block}
+  #upnext{margin-top:var(--s1);font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--raised);border-left:1px solid var(--line);z-index:31;display:flex;flex-direction:column}
+  .drawer header{position:static;background:none;border-bottom:1px solid var(--line);padding:0 var(--s3)}
+  .drawer h2{font-family:var(--font-display);font-weight:700;font-size:24px;margin:0}
+  .drawer .body{flex:1;overflow:auto;padding:var(--s3)}
+  .drawer .foot{padding:var(--s2) var(--s3);border-top:1px solid var(--line);display:flex;gap:var(--s1);justify-content:flex-end}
+  .step{margin-bottom:var(--s4)}
+  .step h3{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink);margin:0 0 12px}
+  .step h3 .n{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+  .row{display:flex;gap:var(--s1);margin-bottom:var(--s1)}
+  .row>*{flex:1}
+  input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 16px;font-size:15px;outline:none;transition:border-color .15s var(--ease)}
+  input:focus,textarea:focus{border-color:var(--keijo)}
+  textarea{min-height:160px;resize:vertical;line-height:1.5}
+  label.f{display:block;font-size:13px;color:var(--muted);margin:0 0 8px}
+  .results{display:flex;flex-direction:column;gap:8px;margin-top:var(--s1)}
+  .res{display:flex;gap:12px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px;transition:border-color .15s var(--ease)}
+  .res:hover{border-color:var(--muted)}
+  .res.sel{border-color:var(--keijo);box-shadow:0 0 0 1px var(--keijo) inset}
+  .res .t{flex:1;min-width:0}
+  .res .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .res .t small{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  body.remote #stage,body.remote #dock,body.remote #controls,body.remote #tapbar,body.remote #startbar,body.remote #party,body.remote #scrim,body.remote #banner{display:none!important}
+  body.remote #addDrawer{width:100vw;border-left:0}
+  body.remote #addDrawer [data-close],body.remote #addNow,body.remote #histList [data-a=now]{display:none!important}
+  #remoteInfo{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 16px;margin-bottom:var(--s3)}
+  #remoteStatus{margin:0 0 8px}
+  .rq{display:flex;gap:12px;align-items:baseline;font-size:14px;padding:4px 0}
+  .rq span{color:var(--muted);min-width:72px;font-size:13px;font-variant-numeric:tabular-nums}
+  .rq b{font-weight:500}
+  #qrBox{display:flex;justify-content:center;margin:var(--s2) 0}
+  #qrBox svg{width:260px;height:260px;background:#fff;border-radius:var(--r-md);padding:12px}
+  #roomLink{word-break:break-all;text-align:center}
+  .qrmini{position:absolute;right:var(--s4);bottom:var(--s4);display:flex;align-items:center;gap:16px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 20px 12px 12px;max-width:360px;z-index:3}
+  .qrmini .qrsvg svg{width:120px;height:120px;background:#fff;border-radius:8px;padding:8px;display:block}
+  .qrmini span{font-size:15px;font-weight:600;line-height:1.35}
+  .qrmini small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:4px}
+  #qrParty{top:var(--s4);bottom:auto}
+  #reactLayer{position:fixed;inset:0;pointer-events:none;z-index:16;overflow:hidden}
+  .emo.react{font-size:56px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+  #reactBar{display:flex;gap:8px;margin-top:12px}
+  #reactBar button{flex:1;font-size:28px;padding:12px 0;border-radius:var(--r-md);background:var(--raised);border:1px solid var(--line);transition:transform .12s var(--ease)}
+  #reactBar button.pop{transform:scale(1.12)}
+  body.remote #toast{top:auto;bottom:96px;max-width:90vw;text-align:center}
+  @media (max-width:860px){.qrmini{display:none!important}}
+  .res .acts{display:flex;gap:4px;flex:none}
+  .res .acts .btn{padding:6px 12px}
+  .res .acts .btn.icon{padding:0}
+  .res img{width:96px;height:54px;object-fit:cover;border-radius:4px;flex:none}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--muted);flex:none;white-space:nowrap}
+  .badge.sync::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--keijo)}
+  .badge.mine{color:var(--ink)}
+  .badge.mine::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
+  .hint{font-size:13px;color:var(--muted);line-height:1.5;margin:var(--s1) 0 0}
+  .hint a{color:var(--keijo)}
+  .err{color:var(--cera)}
+  .chosen{font-size:14px;margin-top:var(--s1);color:var(--ink)}
+  .q{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);margin-bottom:8px}
+  .q.playing{border-color:var(--keijo)}
+  .q .num{font-size:15px;font-weight:500;color:var(--muted);width:24px;text-align:center;font-variant-numeric:tabular-nums;display:inline-flex;justify-content:center}
+  .q.playing .num{color:var(--keijo)}
+  .q .t{flex:1;min-width:0}
+  .q .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .q .t small{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .q .acts{display:flex;gap:4px}
+  .q .acts .btn{padding:0}
+  .range{width:100%;accent-color:var(--keijo)}
+  .seg{display:flex;gap:8px;flex-wrap:wrap}
+  .seg .btn.on{background:var(--keijo);color:var(--on-accent);border-color:var(--keijo)}
+
+  #party{position:fixed;inset:0;z-index:14;background:var(--surface);display:flex;align-items:center;padding:0 var(--s5);overflow:hidden}
+  #party .inner{position:relative;z-index:2;max-width:860px}
+  #party h1{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,7vw,104px);line-height:1;letter-spacing:-.03em;margin:var(--s2) 0 var(--s1);color:var(--keijo);animation:pop .5s var(--ease)}
+  #party .sub{font-size:20px;color:var(--muted);margin:0 0 var(--s4)}
+  #party .nextcard{display:inline-flex;flex-direction:column;gap:4px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s2) var(--s3);margin-bottom:var(--s3);min-width:320px}
+  #party .nextcard b{font-family:var(--font-display);font-weight:700;font-size:26px}
+  #party .nextcard span{color:var(--muted);font-size:15px}
+  #party .nextcard .label{font-size:13px}
+  #party .row2{display:flex;gap:var(--s1);align-items:center;flex-wrap:wrap}
+  #party .left{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;margin-left:var(--s1)}
+  .emo{position:absolute;bottom:-60px;font-size:44px;z-index:1;pointer-events:none;animation:rise var(--d,3.5s) ease-out forwards}
+  @keyframes rise{0%{transform:translate(0,0) rotate(0) scale(.6);opacity:0}10%{opacity:1}100%{transform:translate(var(--dx,0px),-110vh) rotate(var(--r,0deg)) scale(1.15);opacity:0}}
+  @keyframes pop{0%{transform:translateY(12px);opacity:0}100%{transform:none;opacity:1}}
+  @media (max-width:860px){#party{padding:0 var(--s2);align-items:flex-start;padding-top:96px}#party .nextcard{min-width:0;width:100%}}
+  #toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 20px;border-radius:var(--pill);font-weight:600;font-size:14px;z-index:50;transition:opacity .3s var(--ease);pointer-events:none}
+  #banner{position:fixed;top:64px;left:var(--s3);right:var(--s3);z-index:25;background:var(--cera);color:var(--maturado);border-radius:var(--r-md);padding:12px 16px;font-size:14px;line-height:1.45}
+  #banner b{font-weight:600}
+  kbd{font-family:var(--font-body);font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+
+  @media (max-width:860px){
+    :root{--lyric-size:34px}
+    #lyrics{padding:0 var(--s2)} #lines{left:var(--s2);right:var(--s2)}
+    #empty{padding:0 var(--s2)}
+    header{padding:0 var(--s2);gap:var(--s1)}
+    .brand b{font-size:22px} .brand .jp{font-size:13px}
+    #nowWrap{display:none!important}
+    #fsBtn{display:none}
+    #dock{left:var(--s2);right:var(--s2);width:auto;bottom:184px}
+    #playerBox{width:100%;height:200px}
+    #upnext{display:none}
+    #controls{left:var(--s2);right:var(--s2);bottom:var(--s2);max-width:none;justify-content:center}
+    #lyrics{margin-bottom:430px}
+    #empty h1{font-size:40px}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="stage">
+  <header>
+    <div class="brand" aria-label="Karaokeijo"><b>karao<svg class="kj" viewBox="0 0 5000 2489" role="img" aria-label="keijo"><path fill="currentColor" d="M2742 3C2762 1 2782 1 2802 4C2812 4 2823 4 2833 4C2990 4 3148 4 3305 4C3317 3 3330 1 3342 2C3384 1 3427 10 3464 31C3494 48 3521 72 3540 102C3561 133 3571 171 3571 209C3571 245 3563 281 3544 311C3526 341 3500 366 3470 384C3440 401 3406 411 3372 414C3369 415 3365 416 3362 416C3157 416 2951 416 2746 416C2743 416 2739 414 2736 414C2698 411 2660 398 2629 376C2609 363 2592 346 2577 327C2560 305 2549 279 2544 251C2538 221 2538 190 2546 160C2552 132 2566 106 2584 84C2609 54 2641 30 2678 17C2698 9 2720 4 2742 3M6 140C115 141 223 141 332 140C332 142 332 143 332 145C332 459 332 774 332 1088C414 1072 491 1038 559 992C630 944 691 881 739 811C766 769 789 725 807 679C820 644 830 607 838 570C954 570 1069 571 1185 570C1184 579 1181 587 1179 596C1156 678 1121 758 1076 831C1036 894 990 954 939 1008C886 1062 827 1112 762 1152C728 1173 691 1192 654 1207C652 1207 651 1208 650 1209C722 1229 788 1265 848 1309C913 1355 972 1411 1023 1472C1048 1502 1072 1534 1093 1567C1114 1599 1133 1633 1149 1668C1167 1707 1182 1747 1193 1788C1198 1809 1203 1830 1206 1852C1090 1852 975 1851 859 1852C850 1812 839 1773 823 1736C808 1701 789 1667 768 1635C725 1571 673 1513 612 1466C580 1441 546 1419 510 1401C455 1373 396 1355 335 1348C334 1348 333 1348 332 1348C332 1510 332 1671 332 1833C332 1839 333 1845 332 1852C223 1851 115 1851 6 1852C6 1801 6 1751 6 1700C6 1184 6 669 6 153C6 149 6 145 6 140M1604 600C1684 569 1771 554 1857 554C1910 554 1964 559 2016 570C2086 585 2155 610 2216 648C2263 676 2305 711 2339 754C2372 797 2397 846 2409 899C2415 926 2418 954 2418 981C2417 1028 2409 1076 2389 1119C2374 1150 2353 1178 2328 1203C2292 1239 2250 1268 2204 1291C2161 1313 2115 1329 2068 1343C2005 1361 1939 1372 1874 1379C1806 1386 1738 1389 1670 1387C1659 1387 1648 1387 1637 1386C1613 1384 1588 1385 1564 1384C1549 1384 1534 1382 1518 1382C1526 1417 1543 1450 1566 1477C1589 1505 1617 1530 1648 1549C1710 1586 1781 1605 1852 1608C1907 1611 1963 1604 2015 1586C2062 1571 2107 1548 2148 1519C2181 1496 2211 1470 2237 1440C2244 1432 2251 1423 2258 1414C2320 1461 2382 1508 2444 1554C2457 1564 2470 1573 2482 1583C2437 1643 2382 1696 2319 1738C2254 1783 2182 1816 2106 1837C2008 1864 1906 1873 1805 1865C1747 1861 1689 1851 1633 1833C1578 1816 1526 1793 1477 1764C1417 1727 1362 1680 1318 1626C1270 1568 1235 1501 1212 1430C1182 1338 1175 1240 1184 1145C1188 1099 1197 1054 1210 1010C1223 969 1240 930 1261 892C1296 828 1342 770 1398 723C1458 670 1528 628 1604 600M1785 819C1744 827 1705 843 1670 865C1639 884 1611 908 1587 935C1565 961 1547 990 1532 1020C1514 1060 1502 1103 1500 1146C1544 1150 1588 1152 1632 1153C1689 1154 1747 1152 1804 1147C1848 1143 1891 1136 1934 1125C1968 1116 2001 1104 2031 1086C2053 1072 2074 1055 2086 1031C2095 1017 2099 1000 2100 983C2101 965 2099 946 2093 929C2087 914 2078 900 2067 888C2045 864 2017 846 1987 833C1948 817 1905 811 1863 811C1837 811 1811 814 1785 819M4323 554C4415 553 4508 566 4594 598C4667 626 4736 667 4795 720C4822 744 4846 771 4868 800C4892 831 4913 864 4930 899C4968 974 4988 1057 4995 1141C5001 1223 4997 1306 4978 1387C4962 1451 4937 1513 4902 1569C4871 1618 4834 1662 4791 1701C4733 1753 4665 1793 4593 1821C4509 1854 4418 1868 4328 1868C4277 1868 4226 1863 4176 1852C4096 1836 4019 1804 3952 1759C3889 1717 3835 1663 3792 1601C3768 1568 3748 1532 3732 1495C3696 1413 3680 1323 3677 1233C3675 1140 3686 1047 3718 959C3745 886 3787 818 3839 760C3890 705 3951 660 4018 627C4095 588 4179 565 4265 557C4284 556 4304 555 4323 554M4306 838C4252 842 4198 860 4153 891C4125 910 4100 935 4080 963C4059 993 4042 1025 4031 1060C4016 1106 4011 1155 4010 1204C4010 1253 4015 1303 4028 1350C4038 1387 4054 1423 4076 1455C4096 1484 4121 1510 4150 1530C4180 1550 4214 1565 4248 1573C4296 1585 4347 1586 4395 1577C4432 1570 4468 1556 4501 1537C4532 1519 4560 1495 4582 1466C4605 1438 4624 1407 4637 1373C4653 1331 4661 1287 4663 1242C4666 1196 4664 1150 4655 1104C4646 1064 4633 1026 4611 991C4592 960 4569 931 4541 908C4512 885 4479 867 4445 855C4401 840 4353 834 4306 838M2600 570C2710 571 2819 570 2928 571C2929 785 2928 1000 2929 1214C2928 1426 2929 1639 2928 1851C2819 1852 2710 1851 2600 1852C2599 1840 2600 1829 2600 1817C2600 1408 2600 1000 2600 591C2600 584 2599 577 2600 570M3180 570C3289 571 3397 571 3506 570C3507 582 3506 593 3506 605C3506 1084 3506 1563 3506 2042C3505 2090 3500 2138 3486 2184C3476 2219 3461 2252 3441 2282C3422 2314 3398 2343 3371 2369C3315 2421 3243 2457 3168 2471C3120 2480 3071 2480 3022 2472C2943 2459 2868 2424 2806 2374C2826 2338 2846 2302 2867 2267C2888 2229 2909 2192 2930 2154C2934 2149 2936 2143 2940 2138C2955 2146 2970 2152 2986 2157C3011 2163 3037 2166 3063 2161C3080 2158 3096 2151 3110 2142C3135 2125 3154 2101 3165 2074C3177 2045 3180 2014 3180 1983C3180 1551 3180 1119 3180 687C3180 648 3180 609 3180 570"/></svg></b><span class="jp" lang="ja"><button data-th="coalho" title="Tema Coalho (claro)" aria-label="Tema Coalho">チ</button><button data-th="gorgonzola" title="Tema Gorgonzola (escuro)" aria-label="Tema Gorgonzola">ー</button><button data-th="keijo" title="Tema Keijo (claro)" aria-label="Tema Keijo">ズ</button></span></div>
+    <div class="now hidden" id="nowWrap"><span class="tag">no palco</span><strong id="nowTitle"></strong></div>
+    <div class="spacer"></div>
+    <button class="btn icon" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="hnav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path class="m1" d="M4 7h16"/><path class="m2" d="M4 12h16"/><path class="m3" d="M4 17h16"/></svg></button>
+    <nav class="hnav" id="hnav" aria-label="Menu">
+    <button class="btn primary" id="addBtn">+ Música</button>
+    <button class="btn" id="phoneBtn" title="Mandar músicas pelo celular"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>Celular</button>
+    <button class="btn" id="queueBtn">Fila <span id="qCount" class="count">0</span></button>
+    <button class="btn icon" id="settingsBtn" title="Ajustes" aria-label="Ajustes">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="mlabel">Ajustes</span>
+    </button>
+    <button class="btn icon" id="fsBtn" title="Tela cheia" aria-label="Tela cheia">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+    </button>
+    </nav>
+  </header>
+
+  <div id="lyrics">
+    <div id="lines"></div>
+    <div id="countdown" class="hidden"><i></i><i></i><i></i></div>
+  </div>
+
+  <div id="empty">
+    <div>
+      <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
+      <h1 id="emptyH">Solta a voz<br><em>A letra é com a gente</em></h1>
+      <div class="wstats hidden" id="wStats"></div>
+      <p id="emptyP">Digite o nome da música e chame quem vai cantar. A gente acha a versão karaokê no YouTube e a letra aparece sincronizada, linha por linha, na tela toda.</p>
+      <div class="hero-acts"><button class="btn primary lg" id="emptyAdd">+ Adicionar a primeira música</button><button class="btn lg" id="tourBtn"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Como funciona</button></div>
+    </div>
+    <div class="side">
+      <div class="preview" aria-hidden="true"><div class="pl">A sala apaga a luz</div><div class="pl on"><em>a letra </em><i>acende</i> no tempo</div><div class="pl">palavra por palavra</div><div class="pl">todo mundo canta junto</div><div class="pbar"><span></span></div><div class="pfoot"><span>cantando: <b>Ana e Léo</b></span><span>próxima: Bia</span></div></div>
+      <div class="qrmini hidden" id="qrMini"><div class="qrsvg"></div><span>Aponte a câmera e mande sua música<small>Cada um escolhe a sua pelo celular</small></span></div>
+    </div>
+  </div>
+</div>
+
+<div id="controls" class="hidden">
+  <div class="group">
+    <button class="btn" id="playBtn" title="Tocar/pausar (P)"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Tocar</button>
+    <button class="btn icon" id="restartBtn" title="Voltar ao início" aria-label="Voltar ao início"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    <button class="btn" id="nextBtn" title="Próxima da fila (N)">Próxima<svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5v14l10-7z"/><path d="M19 5v14"/></svg></button>
+  </div>
+  <div class="group" title="Letra atrasada? Use −. Adiantada? Use +. Teclas [ e ]">
+    <button class="btn sm" data-off="-1">−1s</button>
+    <button class="btn sm" data-off="-0.2">−</button>
+    <span class="offset">tempo <b id="offVal">0,0s</b></span>
+    <button class="btn sm" data-off="0.2">+</button>
+    <button class="btn sm" data-off="1">+1s</button>
+  </div>
+  <div class="group">
+    <button class="btn sm" id="markStart" title="Toque quando a primeira palavra for cantada (S)">Marcar início</button>
+    <button class="btn sm" id="resyncBtn" title="Marcar os tempos da letra você mesmo">Sincronizar eu mesmo</button>
+  </div>
+</div>
+
+<div id="tapbar" class="hidden">
+  <button class="btn ghost" id="tapCancel">Cancelar</button>
+  <button class="btn primary" id="tapBtn">Marcar linha <kbd>espaço</kbd></button>
+  <button class="btn ghost" id="tapUndo">Desfazer</button>
+</div>
+
+<div id="startbar" class="hidden">
+  <button class="btn ghost" id="startCancel">Cancelar</button>
+  <button class="btn primary" id="startBtn">Começou <kbd>espaço</kbd></button>
+</div>
+
+<div id="dock" class="hidden">
+  <div class="who"><span>cantando: <b id="singerName">—</b></span><span id="lyricSrc"></span></div>
+  <div id="playerBox"><div id="player"></div></div>
+  <div id="upnext"></div>
+</div>
+
+<!-- Add song drawer -->
+<div class="scrim hidden" id="scrim"></div>
+<aside class="drawer hidden" id="addDrawer" aria-label="Adicionar música">
+  <header><h2>Adicionar música</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+  <div class="body">
+    <div id="remoteInfo" class="hidden"><p id="remoteStatus" class="hint"></p><div id="remoteNow"></div>
+      <div id="reactBar" class="hidden"><button data-r="👏">👏</button><button data-r="🔥">🔥</button><button data-r="😂">😂</button><button data-r="❤️">❤️</button><button data-r="🧀">🧀</button></div>
+    </div>
+    <div class="step">
+      <h3><span class="n">1</span> Qual música?</h3>
+      <div class="row">
+        <input type="text" id="fQuery" placeholder="Nome da música">
+        <button class="btn primary" id="searchBtn" style="flex:none">Buscar</button>
+      </div>
+      <p class="hint">Buscamos a letra e o vídeo ao mesmo tempo. No YouTube, a busca já inclui “karaoke” ou “instrumental” pra achar a versão sem voz.</p>
+    </div>
+
+    <div class="step hidden" id="histStep">
+      <h3>Já cantadas <span class="hint" style="margin:0;font-weight:400">· já vêm sincronizadas</span></h3>
+      <div id="histList" class="results"></div>
+    </div>
+
+    <div class="step" id="lyricStep">
+      <h3><span class="n">2</span> A letra</h3>
+      <div id="lyricResults" class="results"><p class="hint">Faça uma busca acima</p></div>
+      <div id="pasteWrap" class="hidden" style="margin-top:12px">
+        <label class="f">Cole a letra (uma linha por verso). Depois você marca os tempos tocando na tela.</label>
+        <textarea id="fPaste" placeholder="Cole a letra aqui…"></textarea>
+      </div>
+      <button class="btn ghost sm" id="togglePaste" style="margin-top:8px">Não achou? Colar a letra</button>
+      <p class="hint">Letras do <a href="https://lrclib.net" target="_blank" rel="noopener">LRCLIB</a>, base aberta mantida pela comunidade.</p>
+    </div>
+
+    <div class="step">
+      <h3><span class="n">3</span> O vídeo</h3>
+      <div id="ytResults" class="results"><p class="hint">Faça uma busca acima</p></div>
+      <div class="chosen" id="videoChosen"></div>
+      <div id="linkWrap" class="hidden" style="margin-top:12px"><input type="url" id="fVideo" placeholder="Cole o link do vídeo do YouTube"></div>
+      <button class="btn ghost sm" id="toggleLink" style="margin-top:8px">Prefere colar um link?</button>
+    </div>
+
+    <div class="step">
+      <h3><span class="n">4</span> Quem canta</h3>
+      <input type="text" id="fSinger" placeholder="Nome de quem vai cantar">
+      <input type="text" id="fSinger2" placeholder="Dueto com… (opcional)" style="margin-top:8px">
+      <p class="hint">No dueto, cada um ganha uma cor e os versos se alternam. O refrão fica pros dois.</p>
+    </div>
+    <p class="hint err" id="addErr"></p>
+  </div>
+  <div class="foot">
+    <button class="btn" id="addQueue">Pôr na fila</button>
+    <button class="btn primary" id="addNow">Cantar agora</button>
+  </div>
+</aside>
+
+<!-- Phone drawer -->
+<aside class="drawer hidden" id="phoneDrawer" aria-label="Celular">
+  <header><h2>Mandar pelo celular</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+  <div class="body">
+    <p class="hint" style="font-size:15px">Aponte a câmera do celular pro código. Cada pessoa busca a música, coloca o nome e manda direto pra fila da TV.</p>
+    <div id="qrBox"></div>
+    <p class="hint" id="roomLink"></p>
+    <p class="chosen" id="phoneStatus" style="text-align:center"></p>
+    <p class="hint">Funciona em qualquer rede, Wi-Fi ou 4G. Deixe esta página aberta na TV enquanto os celulares mandam músicas.</p>
+  </div>
+  <div class="foot"><button class="btn ghost" id="newRoom">Gerar outro código</button></div>
+</aside>
+
+<!-- Queue drawer -->
+<aside class="drawer hidden" id="queueDrawer" aria-label="Fila">
+  <header><h2>Fila da noite</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+  <div class="body" id="queueList"></div>
+  <div class="foot">
+    <button class="btn ghost" id="clearQueue">Limpar fila</button>
+    <button class="btn primary" id="queueAdd">+ Música</button>
+  </div>
+</aside>
+
+<!-- Settings drawer -->
+<div id="tour" class="hidden" role="dialog" aria-modal="true" aria-label="Tutorial"><div class="shade"></div><div class="hole"></div><div class="card"><div class="stepn" id="tourN"></div><h2 id="tourT"></h2><p id="tourP"></p><div class="row"><div class="dots" id="tourDots"></div><button class="skip" id="tourSkip">Pular</button><button class="btn" id="tourBack">Voltar</button><button class="btn primary" id="tourNext">Próximo</button></div></div></div>
+
+<aside class="drawer hidden" id="setDrawer" aria-label="Ajustes">
+  <header><h2>Ajustes</h2><div class="spacer"></div><button class="btn icon ghost" data-close aria-label="Fechar"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+  <div class="body">
+    <div class="step">
+      <h3>Tamanho da letra</h3>
+      <input type="range" class="range" id="sizeRange" min="28" max="96" step="2">
+    </div>
+    <div class="step">
+      <h3>Busca de vídeos no YouTube (opcional)</h3>
+      <label class="f">Chave da API do YouTube Data v3</label>
+      <input type="password" id="ytKey" placeholder="AIza…">
+      <p class="hint">Com a chave, o app busca os vídeos sozinho. Sem ela, é só colar o link. A chave fica salva só neste navegador.</p>
+    </div>
+    <div class="step">
+      <h3>Efeitos visuais</h3>
+      <label style="display:flex;gap:10px;align-items:center;font-size:15px"><input type="checkbox" id="fxToggle" style="accent-color:var(--keijo);width:18px;height:18px"> Desfoque nas outras linhas da letra</label>
+      <p class="hint">Se a TV ou o computador travar durante a música, desligue.</p>
+    </div>
+    <div class="step">
+      <h3>Tutorial</h3>
+      <button class="btn" id="tourAgain"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Ver o tutorial de novo</button>
+    </div>
+    <div class="step">
+      <h3>Atalhos</h3>
+      <p class="hint"><kbd>P</kbd> tocar/pausar · <kbd>N</kbd> próxima · <kbd>[</kbd> <kbd>]</kbd> ajustar tempo · <kbd>F</kbd> tela cheia · <kbd>S</kbd> marcar início · <kbd>espaço</kbd> marca linha no modo sincronizar</p>
+    </div>
+    <div class="step">
+      <h3>Letras que você sincronizou</h3>
+      <p class="hint" id="mineCount"></p>
+      <button class="btn sm" id="copyLrc">Copiar letra sincronizada da música atual (.lrc)</button>
+    </div>
+  </div>
+</aside>
+
+<div id="party" class="hidden" aria-live="polite">
+  <div class="qrmini hidden" id="qrParty"><div class="qrsvg"></div><span>Quer cantar também?<small>Aponte a câmera e entre na fila</small></span></div>
+  <div class="inner">
+    <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
+    <h1 id="partyMsg"></h1>
+    <p class="sub" id="partySub"></p>
+    <div class="nextcard" id="partyNext"><span class="label">Próximo</span><b id="partyNextTitle"></b><span id="partyNextWho"></span></div>
+    <div class="row2">
+      <button class="btn primary" id="partySkip"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Começar agora</button>
+      <button class="btn" id="partyAdd">+ Música</button>
+      <span class="left" id="partyLeft"></span>
+    </div>
+  </div>
+</div>
+
+<div id="intro" class="hidden" title="Clique para começar já">
+  <div class="inner">
+    <span class="tag">no palco</span>
+    <div class="bars"><span style="width:96px"></span><span style="width:56px"></span><span style="width:24px"></span></div>
+    <h1 id="introName"></h1>
+    <p class="sub" id="introSong"></p>
+  </div>
+  <div class="prog"></div>
+</div>
+<div id="reactLayer" aria-hidden="true"></div>
+<div id="toast" style="opacity:0"></div>
+<div id="banner" class="hidden"></div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const IC = {"phone": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><path d=\"M12 18h.01\"/></svg>", "play": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 4.5v15l12-7.5z\"/></svg>", "pause": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 5v14M16 5v14\"/></svg>", "next": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 5v14l10-7z\"/><path d=\"M19 5v14\"/></svg>", "restart": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>", "x": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>", "up": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg>", "help": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg>", "music": "<svg class=\"ic\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></svg>"};
+
+  const IDB_NAME = 'KaraokeijoDB', IDB_STORE = 'kv';
+  let idbPromise = null;
+  const memCache = new Map();
+
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('kk:')) {
+        try { memCache.set(k.slice(3), JSON.parse(localStorage.getItem(k))); } catch {}
+      }
+    }
+  } catch {}
+
+  function getIDB() {
+    if (idbPromise) return idbPromise;
+    idbPromise = new Promise((res, rej) => {
+      if (!window.indexedDB) return rej(new Error('No IDB'));
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+      };
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+    return idbPromise;
+  }
+
+  const store = {
+    get(k, d) {
+      return memCache.has(k) ? memCache.get(k) : d;
+    },
+    set(k, v) {
+      memCache.set(k, v);
+      try { localStorage.setItem('kk:' + k, JSON.stringify(v)); } catch {}
+      getIDB().then(db => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(v, k);
+      }).catch(() => {});
+    },
+    keys(prefix) {
+      return [...memCache.keys()].filter(k => k.startsWith(prefix));
+    },
+    async hydrateFromIDB() {
+      try {
+        const db = await getIDB();
+        return new Promise(res => {
+          const tx = db.transaction(IDB_STORE, 'readonly');
+          const st = tx.objectStore(IDB_STORE);
+          const reqK = st.getAllKeys(), reqV = st.getAll();
+          tx.oncomplete = () => {
+            const ks = reqK.result || [], vs = reqV.result || [];
+            ks.forEach((k, i) => memCache.set(k, vs[i]));
+            res(true);
+          };
+          tx.onerror = () => res(false);
+        });
+      } catch { return false; }
+    }
+  };
+
+  const DEFAULT_YT_KEY = 'AIzaSyBDnKVwUid9iw23mI1CuLvmPuQrAhoZ_2c';
+  const getKey = () => store.get('ytkey', null) || DEFAULT_YT_KEY;
+
+  let wakeLock = null;
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator && document.visibilityState === 'visible') {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      }
+    } catch {}
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') requestWakeLock();
+  });
+  document.addEventListener('pointerdown', () => { if (!wakeLock) requestWakeLock(); }, { passive: true });
+  requestWakeLock();
+
+  const STAGE = Object.freeze({
+    EMPTY: 'EMPTY',
+    WAITING: 'WAITING',
+    INTRO: 'INTRO',
+    PLAYING: 'PLAYING',
+    TAP_SYNC: 'TAP_SYNC',
+    START_MARK: 'START_MARK',
+    PARTY: 'PARTY'
+  });
+  let stageState = STAGE.EMPTY;
+  function setStage(nextState) {
+    stageState = nextState;
+    document.body.dataset.stage = nextState;
+  }
+
+  let queue = store.get('queue', []);
+  let current = store.get('current', null);
+  let lines = [];
+  let offset = 0;
+  let player = null, playerReady = false, pendingVideo = null, waiting = false;
+  let curIdx = -2;
+  let tap = null;
+  let startMode = false, autoPending = false;
+  let history = store.get('history', []);
+  const draft = { lyric: null, video: null };
+
+  store.hydrateFromIDB().then(() => {
+    const idbQueue = store.get('queue', []);
+    const idbHist = store.get('history', []);
+    if (!queue.length && idbQueue.length) { queue = idbQueue; saveQueue(); }
+    if (!history.length && idbHist.length) { history = idbHist; }
+  });
+
+  let toastT;
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => t.style.opacity = 0, 2200); }
+
+  if (location.protocol === 'file:') {
+    const b = $('#banner');
+    b.innerHTML = '<b>Abra este app por um link (http/https).</b> Aberto direto do computador, o YouTube recusa tocar o vídeo. Hospede no GitHub Pages ou rode um servidor local.';
+    b.classList.remove('hidden');
+  }
+
+  function parseLRC(src) {
+    const out = [];
+    const re = /\[(\d{1,3}):(\d{1,2}(?:[.:]\d{1,3})?)\]/g;
+    for (const raw of String(src || '').split(/\r?\n/)) {
+      const stamps = []; let m; re.lastIndex = 0;
+      while ((m = re.exec(raw))) stamps.push(parseInt(m[1], 10) * 60 + parseFloat(m[2].replace(':', '.')));
+      if (!stamps.length) continue;
+      const body = raw.replace(re, '');
+      const reW = /<(\d{1,3}):(\d{1,2}(?:[.:]\d{1,3})?)>/g;
+      let segs = null, end = null;
+      if (/<\d{1,3}:\d/.test(body)) {
+        segs = []; let mm, last = null, lastIdx = 0;
+        while ((mm = reW.exec(body))) {
+          const tt = parseInt(mm[1], 10) * 60 + parseFloat(mm[2].replace(':', '.'));
+          if (last) last.text = body.slice(lastIdx, mm.index);
+          last = { t: tt, text: '' }; segs.push(last); lastIdx = reW.lastIndex;
+        }
+        if (last) last.text = body.slice(lastIdx);
+        if (segs.length && !segs[segs.length - 1].text.trim()) end = segs.pop().t;
+        segs = segs.filter(s => s.text);
+        if (segs.length) { segs[0].text = segs[0].text.trimStart(); segs[segs.length - 1].text = segs[segs.length - 1].text.trimEnd(); } else segs = null;
+      }
+      const text = (segs ? segs.map(s => s.text).join('') : body).trim();
+      for (const t of stamps) out.push({ t, text, segs: segs && stamps.length === 1 ? segs : null, end });
+    }
+    out.sort((a, b) => a.t - b.t);
+    const res = [];
+    for (let i = 0; i < out.length; i++) {
+      const l = out[i];
+      if (!l.text) { res.push({ t: l.t, text: '♪', gap: true }); continue; }
+      const prev = res[res.length - 1];
+      if (prev && !prev.gap && l.t - prev.t > 12) res.push({ t: prev.t + Math.min(6, (l.t - prev.t) / 2), text: '♪', gap: true });
+      res.push(l);
+    }
+    for (let i = 0; i < res.length; i++) {
+      const l = res[i]; if (l.gap) continue;
+      const next = res[i + 1];
+      l.end = l.end || (next ? next.t : l.t + 4);
+      if (l.segs) continue;
+      const chunks = l.text.match(/\S+\s*/g) || [];
+      const dur = Math.min(10, (l.end - l.t) * 0.85);
+      const total = chunks.reduce((a, c) => a + c.trim().length + 1, 0) || 1;
+      let acc = 0;
+      l.segs = chunks.map(c => { const s = { t: l.t + dur * acc / total, text: c }; acc += c.trim().length + 1; return s; });
+      l.segsEnd = l.t + dur; l.estimated = true;
+    }
+    return res;
+  }
+  function fmtTime(s) { const m = Math.floor(s / 60), r = s - m * 60; return `[${String(m).padStart(2, '0')}:${r.toFixed(2).padStart(5, '0')}]`; }
+  function toLRC(ls) { return ls.filter(l => !l.gap).map(l => fmtTime(l.t) + ' ' + l.text).join('\n'); }
+  const fmtDur = s => s ? `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}` : '';
+
+  const lyricKey = song => song.lrclibId ? 'lrclib-' + song.lrclibId : 'paste-' + hash((song.artist + '|' + song.title).toLowerCase());
+  function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return (h >>> 0).toString(36); }
+  const mySync = song => store.get('sync:' + lyricKey(song), null);
+  const offKey = song => 'off:' + song.videoId + ':' + lyricKey(song);
+
+  function ytId(url) {
+    if (!url) return null;
+    url = url.trim();
+    if (/^[\w-]{11}$/.test(url)) return url;
+    const m = url.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/|\/live\/)([\w-]{11})/);
+    return m ? m[1] : null;
+  }
+  window.onYouTubeIframeAPIReady = () => {
+    player = new YT.Player('player', {
+      width: '356', height: '200',
+      playerVars: { rel: 0, playsinline: 1, modestbranding: 1 },
+      events: {
+        onReady: () => { playerReady = true; if (pendingVideo) { loadVideo(pendingVideo.id, pendingVideo.auto); pendingVideo = null; } },
+        onStateChange: e => {
+          const playing = e.data === YT.PlayerState.PLAYING;
+          $('#playBtn').innerHTML = playing ? IC.pause + 'Pausar' : IC.play + 'Tocar';
+          if (e.data === YT.PlayerState.ENDED && !tap && !startMode) celebrate();
+          if (playing) autoAlign();
+          if (playing && current && !current.counted) { current.counted = true; store.set('current', current); addHistory(current); }
+        },
+        onError: async e => {
+          const isEmbedBlocked = e.data === 101 || e.data === 150 || e.data === 100;
+          if (isEmbedBlocked && current && !current._triedFallback) {
+            current._triedFallback = true;
+            toast('Vídeo bloqueado pelo dono. Buscando versão alternativa…');
+            try {
+              const key = getKey();
+              const q = `${current.title} ${current.artist || ''} karaoke|instrumental`.trim();
+              const p = new URLSearchParams({ part: 'snippet', type: 'video', videoEmbeddable: 'true', maxResults: '6', q, key });
+              const data = await (await fetch('https://www.googleapis.com/youtube/v3/search?' + p)).json();
+              const alt = (data.items || []).map(it => it.id?.videoId).find(id => id && id !== current.videoId);
+              if (alt) {
+                current.videoId = alt;
+                store.set('current', current);
+                loadVideo(alt, true);
+                toast('Tocando vídeo alternativo automaticamente');
+                return;
+              }
+            } catch {}
+          }
+          const msg = { 2: 'Link de vídeo inválido.', 5: 'O vídeo não pode tocar aqui.', 100: 'Vídeo removido ou privado.', 101: 'O dono do vídeo não permite tocar fora do YouTube.', 150: 'O dono do vídeo não permite tocar fora do YouTube.', 153: 'O YouTube recusou o vídeo.' }[e.data] || 'Erro ao tocar o vídeo.';
+          toast(msg);
+        }
+      }
+    });
+  };
+  (function loadYT() { if (new URLSearchParams(location.search).get('sala')) return; const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); })();
+  function loadVideo(id, auto) {
+    if (!playerReady) { pendingVideo = { id, auto }; return; }
+    auto ? player.loadVideoById(id) : player.cueVideoById(id);
+  }
+  const now = () => (playerReady && player.getCurrentTime) ? player.getCurrentTime() : 0;
+
+  const whoName = s => s ? (s.singer2 ? `${s.singer || '—'} e ${s.singer2}` : (s.singer || '')) : '';
+  function assignDuet(list) {
+    const cnt = {}; list.forEach(l => { if (!l.gap) { const k = norm(l.text).replace(/[^a-z0-9]/g, ''); cnt[k] = (cnt[k] || 0) + 1; } });
+    let turn = 'a', chunk = 0, prev = null;
+    list.forEach(l => {
+      if (l.gap) { l.who = null; return; }
+      if (cnt[norm(l.text).replace(/[^a-z0-9]/g, '')] >= 2) { l.who = 'both'; if (chunk > 0) { turn = turn === 'a' ? 'b' : 'a'; chunk = 0; } prev = 'both'; return; }
+      l.who = turn; prev = turn;
+      if (++chunk === 2) { turn = turn === 'a' ? 'b' : 'a'; chunk = 0; }
+    });
+  }
+  function renderLines(list, tapMode) {
+    const box = $('#lines'); box.innerHTML = '';
+    const duet = !tapMode && current && current.singer2;
+    if (duet) assignDuet(list); else list.forEach(l => { l.who = null; });
+    const COL = { a: 'var(--keijo)', b: 'var(--duet-b)', both: 'var(--cera)' };
+    const LBL = duet ? { a: current.singer || 'Voz 1', b: current.singer2, both: 'Juntos' } : {};
+    let prevWho = null;
+    list.forEach((l, i) => {
+      const d = document.createElement('div');
+      d.className = 'ln' + (l.gap ? ' gap' : '');
+      if (l.who) { d.style.setProperty('--hl', COL[l.who]); if (l.who !== prevWho) { d.classList.add('who-start'); d.dataset.who = LBL[l.who]; } prevWho = l.who; }
+      if (l.segs && !tapMode) l.segs.forEach(s => { const w = document.createElement('span'); w.className = 'w'; w.textContent = s.text; d.appendChild(w); });
+      else d.textContent = l.text || '♪';
+      d.dataset.i = i;
+      box.appendChild(d);
+    });
+    curIdx = -2;
+    $('#lines').style.transform = 'translateY(30vh)';
+    if (tapMode) markTap();
+  }
+  function centerOn(i) {
+    const el = $('#lines').children[Math.max(0, i)];
+    if (!el) return;
+    const h = $('#lyrics').clientHeight;
+    const y = Math.round(h * 0.36 - el.offsetTop - el.offsetHeight / 2);
+    $('#lines').style.transform = `translate3d(0, ${y}px, 0)`;
+  }
+  function findIdx(t) {
+    let lo = 0, hi = lines.length - 1, ans = -1;
+    while (lo <= hi) { const mid = (lo + hi) >> 1; if (lines[mid].t <= t) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
+    return ans;
+  }
+  let progLast = 0;
+  function updProgress() {
+    const ts = performance.now(); if (ts - progLast < 250) return; progLast = ts;
+    let f = 0;
+    try { if (current && playerReady && player.getDuration) { const d = player.getDuration(); if (d > 0) f = Math.min(1, now() / d); } } catch {}
+    $('#progress').style.width = (waiting ? 0 : f * 100) + '%';
+  }
+  function tick() {
+    requestAnimationFrame(tick);
+    updProgress();
+    if (tap || startMode || !lines.length || !current) return;
+    const t = now() + offset;
+    const i = findIdx(t);
+    const els = $('#lines').children;
+    if (i !== curIdx) {
+      if (curIdx === -2 || Math.abs(i - curIdx) > 1) {
+        for (let k = 0; k < els.length; k++) {
+          els[k].classList.toggle('past', k < i);
+          els[k].classList.toggle('cur', k === i);
+          els[k].classList.toggle('next', k === i + 1);
+        }
+      } else {
+        if (curIdx >= 0 && els[curIdx]) { els[curIdx].classList.remove('cur'); els[curIdx].classList.add('past'); }
+        if (els[curIdx + 1]) els[curIdx + 1].classList.remove('next');
+        if (i >= 0 && els[i]) { els[i].classList.remove('past', 'next'); els[i].classList.add('cur'); }
+        if (els[i + 1]) els[i + 1].classList.add('next');
+      }
+      centerOn(i < 0 ? 0 : i);
+      curIdx = i;
+    }
+    if (i >= 0 && els[i] && lines[i].segs) {
+      const l = lines[i], sp = els[i].children, last = l.segsEnd || l.end;
+      for (let k = 0; k < sp.length; k++) {
+        const st = l.segs[k].t, en = l.segs[k + 1] ? l.segs[k + 1].t : last;
+        const on = t >= en, nw = !on && t >= st;
+        sp[k].classList.toggle('w-on', on); sp[k].classList.toggle('w-now', nw);
+        if (nw) sp[k].style.setProperty('--wp', ((t - st) / Math.max(0.05, en - st)).toFixed(3));
+      }
+    }
+    const cd = $('#countdown');
+    let j = i + 1; while (j < lines.length && lines[j].gap) j++;
+    let p = j - 1; while (p >= 0 && lines[p].gap) p--;
+    const nxt = lines[j], prev = p >= 0 ? lines[p] : null;
+    const pause = nxt ? nxt.t - (prev ? (prev.segsEnd || prev.end || prev.t) : 0) : 0;
+    const until = nxt ? nxt.t - t : 99;
+    const sungNow = i >= 0 && !lines[i].gap && t < (lines[i].segsEnd || lines[i].end || 0);
+    if (nxt && pause >= 4 && until > 0 && until <= 3.2 && !sungNow && now() > 0) {
+      const el = els[j];
+      if (el) {
+        const box = $('#lyrics').getBoundingClientRect(), r = el.getBoundingClientRect();
+        cd.style.top = Math.max(8, r.top - box.top - cd.offsetHeight - 6) + 'px';
+      }
+      cd.classList.remove('hidden');
+      for (let k = p + 1; k < j; k++) els[k] && els[k].classList.add('cd-host');
+      const n = Math.ceil(until);
+      $$('i', cd).forEach((d, k) => d.classList.toggle('on', k < Math.min(3, n)));
+    } else if (!cd.classList.contains('hidden')) { cd.classList.add('hidden'); $$('#lines .cd-host').forEach(e => e.classList.remove('cd-host')); }
+  }
+  requestAnimationFrame(tick);
+
+  function startTap(texts) {
+    if (!current) return;
+    tap = { texts, times: [], i: 0 };
+    lines = texts.map(text => ({ t: 0, text }));
+    renderLines(lines, true);
+    $('#tapbar').classList.remove('hidden');
+    $('#controls').classList.add('hidden');
+    $('#countdown').classList.add('hidden');
+    if (playerReady) { player.seekTo(0, true); player.playVideo(); }
+    toast('Toque “Marcar linha” no começo de cada verso');
+  }
+  function markTap() {
+    const els = $('#lines').children;
+    for (let k = 0; k < els.length; k++) {
+      els[k].classList.remove('cur', 'past', 'next');
+      els[k].classList.toggle('tapped', k < tap.i);
+      els[k].classList.toggle('tap-target', k === tap.i);
+    }
+    centerOn(tap.i);
+  }
+  function tapMark() {
+    if (!tap) return;
+    tap.times[tap.i] = now();
+    tap.i++;
+    if (tap.i >= tap.texts.length) return finishTap();
+    markTap();
+  }
+  function tapUndo() { if (!tap || tap.i === 0) return; tap.i--; tap.times.length = tap.i; markTap(); if (playerReady) player.seekTo(Math.max(0, (tap.times[tap.i - 1] || 0)), true); }
+  function finishTap() {
+    const res = tap.texts.map((text, k) => ({ t: tap.times[k], text }));
+    const lrc = toLRC(res);
+    store.set('sync:' + lyricKey(current), lrc);
+    current.lrc = lrc; current.mine = true;
+    store.set('current', current);
+    tap = null;
+    $('#tapbar').classList.add('hidden');
+    $('#controls').classList.remove('hidden');
+    lines = parseLRC(lrc); offset = 0; store.set(offKey(current), 0); showOffset();
+    renderLines(lines);
+    updateMeta();
+    toast('Letra sincronizada e salva');
+    if (playerReady) player.seekTo(0, true);
+  }
+  function cancelTap() {
+    tap = null;
+    $('#tapbar').classList.add('hidden');
+    $('#controls').classList.remove('hidden');
+    applyLyrics();
+  }
+
+  function applyLyrics() {
+    const lrc = mySync(current) || current.lrc;
+    if (lrc) { lines = parseLRC(lrc); renderLines(lines); }
+    else { lines = []; $('#lines').innerHTML = ''; }
+  }
+  function play(song, auto = true) {
+    current = song; store.set('current', current);
+    tap = null; $('#tapbar').classList.add('hidden');
+    if (partyOn) endParty(false);
+    if (waiting) leaveWaiting();
+    $('#empty').classList.add('hidden');
+    $('#controls').classList.remove('hidden');
+    $('#dock').classList.remove('hidden');
+    
+    // ----------------------------------------------------
+    // CÁLCULO AUTOMÁTICO DE OFFSET POR DIFERENÇA DE DURAÇÃO
+    // ----------------------------------------------------
+    const saved = store.get(offKey(song), null);
+    if (saved !== null) {
+      offset = saved;
+      autoPending = false;
+    } else if (song.duration && song.videoDur) {
+      const diff = song.videoDur - song.duration;
+      if (diff > 1 && diff <= 45) {
+        offset = -Math.round(diff * 10) / 10;
+        autoPending = false;
+      } else {
+        offset = 0;
+        autoPending = !!song.duration;
+      }
+    } else {
+      offset = 0;
+      autoPending = !!song.duration;
+    }
+    showOffset();
+    
+    endStart(true);
+    const hasLyr = !!(mySync(song) || song.lrc);
+    if (auto && hasLyr && !REMOTE) {
+      loadVideo(song.videoId, false);
+      showIntro(song, () => { if (current !== song) return; if (playerReady) player.playVideo(); else if (pendingVideo) pendingVideo.auto = true; });
+    } else { hideIntro(); loadVideo(song.videoId, auto); }
+    applyLyrics();
+    updateMeta();
+    if (!mySync(song) && !song.lrc) {
+      const texts = plainTexts(song);
+      if (texts.length) setTimeout(() => startTap(texts), 300);
+      else toast('Essa música está sem letra. Adicione de novo colando a letra.');
+    }
+  }
+  function plainTexts(song) { return String(song.plain || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean); }
+  function updateMeta() {
+    $('#nowWrap').classList.toggle('hidden', !current);
+    if (!current) return;
+    $('#nowTitle').textContent = `${current.title} · ${current.artist}`;
+    $('#singerName').textContent = whoName(current) || '—';
+    $('#lyricSrc').innerHTML = mySync(current) ? '<span class="badge mine">sincronizada por você</span>' : (current.lrc ? (lines.some(l => l.segs && !l.estimated) ? '<span class="badge sync">palavra por palavra</span>' : 'letra: LRCLIB') : '');
+    const n = queue[0];
+    $('#upnext').textContent = n ? `próximo: ${whoName(n) || '—'} · ${n.title}` : 'fila vazia';
+    $('#qCount').textContent = queue.length;
+    broadcastState();
+  }
+  function next(auto) {
+    if (!queue.length) { if (!auto) toast('A fila está vazia'); return; }
+    const s = queue.shift(); saveQueue(); play(s, true);
+  }
+  function saveQueue() { store.set('queue', queue); $('#qCount').textContent = queue.length; renderQueue(); updateMetaSafe(); broadcastState(); }
+  function updateMetaSafe() { if (current) updateMeta(); else $('#qCount').textContent = queue.length; }
+
+  function autoAlign() {
+    if (!autoPending || !current || !playerReady) return;
+    const vd = player.getDuration ? player.getDuration() : 0;
+    if (!(vd > 0)) return;
+    autoPending = false;
+    const d = vd - current.duration;
+    if (Math.abs(d) >= 1 && Math.abs(d) <= 20) {
+      offset = -Math.round(d * 10) / 10; showOffset(); curIdx = -2;
+      toast(`Início ajustado automaticamente (${$('#offVal').textContent}). Não bateu? Toque “Marcar início”.`);
+    }
+  }
+  const firstSungIdx = () => lines.findIndex(l => !l.gap);
+  function startMark() {
+    if (!current || tap) return;
+    const i = firstSungIdx(); if (i < 0) return toast('Sem letra sincronizada');
+    startMode = true;
+    $('#startbar').classList.remove('hidden'); $('#controls').classList.add('hidden'); $('#countdown').classList.add('hidden');
+    const els = $('#lines').children;
+    for (let k = 0; k < els.length; k++) { els[k].classList.remove('cur', 'past', 'next'); els[k].classList.toggle('tap-target', k === i); }
+    centerOn(i);
+    if (playerReady) { player.seekTo(0, true); player.playVideo(); }
+    toast('Toque “Começou” quando essa primeira linha for cantada');
+  }
+  function startHit() {
+    if (!startMode) return;
+    const f = lines[firstSungIdx()];
+    offset = Math.round((f.t - now()) * 10) / 10; showOffset();
+    store.set(offKey(current), offset); autoPending = false;
+    endStart();
+    toast(`Sincronizado (${$('#offVal').textContent}). Fica salvo pra este vídeo.`);
+  }
+  function endStart(silent) {
+    startMode = false;
+    $('#startbar').classList.add('hidden');
+    if (!silent && !tap) $('#controls').classList.remove('hidden');
+    $$('#lines .tap-target').forEach(e => e.classList.remove('tap-target'));
+    curIdx = -2;
+  }
+
+  function showOffset() { $('#offVal').textContent = (offset > 0 ? '+' : '') + offset.toFixed(1).replace('.', ',') + 's'; }
+  function nudge(d) { autoPending = false; offset = Math.round((offset + d) * 10) / 10; showOffset(); if (current) store.set(offKey(current), offset); curIdx = -2; }
+  $$('[data-off]').forEach(b => b.onclick = () => nudge(parseFloat(b.dataset.off)));
+
+  function openDrawer(id) { closeDrawers(); $('#scrim').classList.remove('hidden'); $(id).classList.remove('hidden'); }
+  function closeDrawers() { if (REMOTE) return; $('#scrim').classList.add('hidden'); $$('.drawer').forEach(d => d.classList.add('hidden')); }
+  $('#scrim').onclick = closeDrawers;
+  const hdr = document.querySelector('#stage > header') || document.querySelector('header');
+  function setMenu(open) { hdr.classList.toggle('menu-open', open); $('#menuBtn').setAttribute('aria-expanded', open); }
+  $('#menuBtn').onclick = e => { e.stopPropagation(); setMenu(!hdr.classList.contains('menu-open')); };
+  $('#hnav').addEventListener('click', e => { if (e.target.closest('button')) setMenu(false); });
+  document.addEventListener('click', e => { if (hdr.classList.contains('menu-open') && !e.target.closest('#hnav,#menuBtn')) setMenu(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && hdr.classList.contains('menu-open')) setMenu(false); });
+  $$('[data-close]').forEach(b => b.onclick = closeDrawers);
+
+  function openAdd() {
+    draft.lyric = null; draft.video = null;
+    $('#lyricResults').innerHTML = '<p class="hint">Faça uma busca acima</p>';
+    $('#ytResults').innerHTML = '<p class="hint">Faça uma busca acima</p>';
+    $('#fVideo').value = ''; $('#videoChosen').textContent = ''; $('#addErr').textContent = '';
+    $('#fPaste').value = ''; $('#pasteWrap').classList.add('hidden'); $('#linkWrap').classList.add('hidden');
+    openDrawer('#addDrawer');
+    $('#fQuery').value = ''; $('#fSinger2').value = ''; renderHistory('');
+    setTimeout(() => $('#fQuery').focus(), 50);
+  }
+  $('#addBtn').onclick = openAdd; $('#emptyAdd').onclick = openAdd; $('#queueAdd').onclick = openAdd;
+
+  $('#togglePaste').onclick = () => { $('#pasteWrap').classList.toggle('hidden'); if (!$('#pasteWrap').classList.contains('hidden')) { draft.lyric = null; $$('#lyricResults .res').forEach(r => r.classList.remove('sel')); $('#fPaste').focus(); } };
+  $('#toggleLink').onclick = () => { $('#linkWrap').classList.toggle('hidden'); if (!$('#linkWrap').classList.contains('hidden')) $('#fVideo').focus(); };
+
+  let lyrRes = [], vidRes = [], pending = 0;
+  const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const tokens = a => norm(a).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !['feat', 'part', 'with'].includes(w));
+  const matches = (v, l) => tokens(l.artistName).some(t => norm(v.title + ' ' + v.channel).includes(t));
+  const durDiff = (v, l) => (v.dur && l.duration) ? Math.abs(v.dur - l.duration) : null;
+  function pairScore(l, v) {
+    const dd = durDiff(v, l);
+    return (l.syncedLyrics ? 0 : 100) + (matches(v, l) ? 0 : 30) + (v.good ? 0 : 25) + (dd == null ? 20 : Math.min(60, dd));
+  }
+  const best = (list, f) => list.reduce((a, x) => (a == null || f(x) < f(a)) ? x : a, null);
+  function showFit(l) {
+    vidRes.forEach(v => {
+      const dd = durDiff(v, l), tag = v.b.querySelector('.fit');
+      tag.classList.toggle('hidden', !(dd != null && dd <= 4));
+    });
+  }
+  function pickVideoFor(l) { const v = best(vidRes, v => pairScore(l, v)); if (v) v.b.click(); showFit(l); return !!v; }
+  function pickLyricFor(v) { const l = best(lyrRes, x => pairScore(x.d, v)); if (l) { l.b.click(); showFit(l.d); } }
+  function autoMatch() {
+    if (pending > 0) return;
+    let pair = null, s = Infinity;
+    for (const l of lyrRes) for (const v of vidRes) { const sc = pairScore(l.d, v); if (sc < s) { s = sc; pair = [l, v]; } }
+    if (pair) { pair[0].b.click(); pair[1].b.click(); showFit(pair[0].d); }
+    else if (lyrRes[0]) lyrRes[0].b.click();
+    else if (vidRes[0]) vidRes[0].b.click();
+  }
+  const RE_BAD = /(cover|reac[tç]|reaction|tutorial|aula|cifra|como tocar|violão|guitar|piano|drum|bateria|dança|coreografia)/i;
+  const RE_LIVE = /(ao vivo|en vivo|\blive\b|show)/i;
+  const RE_GOOD = /(karaok|instrumental|playback|sem voz|sin voz|no vocals|backing track|minus one|\bbase\b)/i;
+  const RE_GUIDE = /(backing vocal|voz guia|com voz|guide vocal|with vocals|con voz)/i;
+  const RE_NOVOX = /(sem voz|sin voz|no vocals|without vocals|instrumental)/i;
+  function classify(title) {
+    const good = RE_GOOD.test(title);
+    if (RE_BAD.test(title) && !good) return null;
+    if (RE_LIVE.test(title) && !good) return null;
+    return { good, guide: RE_GUIDE.test(title), novox: !RE_GUIDE.test(title) && RE_NOVOX.test(title) };
+  }
+  const isoDur = s => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(s || ''); return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0; };
+
+  function search() {
+    const q = $('#fQuery').value.trim();
+    if (!q) { $('#fQuery').focus(); return; }
+    draft.lyric = null; draft.video = null; $('#videoChosen').textContent = '';
+    lyrRes = []; vidRes = []; pending = 2;
+    searchLyrics(q).finally(() => { pending--; autoMatch(); });
+    searchYt(q).finally(() => { pending--; autoMatch(); });
+  }
+  $('#searchBtn').onclick = search;
+  $('#fQuery').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+
+  async function searchLyrics(q) {
+    const box = $('#lyricResults'); box.innerHTML = '<p class="hint">Buscando letra…</p>';
+    try {
+      let r = await fetch('https://lrclib.net/api/search?q=' + encodeURIComponent(q));
+      let data = r.ok ? await r.json() : [];
+      if (!data.length) { r = await fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(q)); data = r.ok ? await r.json() : []; }
+      data = data.filter(d => !d.instrumental && (d.syncedLyrics || d.plainLyrics));
+      data.sort((a, b) => (!!b.syncedLyrics - !!a.syncedLyrics));
+      data = data.slice(0, 8);
+      if (!data.length) { box.innerHTML = '<p class="hint">Não achei essa letra. Tente com o nome do artista junto, ou cole a letra.</p>'; return; }
+      box.innerHTML = '';
+      data.forEach((d, k) => {
+        const b = document.createElement('button'); b.className = 'res';
+        b.innerHTML = `<div class="t"><b></b><small></small></div><span class="badge ${d.syncedLyrics ? 'sync' : 'plain'}">${d.syncedLyrics ? 'sincronizada' : 'só texto'}</span>`;
+        b.querySelector('b').textContent = d.trackName;
+        b.querySelector('small').textContent = [d.artistName, d.albumName, fmtDur(d.duration)].filter(Boolean).join(' · ');
+        b.onclick = e => {
+          $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel');
+          draft.lyric = { lrclibId: d.id, title: d.trackName, artist: d.artistName, lrc: d.syncedLyrics || null, plain: d.plainLyrics || null, duration: d.duration };
+          $('#pasteWrap').classList.add('hidden');
+          if (e && e.isTrusted) pickVideoFor(d);
+        };
+        box.appendChild(b);
+        lyrRes.push({ d, b });
+      });
+    } catch (e) {
+      box.innerHTML = '<p class="hint err">Não consegui falar com o LRCLIB. Verifique a internet.</p>';
+    }
+  }
+
+  $('#fVideo').addEventListener('input', () => {
+    const id = ytId($('#fVideo').value);
+    draft.video = id ? { id, title: '' } : null;
+    $('#videoChosen').textContent = id ? 'Vídeo do link escolhido' : ($('#fVideo').value ? 'Link não reconhecido' : '');
+    $$('#ytResults .res').forEach(r => r.classList.remove('sel'));
+  });
+
+  async function searchYt(name) {
+    const box = $('#ytResults');
+    const key = getKey();
+    const ytQuery = `${name} karaoke|instrumental`;
+    const fallback = `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(name + ' karaoke')}" target="_blank" rel="noopener">Abrir a busca no YouTube</a> e colar o link.`;
+    if (!key) { box.innerHTML = `<p class="hint">${fallback}</p>`; return; }
+    box.innerHTML = '<p class="hint">Buscando vídeos…</p>';
+    try {
+      const p = new URLSearchParams({ part: 'snippet', type: 'video', videoEmbeddable: 'true', maxResults: '12', q: ytQuery, key });
+      const r = await fetch('https://www.googleapis.com/youtube/v3/search?' + p);
+      const data = await r.json();
+      if (data.error) throw new Error(data.error.message);
+      box.innerHTML = '';
+      const items = (data.items || []).map(it => ({ it, c: classify(decode(it.snippet.title)) })).filter(x => x.c);
+      items.sort((a, b) => b.c.good - a.c.good);
+      if (items.filter(x => x.c.good).length >= 3) items.splice(0, items.length, ...items.filter(x => x.c.good));
+      items.slice(0, 6).forEach(({ it, c }) => {
+        const id = it.id.videoId, sn = it.snippet;
+        const b = document.createElement('button'); b.className = 'res';
+        b.innerHTML = `<img alt=""><div class="t"><b></b><small></small></div>${c.guide ? '<span class="badge mine">voz guia</span>' : ''}${c.novox ? '<span class="badge plain">sem voz</span>' : ''}<span class="badge sync fit hidden">duração bate</span>`;
+        { const im = b.querySelector('img'); const u = sn.thumbnails?.medium?.url || sn.thumbnails?.default?.url; u ? (im.src = u) : im.remove(); }
+        b.querySelector('b').textContent = decode(sn.title);
+        b.querySelector('small').textContent = decode(sn.channelTitle);
+        const v = { id, title: decode(sn.title), channel: decode(sn.channelTitle), dur: 0, good: c.good, b };
+        b.onclick = e => { $$('.res', box).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); draft.video = { id, title: v.title, dur: v.dur }; $('#fVideo').value = ''; $('#videoChosen').textContent = ''; if (e && e.isTrusted) pickLyricFor(v); };
+        box.appendChild(b);
+        vidRes.push(v);
+      });
+      if (vidRes.length) {
+        try {
+          const dp = new URLSearchParams({ part: 'contentDetails', id: vidRes.map(v => v.id).join(','), key });
+          const dj = await (await fetch('https://www.googleapis.com/youtube/v3/videos?' + dp)).json();
+          (dj.items || []).forEach(it => { const v = vidRes.find(x => x.id === it.id); if (v) { v.dur = isoDur(it.contentDetails?.duration); if (draft.video && draft.video.id === v.id) draft.video.dur = v.dur; v.b.querySelector('small').textContent = `${v.channel} · ${fmtDur(v.dur)}`; } });
+        } catch {}
+      }
+      if (!box.children.length) box.innerHTML = `<p class="hint">Nenhum vídeo encontrado. ${fallback}</p>`;
+    } catch (e) { box.innerHTML = `<p class="hint err">A busca no YouTube falhou. ${fallback}</p>`; }
+  }
+  function decode(s) { const t = document.createElement('textarea'); t.innerHTML = s || ''; return t.value; }
+
+  function buildSong() {
+    const err = $('#addErr'); err.textContent = '';
+    const pasted = $('#fPaste').value.trim();
+    let lyr = draft.lyric;
+    if (!lyr && pasted) {
+      const title = $('#fQuery').value.trim(), artist = '';
+      if (!title) { err.textContent = 'Dê um nome para a música.'; return null; }
+      lyr = { lrclibId: null, title, artist, lrc: /\[\d{1,3}:\d/.test(pasted) ? pasted : null, plain: pasted };
+    }
+    if (!lyr) { err.textContent = 'Busque a música e escolha uma letra (ou cole a letra).'; return null; }
+    const vid = (ytId($('#fVideo').value) ? { id: ytId($('#fVideo').value) } : null) || draft.video;
+    if (!vid) { err.textContent = 'Escolha um vídeo da lista ou cole um link.'; return null; }
+    return { uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...lyr, videoId: vid.id, videoDur: vid.dur || 0, singer: $('#fSinger').value.trim(), singer2: $('#fSinger2').value.trim() };
+  }
+  $('#addQueue').onclick = () => { const s = buildSong(); if (s) enqueue(s); };
+
+  function addHistory(song) {
+    const k = song.videoId + '|' + lyricKey(song);
+    const old = history.find(x => x.k === k);
+    const { uid, singer, singer2, counted, ...rest } = song;
+    history = [{ ...rest, k, count: (old ? old.count : 0) + 1, last: Date.now() }, ...history.filter(x => x.k !== k)].slice(0, 60);
+    store.set('history', history);
+  }
+  function fromHistory(x) { const { k, count, last, ...s } = x; return { ...s, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), singer: $('#fSinger').value.trim(), singer2: $('#fSinger2').value.trim() }; }
+  function renderHistory(filter) {
+    const box = $('#histList'), q = norm(filter || '').trim();
+    const list = history.filter(x => !q || norm(x.title + ' ' + x.artist).includes(q)).slice(0, q ? 8 : 5);
+    $('#histStep').classList.toggle('hidden', !list.length);
+    box.innerHTML = '';
+    list.forEach(x => {
+      const d = document.createElement('div'); d.className = 'res';
+      d.innerHTML = '<div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm" data-a="now">Cantar</button><button class="btn sm" data-a="q">+ Fila</button><button class="btn sm ghost icon" data-a="rm" title="Tirar do histórico" aria-label="Tirar do histórico">' + IC.x + '</button></div>';
+      d.querySelector('b').textContent = x.title;
+      d.querySelector('small').textContent = [x.artist, `${x.count}×`, store.get(offKey(x), null) != null ? 'tempo ajustado' : ''].filter(Boolean).join(' · ');
+      d.querySelector('[data-a=now]').onclick = () => { closeDrawers(); play(fromHistory(x), true); };
+      d.querySelector('[data-a=q]').onclick = () => enqueue(fromHistory(x));
+      d.querySelector('[data-a=rm]').onclick = () => { history = history.filter(y => y.k !== x.k); store.set('history', history); renderHistory($('#fQuery').value); };
+      box.appendChild(d);
+    });
+  }
+  $('#fQuery').addEventListener('input', e => renderHistory(e.target.value));
+  $('#addNow').onclick = () => { const s = buildSong(); if (!s) return; closeDrawers(); play(s, true); };
+
+  function renderQueue() {
+    const box = $('#queueList'); box.innerHTML = '';
+    if (current) {
+      const d = document.createElement('div'); d.className = 'q playing';
+      d.innerHTML = '<span class="num">' + IC.music + '</span><div class="t"><b></b><small></small></div>';
+      d.querySelector('b').textContent = current.title; d.querySelector('small').textContent = `${whoName(current) || '—'} · agora`;
+      box.appendChild(d);
+    }
+    if (!queue.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ninguém na fila ainda'; box.appendChild(p); return; }
+    queue.forEach((s, i) => {
+      const d = document.createElement('div'); d.className = 'q';
+      d.innerHTML = `<span class="num">${i + 1}</span><div class="t"><b></b><small></small></div><div class="acts"><button class="btn sm icon" data-a="up" title="Subir" aria-label="Subir">${IC.up}</button><button class="btn sm icon" data-a="play" title="Cantar agora" aria-label="Cantar agora">${IC.play}</button><button class="btn sm icon ghost" data-a="rm" title="Tirar" aria-label="Tirar">${IC.x}</button></div>`;
+      d.querySelector('b').textContent = s.title; d.querySelector('small').textContent = `${whoName(s) || '—'} · ${s.artist}`;
+      d.querySelector('[data-a=up]').onclick = () => { if (i > 0) { [queue[i - 1], queue[i]] = [queue[i], queue[i - 1]]; saveQueue(); } };
+      d.querySelector('[data-a=play]').onclick = () => { queue.splice(i, 1); saveQueue(); closeDrawers(); play(s, true); };
+      d.querySelector('[data-a=rm]').onclick = () => { queue.splice(i, 1); saveQueue(); };
+      box.appendChild(d);
+    });
+  }
+  $('#queueBtn').onclick = () => { renderQueue(); openDrawer('#queueDrawer'); };
+  $('#clearQueue').onclick = () => { queue = []; saveQueue(); };
+
+  const size = store.get('size', null); if (size) document.documentElement.style.setProperty('--lyric-size', size + 'px');
+  document.body.classList.toggle('lowfx', !!store.get('lowfx', false));
+  const THEMES = { coalho: 'Coalho', gorgonzola: 'Gorgonzola', keijo: 'Keijo' };
+  function setTheme(t, say) {
+    if (!THEMES[t]) t = '';
+    if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+    $$('.brand .jp button').forEach(b => b.classList.toggle('on', b.dataset.th === t));
+    store.set('theme', t);
+    if (say) toast(t ? `Tema ${THEMES[t]}` : 'Tema Maturado');
+  }
+  $$('.brand .jp button').forEach(b => b.onclick = () => setTheme(store.get('theme', '') === b.dataset.th ? '' : b.dataset.th, true));
+  setTheme(store.get('theme', ''), false);
+  $('#fxToggle').onchange = e => { document.body.classList.toggle('lowfx', !e.target.checked); store.set('lowfx', !e.target.checked); };
+  let idleT;
+  function poke() {
+    document.body.classList.remove('idle'); clearTimeout(idleT);
+    idleT = setTimeout(() => {
+      const playing = playerReady && player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING;
+      const drawerOpen = $$('.drawer').some(d => !d.classList.contains('hidden'));
+      if (playing && !drawerOpen && !tap && !startMode) document.body.classList.add('idle'); else poke();
+    }, 3000);
+  }
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev => document.addEventListener(ev, poke, { passive: true }));
+  poke();
+  let introT = null, introDone = null;
+  function showIntro(song, done) {
+    const el = $('#intro');
+    $('#introName').textContent = whoName(song) || 'Sua vez';
+    const sub = $('#introSong'); sub.textContent = song.title;
+    if (song.artist) { const sm = document.createElement('small'); sm.textContent = song.artist; sub.appendChild(sm); }
+    el.classList.add('hidden'); void el.offsetWidth; el.classList.remove('hidden');
+    document.body.classList.add('intro-on');
+    clearTimeout(introT); introDone = done;
+    introT = setTimeout(() => { hideIntro(); const f = introDone; introDone = null; f && f(); }, 3200);
+  }
+  function hideIntro() { clearTimeout(introT); $('#intro').classList.add('hidden'); document.body.classList.remove('intro-on'); }
+  $('#intro').onclick = () => { hideIntro(); const f = introDone; introDone = null; f && f(); };
+
+  $('#settingsBtn').onclick = () => {
+    $('#fxToggle').checked = !document.body.classList.contains('lowfx');
+    $('#sizeRange').value = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--lyric-size'), 10) || 56;
+    $('#ytKey').value = getKey();
+    $('#mineCount').textContent = `${store.keys('sync:').length} letra(s) sincronizada(s) salvas neste navegador.`;
+    openDrawer('#setDrawer');
+  };
+  $('#sizeRange').oninput = e => { document.documentElement.style.setProperty('--lyric-size', e.target.value + 'px'); store.set('size', +e.target.value); curIdx = -2; };
+  $('#ytKey').onchange = e => { const v = e.target.value.trim(); store.set('ytkey', v || null); toast(v ? 'Chave salva' : 'Usando a chave padrão do app'); };
+  $('#copyLrc').onclick = async () => {
+    if (!current) return toast('Nenhuma música tocando');
+    const lrc = mySync(current) || current.lrc; if (!lrc) return toast('Essa música ainda não tem tempos');
+    try { await navigator.clipboard.writeText(lrc); toast('Copiado'); } catch { toast('Não consegui copiar'); }
+  };
+
+  const PARTY_SECONDS = 8;
+  let partyOn = false, partyTimers = [], actx = null;
+  const getCtx = () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); return actx; } catch { return null; } };
+  document.addEventListener('pointerdown', () => { const c = getCtx(); if (c && c.state === 'suspended') c.resume(); });
+  function noiseBuffer(ctx, secs, decay) {
+    const b = ctx.createBuffer(1, Math.floor(ctx.sampleRate * secs), ctx.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (decay ? Math.exp(-i / (ctx.sampleRate * decay)) : 1);
+    return b;
+  }
+  function playApplause(dur = 6) {
+    const ctx = getCtx(); if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    const t0 = ctx.currentTime + 0.05, out = ctx.createGain();
+    out.gain.setValueAtTime(0, t0); out.gain.linearRampToValueAtTime(0.9, t0 + 0.4);
+    out.gain.setValueAtTime(0.9, t0 + dur - 1.8); out.gain.linearRampToValueAtTime(0, t0 + dur);
+    out.connect(ctx.destination);
+    const clap = noiseBuffer(ctx, 0.06, 0.012);
+    for (let k = 0; k < dur * 45; k++) {
+      const at = t0 + Math.pow(Math.random(), 1.3) * dur;
+      const s = ctx.createBufferSource(); s.buffer = clap; s.playbackRate.value = 0.8 + Math.random() * 0.5;
+      const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900 + Math.random() * 1800; f.Q.value = 1.2;
+      const g = ctx.createGain(); g.gain.value = 0.15 + Math.random() * 0.35;
+      let node = g;
+      if (ctx.createStereoPanner) { const pn = ctx.createStereoPanner(); pn.pan.value = Math.random() * 2 - 1; g.connect(pn); node = pn; }
+      s.connect(f); f.connect(g); node.connect(out); s.start(at);
+    }
+    const roar = ctx.createBufferSource(); roar.buffer = noiseBuffer(ctx, 2, 0); roar.loop = true;
+    const rf = ctx.createBiquadFilter(); rf.type = 'bandpass'; rf.frequency.value = 600; rf.Q.value = 0.6;
+    const rg = ctx.createGain(); rg.gain.setValueAtTime(0, t0); rg.gain.linearRampToValueAtTime(0.18, t0 + 1); rg.gain.linearRampToValueAtTime(0.06, t0 + dur - 1); rg.gain.linearRampToValueAtTime(0, t0 + dur);
+    roar.connect(rf); rf.connect(rg); rg.connect(out); roar.start(t0); roar.stop(t0 + dur + 0.1);
+    for (let k = 0; k < 4; k++) {
+      const at = t0 + 0.3 + Math.random() * (dur - 2.5), o = ctx.createOscillator(), g = ctx.createGain();
+      const base = 700 + Math.random() * 600; o.type = k % 2 ? 'sine' : 'triangle';
+      o.frequency.setValueAtTime(base, at); o.frequency.exponentialRampToValueAtTime(base * 1.6, at + 0.25); o.frequency.exponentialRampToValueAtTime(base * 1.2, at + 0.7);
+      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(0.05, at + 0.05); g.gain.linearRampToValueAtTime(0, at + 0.75);
+      o.connect(g); g.connect(out); o.start(at); o.stop(at + 0.8);
+    }
+  }
+  const cheer = new Audio('applause.mp3'); cheer.preload = 'auto'; cheer.volume = 0.9;
+  function playCheer() {
+    try {
+      cheer.currentTime = 0;
+      const p = cheer.play();
+      if (p && p.catch) p.catch(() => playApplause(6));
+    } catch { playApplause(6); }
+  }
+  function spawnEmojis(secs) {
+    const box = $('#party'), set = ['👏', '👏', '👏', '🎉', '🙌', '🎤', '🧀'];
+    const iv = setInterval(() => {
+      const e = document.createElement('span'); e.className = 'emo';
+      e.textContent = set[Math.floor(Math.random() * set.length)];
+      e.style.left = (Math.random() * 96) + '%';
+      e.style.setProperty('--d', (2.6 + Math.random() * 2) + 's');
+      e.style.setProperty('--dx', (Math.random() * 160 - 80) + 'px');
+      e.style.setProperty('--r', (Math.random() * 60 - 30) + 'deg');
+      e.style.fontSize = (32 + Math.random() * 30) + 'px';
+      box.appendChild(e); setTimeout(() => e.remove(), 5000);
+    }, 110);
+    partyTimers.push(iv, setTimeout(() => clearInterval(iv), secs * 1000));
+  }
+  function celebrate() {
+    if (!current || partyOn) return;
+    partyOn = true;
+    store.set('sung', sungToday().concat(Date.now()).slice(-200));
+    const who = current.singer2 ? `${current.singer} e ${current.singer2}` : current.singer;
+    const msgs = who ? [`Mandou bem, ${who}`, `Que voz, ${who}`, `Aplausos pra ${who}`, (current.singer2 ? `${who} arrasaram` : `${who} arrasou`), `Essa saiu no ponto, ${who}`]
+                     : ['Mandou bem', 'Que voz', 'Aplausos', 'Arrasou', 'Essa saiu no ponto'];
+    $('#partyMsg').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+    $('#partySub').textContent = `${current.title}${current.artist ? ' · ' + current.artist : ''}`;
+    const n = queue[0];
+    $('#partyNext').classList.toggle('hidden', !n);
+    $('#partySkip').classList.toggle('hidden', !n);
+    if (n) { $('#partyNextTitle').textContent = n.title; $('#partyNextWho').textContent = n.singer ? `com ${whoName(n)}` : (n.artist || ''); }
+    $('#party').classList.remove('hidden'); $('#controls').classList.add('hidden');
+    playCheer(); spawnEmojis(5.5);
+    let left = PARTY_SECONDS;
+    const tickLeft = () => { $('#partyLeft').textContent = n ? `começa em ${left}s` : 'fila vazia: adicione a próxima música'; };
+    tickLeft();
+    partyTimers.push(setInterval(() => { left--; tickLeft(); if (left <= 0) endParty(true); }, 1000));
+  }
+  function endParty(goNext) {
+    if (!partyOn) return;
+    partyOn = false;
+    partyTimers.forEach(t => { clearInterval(t); clearTimeout(t); }); partyTimers = [];
+    $('#party').classList.add('hidden'); $$('#party .emo').forEach(e => e.remove());
+    try { cheer.pause(); } catch {}
+    if (!tap) $('#controls').classList.remove('hidden');
+    if (goNext && queue.length) next(true);
+    else if (goNext) showWaiting();
+  }
+  const EMPTY_H = $('#emptyH').innerHTML, EMPTY_P = $('#emptyP').textContent;
+  function sungToday() { const c = Date.now() - 12 * 3600e3; return (store.get('sung', []) || []).filter(x => x > c); }
+  function showWaiting() {
+    waiting = true;
+    try { player.stopVideo(); } catch {}
+    document.body.classList.add('waiting');
+    $('#emptyH').innerHTML = 'Palco livre<br><em>Quem canta agora?</em>';
+    $('#emptyP').textContent = 'Mande a próxima pelo celular ou toque no botão. A fila começa sozinha.';
+    $('#emptyAdd').textContent = '+ Adicionar música';
+    const n = sungToday().length;
+    const st = $('#wStats'); st.innerHTML = '';
+    const add = (n, t, pre = '') => { const s = document.createElement('span'); const b = document.createElement('b'); b.textContent = n; s.append(pre, b, t ? ' ' + t : ''); st.appendChild(s); };
+    add(n, `${n === 1 ? 'música cantada' : 'músicas cantadas'} hoje`);
+    if (current && current.singer) add(whoName(current), '', 'Última: ');
+    st.classList.remove('hidden');
+    $('#qrMini').classList.add('big');
+    $('#empty').classList.remove('hidden');
+  }
+  function leaveWaiting() {
+    waiting = false;
+    document.body.classList.remove('waiting');
+    $('#emptyH').innerHTML = EMPTY_H; $('#emptyP').textContent = EMPTY_P;
+    $('#emptyAdd').textContent = '+ Adicionar a primeira música';
+    $('#wStats').classList.add('hidden'); $('#qrMini').classList.remove('big');
+  }
+  $('#partySkip').onclick = () => endParty(true);
+  $('#partyAdd').onclick = () => { endParty(false); openAdd(); };
+
+  function togglePlay() { if (!playerReady) return; const st = player.getPlayerState(); st === YT.PlayerState.PLAYING ? player.pauseVideo() : player.playVideo(); }
+  $('#playBtn').onclick = togglePlay;
+  $('#restartBtn').onclick = () => { if (playerReady) { player.seekTo(0, true); player.playVideo(); } };
+  $('#nextBtn').onclick = () => next(false);
+  $('#resyncBtn').onclick = () => {
+    if (!current) return;
+    const src = mySync(current) || current.lrc;
+    const texts = src ? parseLRC(src).filter(l => !l.gap).map(l => l.text) : plainTexts(current);
+    if (!texts.length) return toast('Sem letra para sincronizar');
+    startTap(texts);
+  };
+  $('#markStart').onclick = startMark; $('#startBtn').onclick = startHit; $('#startCancel').onclick = () => endStart();
+  $('#tapBtn').onclick = tapMark; $('#tapUndo').onclick = tapUndo; $('#tapCancel').onclick = cancelTap;
+  function toggleFs() { const el = document.documentElement; try { document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen(); } catch {} }
+  $('#fsBtn').onclick = toggleFs;
+
+  const TOUR = [
+    { t: 'Bem-vindo ao Karaokeijo チーズ', p: 'Em um minuto você aprende o básico: <b>escolher a música</b>, <b>chamar a galera</b> e <b>acertar a letra</b>.' },
+    { el: '#addBtn', t: 'Escolha a música', p: 'Toque em <b>+ Música</b> e digite só o nome. A gente busca a versão karaokê no YouTube.' },
+    { el: '#phoneBtn', t: 'Cada um pelo celular', p: 'Mostre o <b>QR code</b> pra galera. Cada pessoa aponta a câmera e manda a própria música pra fila.' },
+    { el: '#queueBtn', t: 'A fila anda sozinha', p: 'Aqui ficam as próximas músicas. Quando uma termina, rolam os <b>aplausos</b> e a seguinte começa automaticamente.' },
+    { el: '#controls', t: 'Letra fora do tempo?', p: 'Durante a música, use <b>−1s</b> e <b>+1s</b> na barra de baixo pra adiantar ou atrasar a letra.' },
+    { el: '.brand .jp', t: 'Deixe com a sua cara', p: 'Toque em <b>チ</b>, <b>ー</b> ou <b>ズ</b> pra trocar as cores do app.' },
+    { t: 'Pronto, bora cantar', p: 'Escolha a primeira música e solte a voz.', last: true },
+  ];
+  let tourI = -1;
+  function tourOn() { return tourI >= 0; }
+  function tourShow(i) {
+    tourI = Math.max(0, Math.min(TOUR.length - 1, i));
+    const s = TOUR[tourI], tour = $('#tour'), card = $('.card', tour), hole = $('.hole', tour);
+    closeDrawers(); document.body.classList.remove('idle');
+    tour.classList.remove('hidden');
+    $('#tourN').textContent = `${tourI + 1} de ${TOUR.length}`;
+    $('#tourT').textContent = s.t; $('#tourP').innerHTML = s.p;
+    $('#tourDots').innerHTML = TOUR.map((_, k) => `<i class="${k === tourI ? 'on' : ''}"></i>`).join('');
+    $('#tourBack').classList.toggle('hidden', tourI === 0);
+    $('#tourSkip').classList.toggle('hidden', !!s.last);
+    $('#tourNext').textContent = s.last ? '+ Adicionar música' : (tourI === 0 ? 'Começar' : 'Próximo');
+    let el = s.el && $(s.el);
+    if (el && el.closest('#hnav') && getComputedStyle($('#menuBtn')).display !== 'none') { el = $('#menuBtn'); }
+    const r = el && el.getBoundingClientRect();
+    const vis = r && r.width > 0 && r.height > 0 && r.left >= 0 && r.right <= innerWidth && getComputedStyle(el).visibility !== 'hidden' && !el.closest('.hidden');
+    const W = innerWidth, H = innerHeight, cw = Math.min(420, W - 32);
+    tour.classList.toggle('has-hole', !!vis);
+    if (vis) {
+      const pad = 8;
+      Object.assign(hole.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px', display: 'block' });
+      const ch = card.offsetHeight || 240;
+      let top = r.bottom + 20; if (top + ch > H - 16) top = Math.max(16, r.top - ch - 20);
+      const left = Math.max(16, Math.min(W - cw - 16, r.left + r.width / 2 - cw / 2));
+      card.style.left = left + 'px'; card.style.top = top + 'px';
+    } else {
+      hole.style.display = 'none';
+      card.style.left = (W - cw) / 2 + 'px'; card.style.top = Math.max(16, (H - (card.offsetHeight || 260)) / 2) + 'px';
+    }
+    $('#tourNext').focus({ preventScroll: true });
+  }
+  function tourEnd(add) {
+    tourI = -1; $('#tour').classList.add('hidden');
+    store.set('tourSeen', true); $('#tourBtn').classList.remove('pulse');
+    if (add) openAdd();
+  }
+  $('#tourBtn').onclick = () => tourShow(0);
+  $('#tourAgain').onclick = () => tourShow(0);
+  $('#tourNext').onclick = () => TOUR[tourI].last ? tourEnd(true) : tourShow(tourI + 1);
+  $('#tourBack').onclick = () => tourShow(tourI - 1);
+  $('#tourSkip').onclick = () => tourEnd(false);
+  $('#tour .shade').onclick = () => tourEnd(false);
+  window.addEventListener('resize', () => { if (tourOn()) tourShow(tourI); });
+  document.addEventListener('keydown', e => {
+    if (!tourOn()) return;
+    e.stopImmediatePropagation();
+    if (e.key === 'Escape') tourEnd(false);
+    else if (e.key === 'ArrowRight') { e.preventDefault(); TOUR[tourI].last ? tourEnd(true) : tourShow(tourI + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); tourShow(tourI - 1); }
+  }, true);
+  document.addEventListener('keydown', e => {
+    if (e.target.matches('input,textarea')) return;
+    if (tap && (e.code === 'Space' || e.key === 'Enter')) { e.preventDefault(); tapMark(); return; }
+    if (tap && e.key === 'Backspace') { e.preventDefault(); tapUndo(); return; }
+    if (startMode && (e.code === 'Space' || e.key === 'Enter')) { e.preventDefault(); startHit(); return; }
+    if (startMode && e.key === 'Escape') { endStart(); return; }
+    if (e.key === 's' || e.key === 'S') { startMark(); return; }
+    if (e.key === 'Escape') closeDrawers();
+    if (e.key === 'p' || e.key === 'P' || (e.code === 'Space' && !tap)) { e.preventDefault(); togglePlay(); }
+    if (partyOn && (e.key === 'n' || e.key === 'N' || e.key === 'Enter' || e.code === 'Space')) { e.preventDefault(); endParty(true); return; }
+    if (e.key === 'n' || e.key === 'N') next(false);
+    if (e.key === '[') nudge(-0.2);
+    if (e.key === ']') nudge(0.2);
+    if (e.key === 'f' || e.key === 'F') toggleFs();
+  });
+  window.addEventListener('resize', () => { curIdx = -2; if (tap) markTap(); });
+
+  const QS = new URLSearchParams(location.search);
+  const ROOM = QS.get('sala');
+  const REMOTE = !!ROOM;
+  const MQTT_SRC = 'https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js';
+  const QR_SRC = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+  const BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  const myId = store.get('clientId', null) || (() => { const id = Math.random().toString(36).slice(2, 10); store.set('clientId', id); return id; })();
+  let mq = null, brokerIdx = 0, phones = new Map(), stateTimer = null, tvSeen = false;
+  const processedMsgIds = new Set();
+
+  const topics = r => ({ in: `karaokeijo/${r}/in`, state: `karaokeijo/${r}/state`, ack: id => `karaokeijo/${r}/ack/${id}` });
+  function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+  function roomId() { let id = store.get('room2', null); if (!id) { id = 'k' + Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6); store.set('room2', id); } return id; }
+  const roomUrl = () => location.origin + location.pathname + '?sala=' + encodeURIComponent(roomId()) + '&b=' + brokerIdx;
+
+  function connectBroker(idx) {
+    return new Promise((res, rej) => {
+      let done = false;
+      const c = mqtt.connect(BROKERS[idx], { clientId: 'kk_' + myId + '_' + Math.random().toString(36).slice(2, 6), connectTimeout: 10000, reconnectPeriod: 2500, clean: true });
+      c.on('connect', () => { if (!done) { done = true; res(c); } });
+      c.on('error', () => {});
+      setTimeout(() => { if (!done) { done = true; try { c.end(true); } catch {} rej(new Error('timeout')); } }, 11000);
+    });
+  }
+
+  function snapshot() { return { type: 'state', ts: Date.now(), now: current ? { title: current.title, singer: whoName(current) } : null, queue: queue.map(s => ({ title: s.title, singer: whoName(s) })) }; }
+  function broadcastState() {
+    if (!mq || REMOTE) return;
+    clearTimeout(stateTimer);
+    stateTimer = setTimeout(() => { try { mq.publish(topics(roomId()).state, JSON.stringify(snapshot()), { retain: true }); } catch {} }, 300);
+  }
+  function phoneStatus(msg) {
+    const el = $('#phoneStatus'); if (!el) return;
+    const n = [...phones.values()].filter(t => Date.now() - t < 3 * 3600e3).length;
+    el.textContent = msg || (mq && mq.connected ? (n ? `${n} ${n === 1 ? 'celular conectado' : 'celulares conectados'}` : 'Pronto. Esperando celulares…') : 'Conectando…');
+  }
+
+  async function startHost() {
+    if (mq) return;
+    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { phoneStatus('Não consegui carregar a conexão.'); return; }
+    for (let i = 0; i < BROKERS.length && !mq; i++) { try { mq = await connectBroker(i); brokerIdx = i; } catch {} }
+    if (!mq) { phoneStatus('Não consegui conectar ao servidor de mensagens.'); return; }
+    const t = topics(roomId());
+    mq.subscribe(t.in);
+    mq.on('message', (topic, buf) => { if (topic !== t.in) return; let d; try { d = JSON.parse(buf.toString()); } catch { return; } onPhoneData(d); });
+    mq.on('connect', () => { mq.subscribe(t.in); phoneStatus(); broadcastState(); });
+    mq.on('offline', () => phoneStatus('Sem internet. Tentando reconectar…'));
+    setInterval(broadcastState, 30000);
+    broadcastState(); phoneStatus(); renderQR();
+  }
+
+  function onPhoneData(d) {
+    if (!d || !d.from) return;
+    const isNew = !phones.has(d.from);
+    phones.set(d.from, Date.now());
+    if (d.type === 'hello') { if (isNew) toast('Um celular entrou'); phoneStatus(); broadcastState(); return; }
+    if (d.type === 'react') { if (REACTS.includes(d.e)) spawnReact(d.e); return; }
+    if (d.type !== 'add' || !d.song || !d.song.videoId) return;
+
+    if (d.msgId && processedMsgIds.has(d.msgId)) {
+      try { mq.publish(topics(roomId()).ack(d.from), JSON.stringify({ type: 'ok', msgId: d.msgId, pos: queue.length })); } catch {}
+      return;
+    }
+    if (d.msgId) processedMsgIds.add(d.msgId);
+
+    const s = { ...d.song, uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
+    delete s.counted;
+    let pos;
+    if (waiting) { play(s, true); toast(`${s.singer || 'Alguém'} mandou “${s.title}”`); }
+    else if (!current) { play(s, false); pos = 0; toast(`${s.singer || 'Alguém'} mandou “${s.title}”. Aperte Tocar`); }
+    else { queue.push(s); saveQueue(); pos = queue.length; toast(`${s.singer || 'Alguém'} entrou na fila: ${s.title}`); }
+    try { mq.publish(topics(roomId()).ack(d.from), JSON.stringify({ type: 'ok', msgId: d.msgId, pos })); } catch {}
+    phoneStatus(); broadcastState();
+  }
+
+  async function renderQR() {
+    const url = roomUrl();
+    $('#roomLink').textContent = url;
+    try {
+      if (!window.qrcode) await loadScript(QR_SRC);
+      const q = qrcode(0, 'M'); q.addData(url); q.make();
+      const svg = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+      $('#qrBox').innerHTML = svg;
+      ['#qrMini', '#qrParty'].forEach(id => { const el = $(id); $('.qrsvg', el).innerHTML = svg; el.classList.remove('hidden'); });
+    } catch { $('#qrBox').innerHTML = '<p class="hint">Não consegui gerar o QR.</p>'; }
+  }
+  $('#phoneBtn').onclick = async () => { openDrawer('#phoneDrawer'); store.set('hostOn', true); phoneStatus(); if (mq) renderQR(); else { $('#qrBox').innerHTML = '<p class="hint">Preparando o código…</p>'; await startHost(); } phoneStatus(); };
+  $('#newRoom').onclick = async () => {
+    if (mq) { try { mq.publish(topics(roomId()).state, '', { retain: true }); mq.end(true); } catch {} mq = null; }
+    store.set('room2', null); phones.clear(); processedMsgIds.clear();
+    phoneStatus('Conectando…'); await startHost(); phoneStatus();
+  };
+
+  const REACTS = ['👏', '🔥', '😂', '❤️', '🧀'];
+  function spawnReact(e) {
+    const layer = $('#reactLayer'); if (layer.childElementCount > 40) return;
+    const el = document.createElement('span'); el.className = 'emo react'; el.textContent = e;
+    el.style.left = (4 + Math.random() * 62) + '%';
+    el.style.setProperty('--d', (3 + Math.random() * 1.5) + 's');
+    el.style.setProperty('--dx', (Math.random() * 140 - 70) + 'px');
+    el.style.setProperty('--r', (Math.random() * 50 - 25) + 'deg');
+    layer.appendChild(el); setTimeout(() => el.remove(), 5000);
+  }
+  let lastReact = 0;
+  function sendReact(e, btn) {
+    if (Date.now() - lastReact < 350 || !mq || !mq.connected) return;
+    lastReact = Date.now();
+    mq.publish(topics(ROOM).in, JSON.stringify({ type: 'react', from: myId, e }));
+    if (btn) { btn.classList.add('pop'); setTimeout(() => btn.classList.remove('pop'), 150); }
+    try { navigator.vibrate && navigator.vibrate(15); } catch {}
+  }
+
+  const OUTBOX_KEY = `kk_outbox_${ROOM}`;
+  let outbox = [];
+  try { outbox = JSON.parse(sessionStorage.getItem(OUTBOX_KEY) || '[]'); } catch {}
+  function saveOutbox() { try { sessionStorage.setItem(OUTBOX_KEY, JSON.stringify(outbox)); } catch {} }
+
+  function flushOutbox() {
+    if (!mq || !mq.connected || !outbox.length) return;
+    const t = topics(ROOM);
+    outbox.forEach(pkt => {
+      try { mq.publish(t.in, JSON.stringify(pkt)); } catch {}
+    });
+  }
+
+  function setRemote(msg) { $('#remoteInfo').classList.remove('hidden'); $('#remoteStatus').textContent = msg; }
+  function renderRemoteState(st) {
+    const box = $('#remoteNow'); box.innerHTML = '';
+    const rows = [];
+    if (st.now) rows.push(['No palco', st.now.title + (st.now.singer ? ' · ' + st.now.singer : '')]);
+    (st.queue || []).slice(0, 5).forEach((q, i) => rows.push([`${i + 1}º da fila`, q.title + (q.singer ? ' · ' + q.singer : '')]));
+    if ((st.queue || []).length > 5) rows.push(['', `+ ${st.queue.length - 5} na fila`]);
+    if (!rows.length) rows.push(['Fila', 'vazia, manda a primeira']);
+    rows.forEach(([a, b]) => { const d = document.createElement('div'); d.className = 'rq'; d.innerHTML = '<span></span><b></b>'; d.children[0].textContent = a; d.children[1].textContent = b; box.appendChild(d); });
+  }
+
+  function sendToTv(s) {
+    if (!s.singer) { $('#addErr').textContent = 'Coloque seu nome em “Quem canta”.'; $('#fSinger').focus(); return; }
+    const { uid, counted, ...song } = s;
+    store.set('myname', s.singer);
+
+    const pkt = {
+      type: 'add',
+      msgId: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      from: myId,
+      song
+    };
+    outbox.push(pkt);
+    saveOutbox();
+
+    if (mq && mq.connected) {
+      flushOutbox();
+      toast('Enviando pra TV…');
+    } else {
+      toast('Guardado! Enviaremos assim que reconectar à TV…');
+    }
+    openAdd(); $('#fSinger').value = s.singer;
+  }
+
+  async function startRemote() {
+    document.body.classList.add('remote');
+    $('#addDrawer h2').textContent = 'Mandar música pra TV';
+    $('#addQueue').textContent = 'Mandar pra fila'; $('#addQueue').classList.add('primary');
+    openAdd(); $('#fSinger').value = store.get('myname', '');
+    setRemote('Conectando…');
+    $('#reactBar').classList.remove('hidden');
+    $$('#reactBar button').forEach(b => b.onclick = () => sendReact(b.dataset.r, b));
+    try { if (!window.mqtt) await loadScript(MQTT_SRC); } catch { setRemote('Não consegui carregar a conexão.'); return; }
+
+    const preferredIdx = Math.min(BROKERS.length - 1, Math.max(0, parseInt(QS.get('b') || '0', 10) || 0));
+    const order = [preferredIdx, ...BROKERS.map((_, i) => i).filter(i => i !== preferredIdx)];
+    for (const idx of order) {
+      try { mq = await connectBroker(idx); break; } catch {}
+    }
+    if (!mq) { setRemote('Não consegui conectar.'); return; }
+
+    const t = topics(ROOM);
+    const onConnected = () => {
+      mq.subscribe([t.state, t.ack(myId)]);
+      mq.publish(t.in, JSON.stringify({ type: 'hello', from: myId }));
+      flushOutbox();
+      if (!tvSeen) setRemote('Procurando a TV…');
+    };
+    if (mq.connected) onConnected();
+    mq.on('connect', onConnected);
+    mq.on('offline', () => setRemote('Reconectando à TV…'));
+    mq.on('error', () => {});
+    mq.on('message', (topic, buf) => {
+      let d; try { d = JSON.parse(buf.toString()); } catch { return; }
+      if (topic === t.state && d.type === 'state') {
+        renderRemoteState(d);
+        if (Date.now() - (d.ts || 0) < 90e3) { tvSeen = true; setRemote(outbox.length ? `Conectado · enviando ${outbox.length} música(s)…` : 'Conectado à TV'); flushOutbox(); }
+        else if (!tvSeen) setRemote('A TV parece estar fechada.');
+      }
+      if (topic === t.ack(myId) && d.type === 'ok') {
+        if (d.msgId) { outbox = outbox.filter(p => p.msgId !== d.msgId); saveOutbox(); }
+        else { outbox = []; saveOutbox(); }
+        setRemote('Conectado à TV');
+        toast(d.pos ? `Mandado! Você é o ${d.pos}º da fila` : 'Mandado! Já está na TV');
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && mq) {
+        if (mq.connected) flushOutbox(); else try { mq.reconnect(); } catch {}
+      }
+    });
+  }
+
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+
+  $('#qCount').textContent = queue.length;
+  if (REMOTE) startRemote();
+  else { if (current) play(current, false); startHost(); }
+
+  window.__kk = { parseLRC, toLRC, ytId, store };
+})();
+</script>
+</body>
+</html>
